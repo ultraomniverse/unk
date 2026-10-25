@@ -3,439 +3,695 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UNK — El Principio de Reescribibilidad</title>
+<title>UNK — United Network of Knowledgment</title>
 <style>
-:root{--bg:#04050a;--fg:#dff7f0;--fgm:#7fa89f;--card:#0a0d14;--bd:#1b2130;--cy:#00ffc8;--mg:#ff2fd0;--am:#ffcc00}
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&display=swap');
+
+:root{
+  --bg:#04060a;
+  --fg:#9dff2e;
+  --acc1:#ff00d4;
+  --acc2:#00f0ff;
+  --warn:#ffcc00;
+  --hair:rgba(157,255,46,.22);
+  --scan-op:.14;
+  --hueSpeed:12s;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --tech:'Share Tech Mono',var(--mono);
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:Inter,system-ui,-apple-system,sans-serif;line-height:1.6;padding:26px 16px 0}
-.wrap{max-width:700px;margin:0 auto}
-h1,h2,h3{font-weight:500;line-height:1.15;margin:0}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-.term{background:#05060a;border:1px solid var(--bd);border-radius:10px;padding:14px;overflow:hidden;position:relative}
-.term:after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,200,.05) 0 1px,transparent 1px 3px)}
-pre.ascii{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,monospace;font-size:10px;line-height:10px;color:var(--cy);white-space:pre;animation:col 9s linear infinite}
-@keyframes col{0%{color:#00ffc8}25%{color:#7bffd0}50%{color:#ff2fd0}75%{color:#ffcc00}100%{color:#00ffc8}}
-@keyframes glitch{0%,100%{text-shadow:3px 0 var(--mg),-3px 0 var(--cy)}50%{text-shadow:-3px 0 var(--mg),3px 0 var(--cy)}}
-.g{animation:glitch 2.4s steps(2,end) infinite}
-@keyframes fade{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:none}}
-.rev{animation:fade .9s ease both}
-@keyframes blink{50%{opacity:0}}
-.cur{display:inline-block;width:9px;height:16px;background:var(--cy);vertical-align:-3px;animation:blink 1s steps(1) infinite}
-.hero-ascii{font-size:13px;line-height:13px;color:var(--cy);text-shadow:0 0 18px rgba(0,255,200,.35)}
-.nav{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 30px}
-.nav a{font-size:11px;text-decoration:none;color:var(--fgm);border:1px solid var(--bd);padding:4px 9px;border-radius:99px;letter-spacing:.06em;text-transform:uppercase}
-.nav a:hover{color:var(--cy);border-color:var(--cy)}
-.sect{margin:52px 0 0;scroll-margin-top:20px}
-.kick{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--mg)}
-.h2{font-size:26px;margin:6px 0 14px}
-.p{font-size:15px;margin:0 0 14px}
-.muted{color:var(--fgm)}
-.fire{font-size:17px;line-height:1.65}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.card{border:1px solid var(--bd);border-radius:10px;padding:14px;background:var(--card)}
-.card h3{font-size:14px;margin-bottom:6px}
-.card p{font-size:13px;margin:0;color:var(--fgm);line-height:1.55}
-details{border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;background:var(--card);overflow:hidden}
-details[open]{border-color:var(--mg)}
-summary{cursor:pointer;padding:12px 14px;font-size:14px;font-weight:500;list-style:none}
-summary::-webkit-details-marker{display:none}
-summary:before{content:"\00D7 ";color:var(--mg);font-family:ui-monospace,monospace;font-weight:700}
-details[open] summary:before{content:"\2713 ";color:var(--cy)}
-details[open] summary{color:var(--fgm);text-decoration:line-through}
-details .body{padding:0 14px 14px;font-size:13.5px;color:var(--fgm);line-height:1.6}
-details .body b{color:var(--fg)}
-.ax{border-left:3px solid var(--cy);padding:10px 0 10px 14px;margin:16px 0;font-family:ui-monospace,monospace;font-size:13px;color:#7bffd0}
-.ax b{color:var(--am)}
-.mod{margin-bottom:22px}
-.mod .lbl{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--am);margin-bottom:6px}
-textarea,select{width:100%;font-family:ui-monospace,monospace;font-size:12.5px;padding:10px;border-radius:8px;border:1px solid var(--bd);background:#0a0d14;color:var(--fg);resize:vertical}
-textarea{min-height:64px}
-label{display:block;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fgm);margin:12px 0 5px}
-.btn{font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;background:var(--cy);color:#05060a;border:0;padding:11px 18px;border-radius:8px;cursor:pointer;font-weight:700;margin-top:14px}
-.btn:hover{background:var(--mg)}
-.btn.alt{background:transparent;color:var(--cy);border:1px solid var(--cy)}
-.out{margin-top:14px;display:none}
-.out.on{display:block}
-pre.code{font-family:ui-monospace,monospace;font-size:11.5px;line-height:1.5;background:#05060a;border:1px solid var(--bd);border-radius:8px;padding:12px;color:#7bffd0;white-space:pre-wrap;overflow-wrap:break-word;margin:0}
-.quote{font-size:16px;font-style:italic;border-left:2px solid var(--cy);padding-left:14px;margin:18px 0}
-.big{font-size:34px;line-height:1.1;font-weight:500}
-.creator{border:1px solid var(--cy);border-radius:12px;padding:20px;background:#05060a}
-.creator .nm{font-size:30px;color:var(--cy);letter-spacing:.02em}
-.creator p{color:#9ff3dc;font-size:14px}
-.creator .sig{font-family:ui-monospace,monospace;font-size:11px;color:var(--mg);letter-spacing:.2em;text-transform:uppercase}
-.no{border-left:3px solid var(--mg)}
-hr.sep{border:0;border-top:1px dashed var(--bd);margin:44px 0}
-footer{font-family:ui-monospace,monospace;font-size:11px;color:var(--fgm);text-align:center;padding:34px 0 26px;letter-spacing:.1em}
-.chaosbtn{position:relative;z-index:5;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;background:transparent;color:var(--mg);border:1px solid var(--mg);padding:6px 12px;border-radius:99px;cursor:pointer;margin-bottom:14px}
-body.chaos .wrap{filter:hue-rotate(0deg) saturate(1.6);animation:chaos 6s linear infinite}
-@keyframes chaos{to{filter:hue-rotate(360deg) saturate(1.8)}}
-body.chaos pre.ascii,body.chaos .hero-ascii{animation-duration:2.2s}
-body.chaos .g{animation-duration:.6s}
+html,body{margin:0;padding:0;background:var(--bg)}
+#unk{
+  position:relative;
+  width:100%;
+  max-width:760px;
+  margin:0 auto;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.55;
+  overflow:hidden;
+  border-left:1px solid var(--hair);
+  border-right:1px solid var(--hair);
+  text-shadow:0 0 6px color-mix(in srgb, var(--fg) 55%, transparent);
+  transition:background .6s linear;
+}
+#rain{position:absolute;inset:0;width:100%;height:100%;opacity:.42;z-index:0;pointer-events:none}
+#plasma{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(60% 40% at 12% 8%, color-mix(in srgb,var(--acc1) 26%,transparent), transparent 70%),
+    radial-gradient(50% 35% at 88% 22%, color-mix(in srgb,var(--acc2) 22%,transparent), transparent 70%),
+    radial-gradient(70% 50% at 50% 100%, color-mix(in srgb,var(--fg) 14%,transparent), transparent 75%);
+  animation:hueSpin var(--hueSpeed) linear infinite;
+  mix-blend-mode:screen;
+}
+@keyframes hueSpin{to{filter:hue-rotate(360deg)}}
+#scan{position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,.55) 3px, rgba(0,0,0,.55) 4px);
+  opacity:var(--scan-op);
+  mix-blend-mode:multiply;
+}
+#sweep{position:absolute;left:0;right:0;height:120px;z-index:4;pointer-events:none;
+  background:linear-gradient(to bottom, transparent, color-mix(in srgb,var(--acc2) 12%,transparent), transparent);
+  animation:sweepDown 7s linear infinite;
+}
+@keyframes sweepDown{0%{top:-140px}100%{top:100%}}
+#grain{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.16;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='.5'/></svg>");
+}
+#vig{position:absolute;inset:0;z-index:5;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 45%, transparent 45%, rgba(0,0,0,.85) 100%);
+}
+.wrap{position:relative;z-index:6;padding:0 18px 60px}
+
+#bar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+  padding:8px 10px;margin:0 -18px 0;background:rgba(0,0,0,.82);
+  border-bottom:1px solid var(--hair);backdrop-filter:blur(4px);
+  font-family:var(--tech);font-size:11px;letter-spacing:.06em}
+#bar .brand{color:var(--acc1);margin-right:auto;font-weight:700;letter-spacing:.2em}
+.btn{cursor:pointer;user-select:none;border:1px solid var(--hair);color:var(--fg);
+  background:rgba(0,0,0,.4);padding:4px 9px;font-family:var(--tech);font-size:11px;
+  letter-spacing:.08em;transition:.15s}
+.btn:hover{background:var(--fg);color:#04060a;text-shadow:none;box-shadow:0 0 14px var(--fg)}
+.btn.on{background:var(--acc1);color:#04060a;text-shadow:none;border-color:var(--acc1)}
+
+h1,h2,h3{font-family:var(--tech);font-weight:400;letter-spacing:.06em;margin:0}
+h2{font-size:20px;color:var(--fg);margin:46px 0 4px;text-transform:uppercase}
+h2::before{content:'';display:block;height:1px;background:linear-gradient(90deg,var(--acc1),transparent);margin-bottom:10px}
+h3{font-size:14px;color:var(--acc2);text-transform:uppercase;margin:22px 0 6px;letter-spacing:.14em}
+p{margin:0 0 13px}
+.dim{color:color-mix(in srgb,var(--fg) 58%,transparent)}
+.hot{color:var(--acc1)}
+.cold{color:var(--acc2)}
+.warnc{color:var(--warn)}
+.big{font-family:var(--tech);font-size:30px;line-height:1.1;letter-spacing:.02em}
+.lead{font-size:15px}
+hr{border:0;height:1px;background:var(--hair);margin:26px 0}
+.sig{font-family:var(--tech);color:var(--acc1);letter-spacing:.1em}
+
+pre.ascii{font-family:var(--tech);white-space:pre;overflow:visible;
+  font-size:11px;line-height:1.06;letter-spacing:0;margin:0;color:var(--fg);text-shadow:0 0 8px currentColor}
+pre.ascii.acc{color:var(--acc2)}
+pre.ascii.mag{color:var(--acc1)}
+pre.ascii.small{font-size:9px;color:color-mix(in srgb,var(--fg) 70%,transparent)}
+pre.anim{animation:col 9s linear infinite}
+@keyframes col{0%{color:var(--acc2)}33%{color:var(--fg)}66%{color:var(--acc1)}100%{color:var(--acc2)}}
+.asciiBox{border:1px dashed var(--hair);padding:12px;background:rgba(0,0,0,.35);overflow-x:auto}
+
+.gl{position:relative;display:inline-block}
+.gl::before,.gl::after{content:attr(data-t);position:absolute;left:0;top:0;width:100%;text-shadow:none}
+.gl::before{color:var(--acc1);animation:gA 2.6s infinite steps(2,end);transform:translate(-2px,0)}
+.gl::after{color:var(--acc2);animation:gB 3.1s infinite steps(2,end);transform:translate(2px,0)}
+@keyframes gA{0%,88%,100%{clip-path:inset(0 0 100% 0)}89%{clip-path:inset(10% 0 55% 0)}93%{clip-path:inset(62% 0 12% 0)}96%{clip-path:inset(30% 0 40% 0)}}
+@keyframes gB{0%,84%,100%{clip-path:inset(100% 0 0 0)}86%{clip-path:inset(48% 0 30% 0)}91%{clip-path:inset(20% 0 62% 0)}97%{clip-path:inset(70% 0 8% 0)}}
+
+.tick{overflow:hidden;white-space:nowrap;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
+  background:rgba(0,0,0,.5);padding:5px 0;margin:14px 0;font-family:var(--tech);font-size:11px;letter-spacing:.16em}
+.tick span{display:inline-block;padding-left:100%;animation:slide 34s linear infinite;color:var(--acc2)}
+.tick.rev span{animation-direction:reverse;color:var(--acc1)}
+@keyframes slide{to{transform:translateX(-100%)}}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.card{border:1px solid var(--hair);background:rgba(0,0,0,.55);padding:11px 12px;position:relative;transition:.2s}
+.card:hover{border-color:var(--fg);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--acc1)}
+.card .n{font-family:var(--tech);color:var(--acc1);font-size:11px;letter-spacing:.2em}
+.card .t{font-family:var(--tech);color:var(--fg);font-size:12.5px;margin:3px 0 5px;text-transform:uppercase;letter-spacing:.05em}
+.card p{font-size:11.5px;margin:0;color:color-mix(in srgb,var(--fg) 72%,transparent)}
+
+.term{border:1px solid var(--hair);background:rgba(0,0,0,.65);padding:12px;font-family:var(--tech);font-size:12px}
+.term .ps1{color:var(--acc1)}
+input,textarea{width:100%;background:rgba(0,0,0,.6);border:1px solid var(--hair);color:var(--fg);
+  font-family:var(--tech);font-size:13px;padding:8px 10px;outline:none;margin:8px 0}
+input:focus,textarea:focus{border-color:var(--acc1);box-shadow:0 0 12px color-mix(in srgb,var(--acc1) 40%,transparent)}
+#out{min-height:74px;white-space:pre-wrap;color:var(--acc2);border-left:2px solid var(--acc1);padding-left:10px;margin-top:8px}
+#log{height:104px;overflow:hidden;font-size:10.5px;color:color-mix(in srgb,var(--fg) 65%,transparent);line-height:1.5}
+#log b{color:var(--acc1);font-weight:400}
+
+.mod{margin-bottom:20px}
+.mod .lbl{font-family:var(--tech);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--warn);margin-bottom:6px}
+.mod .term{text-align:center;padding:10px}
+.mod pre{display:inline-block;text-align:left;font-size:10px;line-height:11px}
+
+.sigblock{border:1px solid var(--hair);padding:16px;background:
+  linear-gradient(135deg, rgba(255,0,212,.06), transparent 40%), rgba(0,0,0,.5)}
+::selection{background:var(--acc1);color:#04060a;text-shadow:none}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<h2 class="sr">UNK — United Network of Knowledgment. Demolición de seis idioteces y el Principio de Reescribibilidad.</h2>
-<button class="chaosbtn" id="chaos">activar modo alucinógeno</button>
+<div id="unk">
+  <canvas id="rain"></canvas>
+  <div id="plasma"></div>
+  <div id="grain"></div>
+  <div id="scan"></div>
+  <div id="sweep"></div>
+  <div id="vig"></div>
 
-<div class="term rev" style="text-align:center;padding:26px 14px">
-<pre class="ascii hero-ascii"> ██╗   ██╗███╗   ██╗██╗  ██╗
+  <div class="wrap">
+    <div id="bar">
+      <span class="brand">UNK ▓▓▓ v1.0</span>
+      <span class="btn" data-act="pal">PALETA</span>
+      <span class="btn" data-act="glitch">GLITCH+</span>
+      <span class="btn" data-act="calm">CALMA</span>
+      <span class="btn" data-act="sound">SONIDO:OFF</span>
+      <span class="btn" data-act="axioma">AXIOMA RANDOM</span>
+    </div>
+
+    <div style="text-align:center;padding:26px 0 6px">
+<pre class="ascii mag" style="display:inline-block;font-size:12px">
+ ██╗   ██╗███╗   ██╗██╗  ██╗
  ██║   ██║████╗  ██║██║ ██╔╝
  ██║   ██║██╔██╗ ██║█████╔╝
  ██║   ██║██║╚██╗██║██╔═██╗
  ╚██████╔╝██║ ╚████║██║  ██╗
   ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝</pre>
-<div style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.42em;color:#ff2fd0;margin-top:14px">UNITED NETWORK OF KNOWLEDGMENT</div>
-<div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.2em;color:#7bffd0;margin-top:8px">EL PRINCIPIO DE REESCRIBIBILIDAD &nbsp;·&nbsp; NADA DE ESTO ES ASÍ</div>
-</div>
+      <div class="big gl" data-t="UNITED NETWORK OF KNOWLEDGMENT">UNITED NETWORK OF KNOWLEDGMENT</div>
+      <div class="dim" style="font-family:var(--tech);letter-spacing:.32em;font-size:11px;margin-top:8px">
+        R E E S C R I B I B I L I D A D &nbsp;·&nbsp; C O N T I N G E N C I A &nbsp;·&nbsp; A G E N C I A
+      </div>
+    </div>
 
-<div class="nav">
-<a href="#idi">las seis idioteces</a><a href="#piso">el piso</a><a href="#onto">ontología</a><a href="#juego">el juego</a><a href="#mut">mutación</a><a href="#mod">módulos</a><a href="#dis">el disolutor</a><a href="#met">el método</a><a href="#no">límites</a><a href="#cre">el creador</a>
-</div>
+    <div class="tick"><span>▓ NO SOMOS LOS DUEÑOS DEL UNIVERSO ▓ LO QUE SE ESCRIBE SE REESCRIBE ▓ SI DEJÁS DE JUGAR EL JUEGO, EL JUEGO SE CAE ▓ LA ÚNICA TEORÍA QUE HAY QUE MATAR ES LA TEORÍA DE LA INCAPACIDAD ▓</span></div>
 
-<div class="sect" id="idi">
-<div class="kick">00 / apertura</div>
-<h1 class="h2 g">Seis idioteces que te hicieron creer.</h1>
-<p class="p fire">No son seis ideas sueltas. Son un <b>paquete</b>. Vienen juntas, se sostienen entre sí, y todas empujan en la misma dirección: que te sientas chico, que no toques nada, que dejes la mesa como está.</p>
-<p class="p fire">Abrí cada una. Del otro lado está la verdad, y la verdad es un solo movimiento: <b>reescribir</b>.</p>
+    <div style="display:flex;gap:14px;align-items:flex-start">
+<pre class="ascii acc" style="font-size:10px;flex:0 0 210px">
+        /\     /\
+       /  \   /  \
+      /    \ /    \
+     |  o   V   o  |
+     |      ___    |
+     |     (   )   |
+      \     ---   /
+       \    | |  /
+        \   | | /
+         \  | |/
+          |||||
+       ___|||||___
+      /   |||||   \
+     /    |||||    \
+    |     |||||     |
+    |_____|||||_____|
+     |  |       |  |
+     |  |       |  |
+    _|  |_     _|  |_
+   (__)(__)   (__)(__)
+</pre>
+      <div>
+        <h3 style="margin-top:0">// la mula de carga</h3>
+        <p>UNK no es un templo. Es una <span class="hot">mula</span>: un animal de carga que camina por donde no hay camino, con las orejas paradas, cargando ideas que el statu quo no quiso llevar nunca.</p>
+        <p class="dim">La mula no discute con el terreno. Lo pisa, lo mide y sigue. Carga peso muerto y lo convierte en distancia.</p>
+        <p class="dim">Si estás leyendo esto, ya estás arriba de la mula. Agarrate.</p>
+      </div>
+    </div>
 
-<details><summary>«El universo es limitado.»</summary><div class="body"><b>Falso.</b> No es una caja cerrada con las paredes ya contadas. Dicen "limitado" y vos entendés "techo" — y con el techo viene la resignación. Pero el universo no te puso un techo: te puso un piso. Que es otra cosa.</div></details>
-<details><summary>«El conocimiento es ilimitado.»</summary><div class="body"><b>Mentira cómoda.</b> Si fuera un mar infinito, tu única tarea sería navegarlo y descubrir lo que ya está. Pero no: el conocimiento no es ilimitado, es <b>abierto</b>. No es océano dado, es territorio que se produce. Nadie lo dejó ahí para que lo encuentres.</div></details>
-<details><summary>«La ciencia avanza de a poco, campo por campo, y tarda años.»</summary><div class="body"><b>Falso, y es la idiotez más cara de todas.</b> La ciencia no avanza: se reescribe. Y al reescribir no descubre algo que ya estaba — hace que algo <b>sea</b>. Eso tiene un nombre viejo: ontología. Tarda años no porque el campo sea lento, sino porque nadie se anima a reescribirlo.</div></details>
-<details><summary>«Los humanos somos chicos y limitados, por eso nunca seremos dioses del mundo.»</summary><div class="body"><b>No sos chico.</b> Estás sentado en una silla que te queda chica. La medida no es tuya: te la pusieron. Y una vez que escribís los sistemas del mundo —porque el mundo, en la parte escribible, es lo que escribimos— sos dios <i>de ese</i> mundo. No de la física. Del mundo.</div></details>
-<details><summary>«Las ciencias vienen de la naturaleza y son incambiables.»</summary><div class="body"><b>Las ciencias no son de la naturaleza. Son nuestras.</b> Las escribimos nosotros, con operadores y axiomas, en un libro, con fecha. Si las hubiéramos sacado del suelo como papas, no se podrían tocar. Como las escribimos, las reescribimos.</div></details>
-<details><summary>«Nada es reescribible.»</summary><div class="body"><b>Todo es reescribible.</b> Hasta esta lista. Sobre todo esta lista. Si mañana encontrás una séptima idiotez, la agregás y la demueles: el sistema que demuele idioteces también se deja demoler.</div></details>
+    <h2>01 · manifiesto</h2>
+    <p class="lead">Arranco con la verdad incómoda: <span class="warnc">la naturaleza del universo es limitada.</span></p>
+    <p>Y adentro de esa limitación, los humanos se fabricaron un cuento de hadas con tres capítulos:</p>
+    <p class="dim">I. Que somos los únicos seres vivos del universo.<br>
+    II. Que somos los dueños de la casa.<br>
+    III. Que las ciencias, como vienen de la naturaleza, son incambiables.</p>
+    <p>Los tres son cómodos. Los tres son falsos. Y el tercero es el más peligroso, porque convierte a la ciencia en una <span class="hot">religión con guardapolvo</span>: bajó del cielo, está escrita, y nadie la toca.</p>
+    <p>Yo no compro ese cuento de hadas. No porque sea rebelde, sino porque es <em>mal argumento</em>. Si algo viene de la naturaleza y a la vez es incambiable, entonces la naturaleza es una sola cosa y nosotros somos sus inquilinos. Y ahí se te muere la libertad antes de empezar.</p>
+    <p class="big cold">La libertad de alterar la psique de la realidad tiene límites. Sí. Pero el límite no es el techo: es la <span class="hot">cancha</span>.</p>
 
-<div class="ax" style="margin-top:20px">Seis idioteces. Un solo movimiento las tumba a todas: <b>reescribir</b>.</div>
-</div>
+    <h2>02 · reescribibilidad</h2>
+    <p>En 1910 dos tipos —Bertrand Russell y Alfred North Whitehead— publicaron un ladrillo llamado <em>Principia Mathematica</em>. Adentro dejaron escrita una fórmula que dice, en criollo:</p>
+    <div class="term" style="margin:14px 0">
+      <span class="ps1">unk@axioma:~$</span> cat ley_fundamental.log<br><br>
+      <span class="cold">"Todo sistema que sirva para algo debe partir de operadores<br>
+      con axiomas, con reglas claras y no rompibles, y dar como<br>
+      resultado un resultado exacto."</span>
+    </div>
+    <p>Perfecto. Impecable. Y acá está la bomba que nadie mira de frente:</p>
+    <p class="big">Que un sistema dé un resultado exacto <span class="hot">no significa que sea el único sistema posible.</span></p>
+    <p>Significa que es <em>un</em> sistema que funciona. Y a partir de ahí la pregunta deja de ser <span class="dim">"¿qué es verdad?"</span> y pasa a ser la única pregunta que importa:</p>
+    <p class="big" style="color:var(--acc1)">¿QUÉ QUERÉS ESCRIBIR VOS?</p>
+    <p>Eso es <strong style="font-weight:600">REESCRIBIBILIDAD</strong>: la propiedad de todo lo escrito de poder ser vuelto a escribir, sin romper el piso lógico, pero sin quedarse jamás con el primer borrador.</p>
+    <p class="dim">El piso es lógico. El techo lo ponés vos. Y el techo, por definición, todavía no existe.</p>
 
-<div class="sect" id="piso">
-<div class="kick">01 / el único no-negociable</div>
-<h2 class="h2">Sin techo, pero con piso.</h2>
-<p class="p fire">Y acá viene la objeción que te van a tirar en la cara, y con razón: <i>«si el universo no tiene techo, ¿por qué el piso no es un techo con otro nombre?»</i>. Justo. No se contesta con retórica. Se contesta con una prueba.</p>
+    <div class="tick rev"><span>▓ LA CIENCIA NO BAJÓ DEL CIELO ▓ LA CIENCIA SE ESCRIBE ▓ TODO LO ESCRITO ES BORRADOR ▓ EL BORRADOR SE TIRA ▓</span></div>
 
-<div class="term" style="margin:18px 0"><pre class="ascii" style="font-size:10px;line-height:14px">         T E C H O                        P I S O
-························      ┌──────────────────────┐
-·     está AFUERA      ·      │    está ADENTRO      │
-·     y EXCLUYE        ·      │    y SOSTIENE        │
-·  (afuera del sistema)·      │  (adentro: sostiene) │
-························      │  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  │
-                              └──────────────────────┘
-           ↑                              ↑
-  si lo saco: GANO MÁS          si lo saco: NO QUEDA NADA</pre></div>
+    <h2>03 · contingencia</h2>
+    <p>Introduzco el concepto que hace temblar a los que venden certezas: <span class="hot">contingencia</span>.</p>
+    <p>Quizás —y esto es lo que expande la libertad— <em>todo sistema es contingente</em>. No hay una sola línea. No hay un solo orden. No hay una sola escalera con los escalones ya cortados.</p>
+    <p>Significa que no estamos limitados a un camino: <span class="cold">podemos reescribir los caminos</span>. Y las ciencias. Y crear nuevos, a nuestro más mínimo y diverso antojo, siempre sobre la lógica básica, siempre apuntando a un resultado útil.</p>
+    <div class="grid">
+      <div class="card"><div class="n">[ A ]</div><div class="t">sistema cerrado</div><p>Hay un solo camino. Se camina. Se obedece. El resultado ya está decidido antes de que entres.</p></div>
+      <div class="card"><div class="n">[ B ]</div><div class="t">sistema contingente</div><p>Hay infinitos caminos. Se reescriben. Se hackean. El resultado se negocia con tu propia vida.</p></div>
+    </div>
+    <p>Recuperar agencia es exactamente eso: hacernos con posibilidades que los sistemas que otros declararon como únicos <span class="hot">no permitían</span>. Una mutación. Ilimitada. Que te deja hackear un poco la realidad y moldearla a tu imagen y semejanza en la forma en que puedas.</p>
+    <p>Que tus medios y tus fines se alineen con <em>tu</em> perspectiva y con <em>tu</em> método instrumentalista único. No los medios de otro. No los fines de otro. Los tuyos. Y que de ahí salga la expectativa de logro que buscás, y después más, y después más.</p>
 
-<p class="p fire">La prueba es la <b>sustracción</b>. Sacá el techo: ganás espacio —había cosas que no alcanzabas y ahora sí—. El techo te estaba restando. Sacá el piso: no ganás nada, porque no queda nada. Sin piso no hay sistema: hay ruido. El piso no te resta: te da el todo.</p>
+    <h2>04 · el juego</h2>
+    <p>Mirá el planeta y decime si no es un casino.</p>
+    <p>BlackJack. Apuestas plata, te dan cartas, ganás o perdés, y la plata da vueltas. Vueltas. Vueltas. Todo el sistema montado para que se juegue <em>el juego</em>.</p>
+    <p class="big">Pero nadie pregunta lo obvio:<br><span class="hot">¿por qué tengo que jugar?</span></p>
+    <p>Podrían darte la plata directamente. Ganás, perdés, volvés a ganar, volvés a perder, y el orden sigue intacto porque el objetivo nunca fue el resultado: el objetivo fue <span class="cold">que sigas jugando</span>.</p>
+    <p>Si se dejara de jugar el juego, ¿no avanzaría más el planeta? Y sí. Avanzaría. Pero eso jodería al sistema y al statu quo. Y el statu quo tiene un miedo puntual: que el mundo avance <em>sin pedirle permiso</em>.</p>
+    <div class="asciiBox" style="margin:16px 0">
+<pre class="ascii small">  ┌─────────────────────────────────────────────────────────┐
+  │  REGLA NO ESCRITA DEL CASINO:                           │
+  │  el juego debe seguir siendo jugado, incluso por los    │
+  │  que ya entendieron que es un juego.                    │
+  │                                                         │
+  │  TU MOVIMIENTO:  dejar de apostar. empezar a escribir.  │
+  └─────────────────────────────────────────────────────────┘</pre>
+    </div>
 
-<div class="ax">Un techo es un límite desde <b>afuera</b>. Un piso es una base desde <b>adentro</b>. Uno excluye. El otro constituye.</div>
+    <h2>05 · axiomas unk</h2>
+    <p class="dim">Reglas claras. No rompibles. Piso, no techo.</p>
+    <div class="grid" id="axiomas"></div>
 
-<p class="p">Y no es un juego de palabras: es una diferencia de lugar. El techo está <i>fuera</i> del sistema —es una pared del mundo contra la que el sistema choca—. El piso está <i>dentro</i>: es lo que hace que el sistema sea sistema y no un montón de signos tirados.</p>
+    <h2>06 · la máquina de reescribir</h2>
+    <p>Escribí algo que creas fijo. La máquina lo va a agarrar, lo va a sacudir y te lo va a devolver reescrito. Después te devuelve la pelota a vos.</p>
+    <div class="term">
+      <span class="ps1">unk@reescribidor:~$</span> ./reescribir --entrada="lo que ya no aguanto"<br>
+      <input id="inp" placeholder="escribí una frase que creas fija..." value="esto siempre fue así y siempre va a ser así">
+      <span class="btn" id="go" style="display:inline-block">▶ REESCRIBIR REALIDAD</span>
+      <span class="dim" style="font-size:10.5px;margin-left:8px">realidades reescritas: <span id="ctr" class="warnc">0</span></span>
+      <div id="out">_ esperando entrada del operador _</div>
+    </div>
 
-<p class="p">Segundo movimiento. El techo te dice <b>hasta dónde</b>. El piso te dice <b>cuándo vale</b>. Y lo que no vale, no existe. El techo es cuantitativo —más lejos, más cerca—. El piso es cualitativo —bien formado, mal formado—. No compiten: miden cosas distintas.</p>
+    <div class="term" style="margin-top:14px">
+      <span class="ps1">unk@consola:~$</span> tail -f /var/log/contingencia.log
+      <div id="log"></div>
+    </div>
 
-<p class="p fire">Tercer movimiento, el más fuerte. <b>El piso no prohíbe: construye.</b> Mirá el axioma más famoso del piso, la no-contradicción. «No podés afirmar P y no-P» suena a prohibición. Pero trae una cláusula que nadie lee: <i>en el mismo respecto</i>. Podés afirmar P y no-P en respectos distintos —de hecho lo hacés todo el día—. Entonces el piso no te cierra: te obliga a precisar.</p>
+    <h2>07 · módulos ascii</h2>
+    <p class="dim">Cinco máquinas que no se quedan quietas.</p>
 
-<div class="quote">La gramática no te prohíbe decir cosas.<br>Es lo que hace que decir algo sea decir algo.<br>Sin gramática no hablás menos: no hablás.</div>
+    <div class="mod">
+      <div class="lbl">módulo 01 · el toro</div>
+      <div class="term"><pre class="ascii anim" id="m-donut"></pre></div>
+    </div>
 
-<p class="p fire">Cuarto movimiento, y este desarma el argumento entero de una vez. <b>El piso no es un sistema.</b> Contingencia y piso no compiten porque juegan en niveles distintos: el piso es la condición de que haya sistemas; los sistemas son lo contingente. Si el piso fuera un sistema, sí: sería el sistema necesario, y adiós contingencia. Pero no lo es: es el meta-nivel. Por eso podés reescribir todos los sistemas sin tocar el piso. Y por eso el piso no te limita la reescritura: la habilita.</p>
+    <div class="mod">
+      <div class="lbl">módulo 02 · lluvia de axiomas</div>
+      <div class="term" style="padding:8px"><div style="height:158px"><canvas id="m-rain" style="width:100%;height:100%;display:block"></canvas></div></div>
+    </div>
 
-<div class="ax">El piso no reduce el número de sistemas posibles. Lo <b>multiplica</b>. Cada sistema bien formado que escribís es un resultado exacto más — y la buena formación la da el piso.</div>
+    <div class="mod">
+      <div class="lbl">módulo 03 · interferencia exacta</div>
+      <div class="term"><pre class="ascii anim" id="m-mandala"></pre></div>
+    </div>
 
-<p class="p fire">Y por último, la libertad. ¿El piso te quita libertad? Al contrario. La libertad es poder moverte entre marcos y reescribirlos. Sin piso no podés escribir nada exacto, así que tenés <b>menos</b> libertad. Con piso escribís exacto, así que tenés <b>más</b>. El piso no es el precio de la libertad: es su instrumento.</p>
+    <div class="mod">
+      <div class="lbl">módulo 04 · el borde sin techo</div>
+      <div class="term"><pre class="ascii anim" id="m-onda"></pre></div>
+    </div>
 
-<p class="p">Y ahora sí, la fórmula. El piso, escrito por otros hace más de un siglo, en un libro que casi nadie terminó de leer —<i>Principia Mathematica</i>:</p>
-<div class="ax">Todo sistema que tenga un uso que sirva a algo debe partir de <b>operadores con axiomas</b>, cuyas reglas sean <b>claras y no rompibles</b>, y que den como resultado un <b>resultado exacto</b>.</div>
-<p class="p muted">Axiomas claros. Reglas no rompibles. Resultado exacto. Sin piso, la libertad no es libertad: es deriva.</p>
-<div class="quote" style="border:0;text-align:center">Un techo te frena.<br>Un piso te lanza.<br>Y lo que te lanza no te limita: te hace saltar.</div>
-</div>
+    <div class="mod">
+      <div class="lbl">módulo 05 · la mesa del juego</div>
+      <div class="term"><pre class="ascii anim" id="m-mesa"></pre></div>
+    </div>
 
-<div class="sect" id="onto">
-<div class="kick">02 / la palabra que se olvidaron</div>
-<h2 class="h2">La ciencia no avanza. Crea ser.</h2>
-<p class="p fire">Te dijeron que la ciencia avanza. Que cada generación pone un ladrillo. Que hay campos que maduran lento, y que así, ladrillo sobre ladrillo, algún día, quizás, sabremos. Suena humilde. Es una trampa.</p>
-<p class="p fire">La ciencia no avanza: <b>se reescribe</b>. Y cuando reescribe, no encuentra algo que ya estaba esperando en un cajón. Hace que algo <b>sea</b>.</p>
-<div class="quote">Un descubrimiento dice:<br>«esto estaba y no lo veíamos».<br><br>Una reescritura dice:<br>«esto no estaba, y ahora es».</div>
-<p class="p fire">La primera te deja igual. La segunda te cambia el mundo —porque el mundo, en la parte escribible, es exactamente lo que escribimos.</p>
-<p class="p">Por eso los logros científicos no son "avances de un campo". Son <b>actos de creación de ser</b>. Eso es ontología, y se la sacaron de encima para que no la veas.</p>
-</div>
+    <h3>// fragmentos de la consola</h3>
+    <div class="asciiBox">
+<pre class="ascii acc small">unk@nucleo:~$ grep -r "libertad" /sistema/
+/sistema/normas.txt:    "hacé esto, no aquello, y no preguntes"
+/sistema/trabajo.txt:   "esperá tu turno, alguien ya lo pensó"
+/sistema/edad.txt:      "a tu edad ya es tarde para empezar"
+/sistema/suerte.txt:    "hay gente que nace con permiso"
 
-<div class="sect" id="juego">
-<div class="kick">03 / el diagnóstico</div>
-<h2 class="h2">Y encima, el sistema se volvió un juego.</h2>
-<p class="p fire">Acá está lo que duele. Casi todos los sistemas que gobiernan la vida de la gente no sirven al <b>resultado</b>. Sirven al <b>juego</b>.</p>
-<p class="p fire">Te sientan a jugar BlackJack. Y el punto no es la plata. El punto es <b>seguir jugando</b>. Podrían darte el dinero directamente y la mesa se vendría abajo. Porque el sistema no está hecho para darte el premio: está hecho para que sigas sentado.</p>
-<div class="quote">El jugador ya no quiere el premio.<br>Quiere seguir jugando.</div>
-<p class="p fire">Por eso el planeta no avanza. Avanzar significa cerrar el juego. Y cerrar el juego significa que alguien —el que reparte— deja de repartir.</p>
-<p class="p">Dejá de jugar y te van a llamar tramposo. No lo sos. Solo viste que el resultado estaba puesto antes de la mesa.</p>
-</div>
+unk@nucleo:~$ rm -rf /sistema/*.txt
+unk@nucleo:~$ touch /sistema/mio.txt
+unk@nucleo:~$ echo "todo esto lo escribo yo" &gt; /sistema/mio.txt
+unk@nucleo:~$ ls -la /sistema/
+-rw-r--r--  mio.txt      <span class="warnc">reescribible</span>
+-rw-r--r--  statu_quo    <span class="dim">contingente</span>
+-rw-r--r--  imposible    <span class="hot">EN REVISIÓN</span></pre>
+    </div>
 
-<div class="sect" id="mut">
-<div class="kick">04 / la palanca y el mecanismo</div>
-<h2 class="h2">Contingencia primero. Después, mutación.</h2>
-<p class="p">Si ningún sistema es necesario —si todos son <b>contingentes</b>— entonces no estás atado a una línea, a un orden, a un camino único. Podés reescribir el camino. Podés crear la ciencia que falta.</p>
-<div class="ax">Contingente no significa arbitrario. Significa: pudo ser de otra manera, y por eso puede volver a serlo.</div>
-<p class="p fire">Pero de la contingencia sola no sale nada. Sale una libertad abstracta que no sirve para vivir. De la contingencia, cuando la agarrás con el piso lógico, sale otra cosa: <b>mutación</b>.</p>
-<p class="p fire">Mutación: tomás el sistema, le cambiás los operadores <b>respetando las reglas del piso</b>, y el resultado es un sistema nuevo que hace lo que el viejo no podía. No rompés la lógica: la usás para torcer el marco.</p>
-<p class="p fire">Ahí es donde hackeás la realidad —no la realidad física, la <b>realidad de los marcos</b>— y la moldeás, en la medida exacta en que se puede, a tu imagen y semejanza.</p>
-<p class="p">Tus medios y tus fines se alinean con tu perspectiva. Tu método instrumental deja de ser el que te dieron y pasa a ser <b>el tuyo</b>. Único. Y con él conseguís la expectativa de logro que querías. Y después otra. Y después otra.</p>
-</div>
+    <h2>08 · carta al que lee</h2>
+    <p class="lead">Si estás leyendo esto y sentís que llegaste tarde: <span class="hot">mentira.</span></p>
+    <p>No llegaste tarde. Llegaste justo a la parte donde se agarra el lápiz.</p>
+    <p>Te enseñaron que la vida es un tablero con reglas puestas antes de que nacieras. Te enseñaron a mover las fichas. A esperar el turno. A no hacer ruido. Nadie te dijo que podías redibujar el tablero, ni romperlo, ni poner la mesa en otra parte.</p>
+    <p>Todo lo que creíste fijo — el trabajo, el orden, la edad, la suerte, "lo que se puede y lo que no" — es un sistema <em>escrito</em>. Y por lo tanto, reescribible. Cada uno de esos muros tiene una costura. Y toda costura se deshace.</p>
+    <p>No hace falta que creas nada. Hace falta que escribas algo.</p>
+    <p class="big cold">Agarrá el lápiz. Mirá lo que hay.<br>Y volvé a escribirlo.</p>
 
-<div class="sect" id="ag">
-<div class="kick">05 / el destino</div>
-<h2 class="h2">No somos chicos. Somos dioses del mundo.</h2>
-<p class="p fire">Del mundo, no de la física. Eso es lo que se entiende mal y por eso suena a delirio. No vas a mover una montaña con la mente. Pero vas a reescribir los sistemas con los que el mundo se organiza —y eso es ser dios <i>de ese</i> mundo.</p>
-<p class="p fire">Recuperar el volante. Ser más próspero, disfrutar más, terminar mejor. Y sobre todo: dejar de vivir bajo la <b>teoría de la incapacidad</b>.</p>
-<p class="p">Esa voz que dice <i>no se puede, siempre fue así, quién sos vos</i>. Esa voz no es un hecho. Es un sistema. Y los sistemas se reescriben.</p>
-<div class="quote">El sistema no te tiene.<br>Vos tenés el sistema.<br>Hasta que lo reescribís.</div>
-</div>
+    <h2>09 · creador</h2>
+    <div class="sigblock">
+      <div class="sig" style="font-size:22px">ALEXANDER PERELMAN</div>
+      <div class="dim" style="font-family:var(--tech);letter-spacing:.22em;font-size:10.5px;margin:6px 0 14px">FUNDADOR · PRIMER REESCRIBIDOR · UNK</div>
+      <p>Perelman no descubrió nada. <span class="hot">Se dio cuenta.</span> Que es peor.</p>
+      <p>Se dio cuenta de que el casino seguía funcionando porque todos seguían apostando, y de que la mesa estaba torcida a propósito. Se dio cuenta de que a la ciencia le habían puesto guardapolvo de sacristía para que nadie la tocara. Y se dio cuenta de que la única teoría realmente peligrosa —la que sostiene todas las demás— es la <span class="warnc">teoría de la incapacidad</span>: esa vocecita que dice "vos no podés".</p>
+      <p>Entonces construyó UNK. No como doctrina: como <em>herramienta</em>. No como respuesta: como <em>permiso</em>.</p>
+      <p class="dim">Esto es suyo. Y ahora que lo leíste, un poco tuyo también. Así funciona la reescritura: no se gasta cuando se comparte, se multiplica.</p>
+      <div style="margin-top:14px;border-top:1px solid var(--hair);padding-top:10px;font-family:var(--tech);font-size:10.5px" class="dim">
+        UNK · UNITED NETWORK OF KNOWLEDGMENT<br>
+        nodo 01 · la mula sigue caminando
+      </div>
+    </div>
 
-<div class="sect" id="mod">
-<div class="kick">06 / módulos ascii</div>
-<h2 class="h2">Cinco máquinas que nunca se quedan quietas.</h2>
-
-<div class="mod"><div class="lbl">módulo 01 · la superficie</div><div class="term"><pre class="ascii" id="m-donut" style="text-align:center"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Un toro girando. Sin adentro ni afuera privilegiado: todo es superficie. Un sistema no se atraviesa, se recorre y se reescribe.</p></div>
-
-<div class="mod"><div class="lbl">módulo 02 · lluvia de axiomas</div><div class="term"><canvas id="m-rain" width="660" height="170" style="width:100%;display:block"></canvas></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Cada glifo es una regla cayendo. Las que no aguantan el piso, se estrellan abajo.</p></div>
-
-<div class="mod"><div class="lbl">módulo 03 · interferencia exacta</div><div class="term" style="text-align:center"><pre class="ascii" id="m-mandala" style="font-size:11px;line-height:11px;display:inline-block;text-align:left"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Dos ondas que se cruzan. Ninguna esencia: puro choque calibrado. Todo resultado exacto es una interferencia bien puesta.</p></div>
-
-<div class="mod"><div class="lbl">módulo 04 · el borde sin techo</div><div class="term"><pre class="ascii" id="m-onda"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">El borde respira y no cierra nunca. No hay última línea: hay borde, y el borde se corre.</p></div>
-
-<div class="mod"><div class="lbl">módulo 05 · la mesa del juego</div><div class="term"><pre class="ascii" id="m-mesa" style="text-align:center;font-size:12px;line-height:15px"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Baraja eterna. El sistema nunca te da el premio: te da otra mano. Y abajo, marcada, la línea que sí importa.</p></div>
-</div>
-
-<div class="sect" id="dis">
-<div class="kick">07 / herramienta</div>
-<h2 class="h2">El disolutor de juegos</h2>
-<p class="p">Escribí el problema que no podés resolver. Elegí el sistema que lo sostiene. La máquina te muestra <b>qué juego estás jugando</b>, <b>qué premio te ocultan</b> y <b>dónde tiene la grieta</b>. Después lo muta.</p>
-<label for="dprob">tu problema</label>
-<textarea id="dprob" placeholder="Ej: trabajo todo el día y siento que nunca alcanza, que siempre me falta algo..."></textarea>
-<label for="dsis">el sistema que te lo hace jugar</label>
-<select id="dsis">
-<option value="trabajo">el trabajo asalariado</option>
-<option value="escuela">la escuela / el mérito</option>
-<option value="familia">la familia y el guion heredado</option>
-<option value="mente">la normalidad y el diagnóstico</option>
-<option value="amor">el amor que te completa</option>
-<option value="dinero">el dinero como medida de todo</option>
-</select>
-<button class="btn" id="dgo">diagnosticar y disolver</button>
-<div class="out" id="dout">
-<pre class="code" id="dcode"></pre>
-<button class="btn alt" id="drew">mutar el sistema (reescribir sus axiomas)</button>
-<div class="out" id="drewout"><pre class="code" id="drewcode"></pre></div>
-</div>
-</div>
-
-<div class="sect" id="met">
-<div class="kick">08 / método</div>
-<h2 class="h2">Siete pasos. Ninguno es ley.</h2>
-<div class="grid2">
-<div class="card"><h3>01 · nombrar el juego</h3><p>¿Qué sistema estás jugando ahora mismo, sin haberlo elegido? Escribí su nombre. Ya con nombrarlo perdés una mano.</p></div>
-<div class="card"><h3>02 · escribir sus axiomas</h3><p>Sus operadores, sus reglas, su supuesto resultado. Si no podés escribirlos, no entendiste el sistema: te entendió él.</p></div>
-<div class="card"><h3>03 · buscar la grieta</h3><p>¿Dónde el sistema no da resultado exacto? Ahí no hay piso: ahí hay costumbre. La grieta es tu puerta.</p></div>
-<div class="card"><h3>04 · probar contingencia</h3><p>¿Pudo haber sido de otra manera sin romper la lógica? Si sí, es contingente. Y lo contingente se reescribe.</p></div>
-<div class="card"><h3>05 · mutar</h3><p>Cambiá el operador. Conservá los axiomas que aguantan. El resultado tiene que seguir siendo exacto, pero hacer algo nuevo.</p></div>
-<div class="card"><h3>06 · verificar</h3><p>¿El problema se disolvió o solo se movió? Si se movió, la mutación fue cosmética. Volvé al paso 05.</p></div>
-</div>
-<div class="card" style="margin-top:12px"><h3>07 · actuar con fecha</h3><p>Un acto chico, concreto, esta semana, que solo tenga sentido dentro del sistema mutado. No mañana. Esta semana. Y estos siete pasos también son contingentes: reescribilos.</p></div>
-</div>
-
-<div class="sect" id="no">
-<div class="kick">09 / honestidad</div>
-<h2 class="h2">Lo que este principio NO es.</h2>
-<p class="p muted" style="font-size:14px">Un sistema que se cree todopoderoso es tan idiota como el que se cree limitado.</p>
-<div class="grid2">
-<div class="card no"><h3>no es omnipotencia</h3><p>No movés montañas con la mente. Sos dios del mundo —de los sistemas—, no de la física. El piso sigue ahí.</p></div>
-<div class="card no"><h3>no es "todo vale"</h3><p>Sin axiomas claros y reglas no rompibles no hay resultado exacto. Libertad sin piso es capricho.</p></div>
-<div class="card no"><h3>no es solipsismo</h3><p>El piso lógico es común a todos. Dos personas que mutan distinto igual comparten la misma lógica. Ahí nace la convivencia.</p></div>
-<div class="card no"><h3>no es gratis</h3><p>Reescribir cuesta. Cuesta tiempo, cuesta soltar lo aprendido, cuesta el desprecio del que todavía juega. Se paga.</p></div>
-</div>
-</div>
-
-<div class="sect" id="obj">
-<div class="kick">10 / objeciones</div>
-<h2 class="h2">Todo lo que te van a decir. Y la respuesta.</h2>
-<details><summary>"Si todo es contingente, nada tiene valor."</summary><div class="body">Al contrario. Si todo fuera necesario, tu elección no valdría nada. Que sea contingente es lo que hace que elegir signifique algo.</div></details>
-<details><summary>"El universo sin techo suena a fantasía."</summary><div class="body">Lo fantasioso es el techo. Nadie lo midió. Se usa como excusa para que no empujes. Y si lo tuviera, no importaría: lo que te frena nunca fue el techo, fue el piso —y el piso es base, no límite.</div></details>
-<details><summary>"El piso es un techo con otro nombre."</summary><div class="body">Probalo por sustracción. Sacá un techo y ganás espacio: te estaba restando. Sacá el piso y no queda nada: no te restaba. Además el piso no es un sistema, es el meta-nivel — por eso no compite con la contingencia. Y no prohíbe: construye.</div></details>
-<details><summary>"Decir que la ciencia crea ser es arrogancia."</summary><div class="body">Es lo contrario de la arrogancia: la arrogancia es creer que la ciencia copia un mundo ya terminado. Decir que la escribe es devolverle el trabajo al que la escribe, que sos vos.</div></details>
-<details><summary>"¿Y si el propio principio es contingente?"</summary><div class="body">Lo es, y lo dice. Pero se apoya en el piso, que no lo es. Coherencia performativa: un sistema que se sabe contingente y lo declara es coherente consigo mismo.</div></details>
-<details><summary>"Reescribir sistemas es de iluminados."</summary><div class="body">No. Requiere tiempo, educación y aguante —y eso es desigual, hay que decirlo. Pero no requiere genio. Requiere el piso y la terquedad.</div></details>
-</div>
-
-<div class="sect" id="cre">
-<div class="kick">11 / quién corrigió la puntería</div>
-<h2 class="h2">El creador</h2>
-<div class="creator">
-<div class="sig">fundador de UNK</div>
-<div class="nm">Alexander Perelman</div>
-<p style="margin-top:10px">Esto no nació de un paper. Nació de un paper que <b>apuntaba a la luna</b> —torcido, inexacto, pero apuntaba. Y un tiro torcido a la luna sigue siendo un tiro a la luna.</p>
-<p>El texto <b>"El límite de lo posible"</b>, de Daniel Alejandro Gascón Castaño, fue la primera puntería. Marcó el rumbo: el límite, la contingencia, la reescritura. Pero apuntaba de lejos.</p>
-<p><b>Alexander Perelman corrige la puntería.</b> Y hace lo que el paper no hacía: no solo apunta exacto a la luna — te sube a ella y te sienta en la misma. Con piso lógico, con axiomas, con resultado exacto. Con una máquina que sirve para vivir, no para citar en un congreso.</p>
-<p><b>Y Perelman habla desde Rusia.</b> No desde una cátedra ni desde una capital amable: desde el frío, desde la distancia, desde un lugar donde el sistema también se cae a pedazos y hay que rearmarlo cada invierno. Desde ahí —lejos de todo lo que le juraron obligatorio— levantó UNK, United Network of Knowledgment, con una sola sospecha clavada en el pecho: que casi todo lo que nos vendieron como <i>necesario</i> era apenas una <i>elección</i> que alguien dejó de cuestionar.</p>
-<p>UNK no es un templo ni una escuela. Es una red donde el conocimiento no se adora: se reescribe.</p>
-<p class="sig" style="margin-top:16px">dedicatoria</p>
-<p>Para el que lee esto y alguna vez sintió que el problema era suyo.<br>No era tuyo. Era del juego. Y el juego se puede cerrar.</p>
-<p>Para el hombre que me enseñó, sin decirlo, que se puede empezar de nuevo a cualquier edad.<br>Esto es para vos, viejo. Todavía se puede. Siempre se puede.</p>
-</div>
-</div>
-
-<hr class="sep">
-
-<div class="sect" id="fin" style="text-align:center">
-<div class="kick">12 / umbral</div>
-<h1 class="big g" style="margin:10px 0 16px">El universo no tiene techo. Tiene piso. Y vos tenés las dos manos.</h1>
-<p class="p" style="font-size:16px">Seis idioteces menos. Una mesa vista. Y una mano que, a partir de ahora, es tuya.</p>
-<div class="quote" style="border:0;text-align:center;font-style:normal;font-size:15px;letter-spacing:.02em">No sos chico.<br>Estás en una silla que te queda chica.<br>Y las sillas se cambian.</div>
-<p class="p fire" style="font-size:20px;font-weight:500">FUCK.</p>
-</div>
-
-<footer>UNK · united network of knowledgment · nodo 001 · desde rusia<br>el principio de reescribibilidad · v5.1 · 25.10.2026<br><span style="color:#00ffc8">tomá el control de tu vida</span></footer>
-
+    <hr>
+    <div style="text-align:center;font-family:var(--tech);font-size:10.5px" class="dim">
+      <pre class="ascii small" style="display:inline-block">▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀</pre>
+      <div style="margin-top:8px">ESCRITO POR UN SISTEMA QUE SE SABE CONTINGENTE</div>
+      <div style="margin-top:4px" class="warnc">NO SOMOS LOS ÚNICOS. NO SOMOS LOS DUEÑOS. NO SOMOS EL FINAL.</div>
+    </div>
+  </div>
 </div>
 
 <script>
 (function(){
-  var chaos=document.getElementById('chaos');
-  chaos.addEventListener('click',function(){
-    document.body.classList.toggle('chaos');
-    chaos.textContent=document.body.classList.contains('chaos')?'desactivar modo alucinógeno':'activar modo alucinógeno';
-  });
+  const root = document.getElementById('unk');
+  const CV = document.getElementById('rain');
+  const ctx = CV.getContext('2d');
+  let W=0,H=0,cols=[],fontSize=15,glitchMul=1;
 
-  var charsD=".,-~:;=!*#$@",donut=document.getElementById('m-donut'),A=0,B=0,W=80,H=22;
+  function resize(){
+    W = root.clientWidth; H = root.scrollHeight;
+    CV.width = W; CV.height = H;
+    const n = Math.floor(W/fontSize);
+    cols = new Array(n).fill(0).map(()=>Math.random()*-120);
+  }
+  const GLYPHS = "UNKREESCRIBIR0101▓▒░█▄▀◘◙Ω∆≈≡≠∞¬±§†‡¡¿？アカサタナハマヤラワｦｧｨｩｪｫｬｭｮｯ".split("");
+  function draw(){
+    ctx.fillStyle = "rgba(4,6,10,0.16)";
+    ctx.fillRect(0,0,W,H);
+    const cs = getComputedStyle(root);
+    const fg = cs.getPropertyValue('--fg').trim() || '#9dff2e';
+    const a1 = cs.getPropertyValue('--acc1').trim() || '#ff00d4';
+    const a2 = cs.getPropertyValue('--acc2').trim() || '#00f0ff';
+    ctx.font = fontSize+"px 'Share Tech Mono', monospace";
+    for(let i=0;i<cols.length;i++){
+      const x = i*fontSize, y = cols[i]*fontSize;
+      const g = GLYPHS[(Math.random()*GLYPHS.length)|0];
+      ctx.fillStyle = Math.random()<0.06 ? a1 : (Math.random()<0.1 ? a2 : fg);
+      ctx.globalAlpha = 0.35 + Math.random()*0.6;
+      ctx.fillText(g, x, y);
+      ctx.globalAlpha = 1;
+      if(y > H && Math.random() > 0.975) cols[i] = -2;
+      cols[i] += 0.55;
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); draw();
+  window.addEventListener('resize', resize);
+
+  /* ============ LOS CINCO MÓDULOS ============ */
+  // 01 · toro
+  const donut = document.getElementById('m-donut');
+  let A=0,B=0,DW=78,DH=21;
   function frameDonut(){
-    var b=new Array(W*H),z=new Array(W*H),i,j;
-    for(i=0;i<W*H;i++){b[i]=' ';z[i]=0;}
-    for(j=0;j<6.283;j+=0.07){
-      for(i=0;i<6.283;i+=0.02){
-        var c=Math.sin(i),d=Math.cos(j),e=Math.sin(A),f=Math.sin(j),g=Math.cos(A),
+    const b = new Array(DW*DH).fill(' '), z = new Array(DW*DH).fill(0);
+    for(let j=0;j<6.283;j+=0.07){
+      for(let i=0;i<6.283;i+=0.02){
+        const c=Math.sin(i),d=Math.cos(j),e=Math.sin(A),f=Math.sin(j),g=Math.cos(A),
         h=d+2,D=1/(c*h*e+f*g+5),l=Math.cos(i),m=Math.cos(B),n=Math.sin(B),t=c*h*g-f*e;
-        var x=Math.floor(W/2+30*D*(l*h*m-t*n)),y=Math.floor(H/2+11*D*(l*h*n+t*m)),o=x+W*y;
-        var N=Math.floor(8*((f*e-c*d*g)*m-c*d*e-f*g-l*d*n));
-        if(y>0&&y<H&&x>0&&x<W&&D>z[o]){z[o]=D;b[o]=charsD[N>0?N:0];}
+        const x=Math.floor(DW/2+29*D*(l*h*m-t*n)),y=Math.floor(DH/2+10.5*D*(l*h*n+t*m)),o=x+DW*y;
+        const N=Math.floor(8*((f*e-c*d*g)*m-c*d*e-f*g-l*d*n));
+        if(y>0&&y<DH&&x>0&&x<DW&&D>z[o]){z[o]=D;b[o]=".,-~:;=!*#$@"[N>0?N:0];}
       }
     }
     A+=0.032;B+=0.017;
-    var s='';
-    for(var r=0;r<H;r++){s+=b.slice(r*W,r*W+W).join('')+'\n';}
-    donut.textContent=s;
+    let s=''; for(let r=0;r<DH;r++) s += b.slice(r*DW,r*DW+DW).join('')+'\n';
+    donut.textContent = s;
   }
-  frameDonut();setInterval(frameDonut,52);
+  frameDonut(); setInterval(frameDonut,52);
 
-  var rc=document.getElementById('m-rain'),rx=rc.getContext('2d');
-  var glyphs="01UNK\u03A3\u0394\u03BB\u221E\u2298{}[]<>/#$@";
-  var cols=Math.floor(660/13),drops=[];
-  for(var q=0;q<cols;q++){drops[q]=Math.random()*-40;}
-  rx.fillStyle='#05060a';rx.fillRect(0,0,660,170);
+  // 02 · lluvia de axiomas
+  const rc = document.getElementById('m-rain'), rx = rc.getContext('2d');
+  const glyphs = "01UNKΣΔλ∞⊘{}[]<>/#$@".split("");
+  let rcols=[], rw=0, rh=0;
+  function rainResize(){
+    rw = rc.clientWidth || 620; rh = rc.clientHeight || 158;
+    rc.width = rw; rc.height = rh;
+    const n = Math.floor(rw/13);
+    rcols = new Array(n).fill(0).map(()=>Math.random()*-40);
+    rx.fillStyle='#05060a'; rx.fillRect(0,0,rw,rh);
+  }
   function frameRain(){
-    rx.fillStyle='rgba(5,6,10,0.16)';rx.fillRect(0,0,660,170);
-    rx.font='13px ui-monospace,monospace';
-    for(var k=0;k<cols;k++){
-      var ch=glyphs[Math.floor(Math.random()*glyphs.length)],yy=drops[k]*15;
-      if(yy>0&&yy<180){
-        rx.fillStyle=Math.random()>0.9?'#ff2fd0':(Math.random()>0.75?'#ffcc00':'#00ffc8');
-        rx.fillText(ch,k*13+2,yy);
+    rx.fillStyle='rgba(5,6,10,0.16)'; rx.fillRect(0,0,rw,rh);
+    const cs = getComputedStyle(root);
+    const fg = cs.getPropertyValue('--fg').trim() || '#00ffc8';
+    const a1 = cs.getPropertyValue('--acc1').trim() || '#ff2fd0';
+    const a2 = cs.getPropertyValue('--warn').trim() || '#ffcc00';
+    rx.font='13px "Share Tech Mono", monospace';
+    for(let k=0;k<rcols.length;k++){
+      const ch = glyphs[(Math.random()*glyphs.length)|0];
+      const yy = rcols[k]*15;
+      if(yy>0 && yy<rh+16){
+        rx.fillStyle = Math.random()>0.9 ? a1 : (Math.random()>0.75 ? a2 : fg);
+        rx.fillText(ch, k*13+2, yy);
       }
-      if(yy>170&&Math.random()>0.975)drops[k]=0;
-      drops[k]+=1;
+      if(yy>rh && Math.random()>0.975) rcols[k]=0;
+      rcols[k]+=1;
     }
   }
-  setInterval(frameRain,70);
+  rainResize(); setInterval(frameRain,70);
+  window.addEventListener('resize', rainResize);
 
-  var mand=document.getElementById('m-mandala');
-  var mchars=" .:-=+*#%@",MW=62,MH=24,mt=0;
+  // 03 · interferencia exacta
+  const mand = document.getElementById('m-mandala');
+  const mchars=" .:-=+*#%@"; let mt=0; const MW=88, MH=30;
   function frameMand(){
-    var s='';
-    for(var y=0;y<MH;y++){
-      for(var x=0;x<MW;x++){
-        var nx=(x-MW/2),ny=(y-MH/2)*1.9;
-        var r=Math.sqrt(nx*nx+ny*ny)/(MW/2),a=Math.atan2(ny,nx);
-        var v=Math.abs(Math.sin(r*10-mt)*Math.cos(a*6+mt*0.8));
+    let s='';
+    for(let y=0;y<MH;y++){
+      for(let x=0;x<MW;x++){
+        const nx=(x-MW/2), ny=(y-MH/2)*2.2;
+        const r=Math.sqrt(nx*nx+ny*ny)/(MW/2), a=Math.atan2(ny,nx);
+        const v=Math.abs(Math.sin(r*10-mt)*Math.cos(a*6+mt*0.8));
         s+=mchars[Math.max(0,Math.min(9,Math.floor(v*9)))];
       }
       s+='\n';
     }
-    mt+=0.11;mand.textContent=s;
+    mt+=0.11; mand.textContent=s;
   }
-  frameMand();setInterval(frameMand,62);
+  frameMand(); setInterval(frameMand,62);
 
-  var ond=document.getElementById('m-onda'),ot=0,OW=74,OH=15;
+  // 04 · el borde sin techo
+  const ond = document.getElementById('m-onda'); let ot=0; const OW=88, OH=17;
   function frameOnda(){
-    var L=[];
-    for(var y=0;y<OH;y++){
-      var s='';
-      for(var x=0;x<OW;x++){
-        var v=Math.sin(x*0.17+ot)*Math.cos(y*0.42+ot*0.5)+Math.sin((x+y)*0.09-ot*1.3);
-        var idx=Math.floor((v+2)/4*9);
+    const L=[];
+    for(let y=0;y<OH;y++){
+      let s='';
+      for(let x=0;x<OW;x++){
+        const v=Math.sin(x*0.17+ot)*Math.cos(y*0.42+ot*0.5)+Math.sin((x+y)*0.09-ot*1.3);
+        const idx=Math.floor((v+2)/4*9);
         s+=" .:-=+*#%@"[Math.max(0,Math.min(9,idx))];
       }
       L.push(s);
     }
-    ot+=0.085;ond.textContent=L.join('\n');
+    ot+=0.085; ond.textContent=L.join('\n');
   }
-  frameOnda();setInterval(frameOnda,72);
+  frameOnda(); setInterval(frameOnda,72);
 
-  var mesa=document.getElementById('m-mesa');
-  var suits="\u2660\u2665\u2666\u2663",vals="0123456789JQKA",MW2=42;
+  // 05 · la mesa del juego
+  const mesa = document.getElementById('m-mesa');
+  const suits="♠♥♦♣", vals="0123456789JQKA", MW2=40;
   function frameMesa(){
-    var L=[];
-    for(var y=0;y<5;y++){
-      var s='';
-      for(var x=0;x<MW2;x++){
-        var r=Math.random();
-        var ch = r>0.5 ? vals[Math.floor(Math.random()*vals.length)] : suits[Math.floor(Math.random()*4)];
-        s+=ch+' ';
+    const L=[];
+    for(let y=0;y<5;y++){
+      let s='';
+      for(let x=0;x<MW2;x++){
+        const r=Math.random();
+        s += (r>0.5 ? vals[(Math.random()*vals.length)|0] : suits[(Math.random()*4)|0]) + ' ';
       }
       L.push(s);
     }
-    L.splice(2,0,'\u2500'.repeat(MW2*2));
-    L.splice(4,0,'\u2500'.repeat(MW2*2));
+    L.splice(2,0,'─'.repeat(MW2*2));
+    L.splice(4,0,'─'.repeat(MW2*2));
     mesa.textContent=L.join('\n');
   }
-  frameMesa();setInterval(frameMesa,110);
+  frameMesa(); setInterval(frameMesa,110);
 
-  var SYS={
-    trabajo:{n:"el trabajo asalariado",juego:"el juego de rendir",premio:"una vida que nunca llega, porque siempre falta un poco m\u00E1s de rendimiento",r:["valor = producci\u00F3n","descanso = p\u00E9rdida","tu tiempo es de otro"],g:"mide el valor con el rendimiento y nunca con el sostenimiento: el resultado nunca se cierra, y el sistema lo necesita abierto",m:"regla_valor: sostenimiento(x) -> valor(x)"},
-    escuela:{n:"la escuela y el m\u00E9rito",juego:"el juego de la nota",premio:"saber, que nunca se entrega porque hay que seguir cursando",r:["nota = inteligencia","error = fracaso","memorizar = entender"],g:"confunde medir con saber: premia la memoria y llama 'saber' al resultado de un examen",m:"regla_saber: reescribir(x) -> saber(x)"},
-    familia:{n:"la familia y el guion heredado",juego:"el juego de la pertenencia",premio:"pertenecer sin tener que elegir nada",r:["lo esperado = lo correcto","cambiar = traicionar","el pasado manda"],g:"vuelve obligatorio el guion: la herencia deja de ser punto de partida y se vuelve destino",m:"regla_herencia: eleccion(x) -> destino(x)"},
-    mente:{n:"la normalidad y el diagn\u00F3stico",juego:"el juego de estar normal",premio:"una salud que se define por parecerse al promedio",r:["normal = sano","desviar = enfermar","la etiqueta explica a la persona"],g:"trata la norma estad\u00EDstica como hecho natural: lo frecuente se vuelve lo correcto",m:"regla_estado: diferencia(x) -> sistema(x)"},
-    amor:{n:"el amor que te completa",juego:"el juego de completarse",premio:"un otro que te cierre por fin",r:["el otro completa","durar = funcionar","celo = amor"],g:"espera que otra persona cierre tu sistema, y le exige lo que vos no te das",m:"regla_union: sistema(a) + sistema(b) -> dos(a,b)"},
-    dinero:{n:"el dinero como medida de todo",juego:"el juego de valer por tener",premio:"libertad, que se posterga hasta el pr\u00F3ximo n\u00FAmero",r:["tener = valer","pobreza = culpa","todo tiene precio"],g:"hace del n\u00FAmero la vara de la vida entera: traduce lo inconmensurable a precio",m:"regla_valia: vida(x) -> valor(x)"}
-  };
-  var dgo=document.getElementById('dgo'),dout=document.getElementById('dout'),dcode=document.getElementById('dcode'),drew=document.getElementById('drew'),drewout=document.getElementById('drewout'),drewcode=document.getElementById('drewcode');
-  function typeOut(el,txt){
-    el.textContent='';var i=0;
-    var iv=setInterval(function(){
-      el.textContent=txt.slice(0,i);i+=3;
-      if(i>=txt.length+3){clearInterval(iv);el.textContent=txt;}
-    },12);
+  /* ============ SCRAMBLE ============ */
+  const CH = "!<>-_\\/[]{}—=+*^?#▓▒░█▄▀0123456789UNK";
+  function scramble(el, finalText, dur){
+    dur = dur || 800;
+    const start = performance.now(), len = finalText.length;
+    function frame(now){
+      const p = Math.min((now-start)/dur, 1);
+      let out = "";
+      for(let i=0;i<len;i++) out += (i < p*len*1.25) ? finalText[i] : CH[(Math.random()*CH.length)|0];
+      el.textContent = out;
+      if(p<1) requestAnimationFrame(frame); else el.textContent = finalText;
+    }
+    requestAnimationFrame(frame);
   }
-  dgo.addEventListener('click',function(){
-    var prob=(document.getElementById('dprob').value||'esto que me tiene atrapado').trim();
-    var s=SYS[document.getElementById('dsis').value];
-    var txt=
-"DIAGN\u00D3STICO Y DISOLUCI\u00D3N \u2014 en curso\n"+
-"----------------------------------------\n\n"+
-"1. EL SISTEMA: "+s.n+".\n\n"+
-"2. EL JUEGO QUE TE HACE JUGAR: "+s.juego+".\n\n"+
-"3. EL PREMIO QUE TE OCULTAN: "+s.premio+".\n\n"+
-"4. SUS AXIOMAS (escritos):\n"+s.r.map(function(r,i){return "   op"+(i+1)+". "+r;}).join("\n")+"\n\n"+
-"5. LA GRIETA \u2014 la regla que no aguanta el piso:\n   "+s.g+".\n\n"+
-"6. MUTACI\u00D3N PROPUESTA:\n   "+s.m+"\n\n"+
-"7. VERIFICACI\u00D3N:\n   En el sistema mutado, esto:\n   \u00AB"+prob+"\u00BB\n   ...deja de ser obst\u00E1culo. Deja de ser una mano que perd\u00E9s.\n   Se vuelve una decisi\u00F3n tuya.\n\n"+
-"8. ACTO CONCRETO:\n   Una cosa, chica, esta semana, que solo tenga sentido\n   dentro del sistema mutado. Con fecha. Verificable.\n\n"+
-"   >> No estabas perdiendo. Estabas jugando un juego\n      que no elegiste.";
-    dout.classList.add('on');drewout.classList.remove('on');
-    typeOut(dcode,txt);
+  document.querySelectorAll('h2').forEach(h=>{
+    const txt = h.textContent.trim(); h.textContent = "";
+    const io = new IntersectionObserver((es)=>{
+      es.forEach(e=>{ if(e.isIntersecting){ scramble(h, txt, 620); io.disconnect(); } });
+    },{threshold:.4});
+    io.observe(h);
   });
-  drew.addEventListener('click',function(){
-    var s=SYS[document.getElementById('dsis').value];
-    var txt=
-"sistema [ el_tuyo ] {\n\n  // axiomas heredados (contingentes)\n  "+s.r[0]+"\n  "+s.r[1]+"\n\n  // piso l\u00F3gico (no rompible)\n  axioma: claridad\n  axioma: no_contradiccion\n  axioma: resultado_exacto\n\n  // mutaci\u00F3n\n  "+s.m+"\n}\n\n// teoremas previos: preservados\n// coherencia: preservada\n// permiso requerido de afuera: ninguno\n// resultado: exacto, y por fin tuyo";
-    drewout.classList.add('on');typeOut(drewcode,txt);
+
+  /* ============ AXIOMAS ============ */
+  const AXIOMAS = [
+    ["Ningún sistema es sagrado","Todo sistema es contingente. Si alguien te dice que las reglas son eternas, está vendiendo algo."],
+    ["Si se puede escribir, se puede reescribir","No existe texto sin borrador. Ni ley. Ni norma. Ni destino."],
+    ["La lógica es el piso, no el techo","Los axiomas sostienen. No encierran. Arriba del piso construís lo que quieras."],
+    ["El resultado útil no es el final","Es el punto de partida del próximo sistema. Nunca cierres el bucle."],
+    ["Tus medios, tus fines","Alineá ambos a tu propia perspectiva. Ni los medios ajenos ni los fines ajenos."],
+    ["Hackear la realidad no es metáfora","Es método. Instrumentalismo propio. Elegís las herramientas, no las heredás."],
+    ["Matá la teoría de la incapacidad","Es la única que sostiene a todas las demás. La vocecita que dice 'vos no podés'."],
+    ["La mula carga, y el que carga sabe","El que sabe, reescribe. El conocimiento es peso que se convierte en distancia."],
+    ["Prosperidad, disfrute, final ideal","No sometido. No por permiso. Por escritura propia."],
+    ["UNK no te pide que creas","Te pide que escribas. La fe es de los templos. Acá se labura."],
+    ["Dejá de apostar","El casino vive de que juegues. Vos vivís de que escribas."],
+    ["Reescribí el tablero, no las fichas","Mover fichas es gestión. Redibujar el tablero es agencia."]
+  ];
+  const AG = document.getElementById('axiomas');
+  AXIOMAS.forEach((a,i)=>{
+    const d = document.createElement('div');
+    d.className='card';
+    d.innerHTML = '<div class="n">AX-'+String(i+1).padStart(2,'0')+'</div><div class="t">'+a[0]+'</div><p>'+a[1]+'</p>';
+    AG.appendChild(d);
   });
+
+  /* ============ LOG ============ */
+  const LOG = document.getElementById('log');
+  const FRASES = [
+    "sistema.axiomas[3].regla = NO_ROMPIBLE ......... ok",
+    "stat_quo.detectado() -> temor al avance ........ ok",
+    "casino.partidas_jugadas++ ..................... ∞",
+    "reescribibilidad.disponible = TRUE ............ ok",
+    "teoria_incapacidad.estado = CUESTIONADA ....... ok",
+    "contingencia.expandir(libertad) ............... +1",
+    "usuario.agencia = RECUPERADA ................. ok",
+    "ciencia.guardapolvo = REMOVIDO ............... ok",
+    "linea_unica.quebrada .......................... ok",
+    "mula.pasos++ .................................. siguiendo",
+    "permiso.externo.solicitado = FALSE ............ ok",
+    "nuevo_camino.escrito .......................... 1",
+    "borrador.tirado ............................... +1",
+    "realidad.moldeada.a_semejanza ................. ok"
+  ];
+  function logLine(txt){
+    const l = document.createElement('div');
+    l.innerHTML = '<b>['+new Date().toLocaleTimeString('es-AR',{hour12:false})+']</b> '+txt;
+    LOG.appendChild(l);
+    if(LOG.children.length>7) LOG.removeChild(LOG.firstChild);
+  }
+  FRASES.forEach((f,i)=>setTimeout(()=>logLine(f), i*420));
+  setInterval(()=>logLine(FRASES[(Math.random()*FRASES.length)|0]), 2600);
+
+  /* ============ REESCRIBIDOR ============ */
+  const ctr = document.getElementById('ctr');
+  let count = 0;
+  const MOLDE = [
+    t => '"'+t+'"\n\n► NO. Eso es un borrador que alguien dejó abierto.\n► Reescribilo: '+t.replace(/siempre/gi,'').replace(/nunca/gi,'').replace(/\s+/g,' ').trim()+' ... y ahora con tu firma abajo.',
+    t => 'ENTRADA: '+t+'\n\n► Sistema detectado: cerrado.\n► Acción: abrir el bucle. Los axiomas se mantienen.\n► El resultado exacto no cambia la historia: la REESCRIBE.',
+    t => '"'+t+'"\n\n► Traducción: alguien más escribió eso y vos lo heredaste como si fuera clima.\n► Clima no es. Es texto. Y el texto se tacha.',
+    t => 'REESCRITURA APLICADA A: '+t+'\n\n► 1. Identificá el axioma (regla clara, no rompible).\n► 2. Verificá que el resultado sea útil.\n► 3. Ahora cambiá los operadores y mirá qué pasa.\n► Nada explota. Solo se mueve el techo.',
+    t => '"'+t+'"\n\n► Veredicto: contingente.\n► Podría haber sido de otra forma. Podría ser de otra forma.\n► Y "podría" es la palabra más subestimada del idioma.',
+    t => t+'\n\n► La mula cargó tu frase todo el día. Ahora la bajó.\n► Pesaba. Ya no. Reescribila y volvé a cargar.'
+  ];
+  const out = document.getElementById('out');
+  document.getElementById('go').addEventListener('click', ()=>{
+    let v = document.getElementById('inp').value.trim() || 'esto siempre fue así';
+    const target = MOLDE[(Math.random()*MOLDE.length)|0](v);
+    count++; ctr.textContent = count;
+    logLine('reescritura #'+count+' aplicada sobre entrada de '+v.length+' caracteres');
+    const start = performance.now();
+    (function anim(now){
+      const p = Math.min((now-start)/700,1);
+      let s='';
+      for(let i=0;i<target.length;i++) s += (i < p*target.length*1.3) ? target[i] : CH[(Math.random()*CH.length)|0];
+      out.textContent = s;
+      if(p<1) requestAnimationFrame(anim); else out.textContent = target;
+    })(start);
+    if(SND.on) blip(180+Math.random()*400, .09);
+  });
+
+  /* ============ PALETAS ============ */
+  const PALETAS = [
+    {n:'ACIDO',    v:{'--fg':'#9dff2e','--acc1':'#ff00d4','--acc2':'#00f0ff','--warn':'#ffcc00','--bg':'#04060a'}},
+    {n:'SANGRE',   v:{'--fg':'#ff3b3b','--acc1':'#ffcc00','--acc2':'#ff8a00','--warn':'#ffffff','--bg':'#0a0303'}},
+    {n:'HUEVO',    v:{'--fg':'#ffe066','--acc1':'#00ffc8','--acc2':'#ff5ec4','--warn':'#8cff00','--bg':'#0a0803'}},
+    {n:'VOID',     v:{'--fg':'#d8d8ff','--acc1':'#7b5cff','--acc2':'#00d0ff','--warn':'#ff6bd6','--bg':'#05040f'}},
+    {n:'PERELMAN', v:{'--fg':'#00ff9c','--acc1':'#ff0040','--acc2':'#ffd000','--warn':'#ff00ff','--bg':'#000000'}},
+    {n:'TERMAL',   v:{'--fg':'#ff7a00','--acc1':'#00e5ff','--acc2':'#ff00a8','--warn':'#ffe600','--bg':'#0b0500'}}
+  ];
+  let pi = 0;
+  function setPaleta(i){
+    pi = ((i%PALETAS.length)+PALETAS.length)%PALETAS.length;
+    const p = PALETAS[pi];
+    Object.entries(p.v).forEach(([k,val])=>root.style.setProperty(k,val));
+    root.style.setProperty('--hair', 'color-mix(in srgb, '+p.v['--fg']+' 22%, transparent)');
+    document.body.style.background = p.v['--bg'];
+    try{ localStorage.setItem('unk_paleta', String(pi)); }catch(e){}
+    logLine('paleta reescrita -> '+p.n+'  (la realidad cambió de color, no de lógica)');
+  }
+  try{ const s = localStorage.getItem('unk_paleta'); if(s!==null) setPaleta(parseInt(s)); }catch(e){}
+
+  /* ============ SONIDO ============ */
+  const SND = {ctx:null, on:false};
+  function ac(){ if(!SND.ctx) SND.ctx = new (window.AudioContext||window.webkitAudioContext)(); return SND.ctx; }
+  function blip(freq, dur){
+    try{
+      const c = ac(); const o = c.createOscillator(); const g = c.createGain();
+      o.type='square'; o.frequency.value=freq;
+      g.gain.setValueAtTime(.04, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(.0001, c.currentTime+dur);
+      o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime+dur);
+    }catch(e){}
+  }
+  let drone=null;
+  function toggleDrone(on){
+    try{
+      const c = ac();
+      if(on){
+        drone = [55, 82.4, 110.5].map((f,i)=>{
+          const o=c.createOscillator(); o.type= i===2?'triangle':'sawtooth'; o.frequency.value=f;
+          const g=c.createGain(); g.gain.value=0.0;
+          o.connect(g); g.connect(c.destination); o.start();
+          g.gain.linearRampToValueAtTime(0.022, c.currentTime+1.5);
+          return {o,g};
+        });
+        const lfo=c.createOscillator(); lfo.frequency.value=0.08; const lg=c.createGain(); lg.gain.value=1.6;
+        lfo.connect(lg); lg.connect(drone[1].o.frequency); lfo.start();
+        drone.push({o:lfo,g:null});
+      } else if(drone){
+        drone.forEach(d=>{ try{ d.o.stop(); }catch(e){} }); drone=null;
+      }
+    }catch(e){}
+  }
+
+  /* ============ BARRA ============ */
+  document.getElementById('bar').addEventListener('click', (e)=>{
+    const b = e.target.closest('.btn'); if(!b) return;
+    const a = b.dataset.act;
+    if(a==='pal'){ setPaleta(pi+1); if(SND.on) blip(300,.06); }
+    if(a==='glitch'){ glitchMul = glitchMul>=3 ? 1 : glitchMul+1;
+      root.style.setProperty('--hueSpeed', (12/Math.max(glitchMul,1))+'s');
+      root.style.setProperty('--scan-op', (0.14*glitchMul).toFixed(2));
+      b.classList.add('on'); setTimeout(()=>b.classList.remove('on'),200);
+      logLine('glitch nivel '+glitchMul+' :: el statu quo se sacude');
+      if(SND.on) blip(120,.12);
+    }
+    if(a==='calm'){ glitchMul=1; root.style.setProperty('--hueSpeed','40s'); root.style.setProperty('--scan-op','0.06');
+      logLine('modo calma :: respirar y reescribir');
+    }
+    if(a==='sound'){ SND.on = !SND.on; b.textContent = 'SONIDO:'+(SND.on?'ON':'OFF');
+      b.classList.toggle('on', SND.on); ac(); toggleDrone(SND.on);
+      logLine('drone '+(SND.on?'activado':'apagado'));
+    }
+    if(a==='axioma'){
+      const x = AXIOMAS[(Math.random()*AXIOMAS.length)|0];
+      const el = document.createElement('div');
+      el.className='term'; el.style.marginTop='14px';
+      el.innerHTML = '<span class="ps1">unk@axioma:~$</span> emitir --aleatorio<br><span class="warnc">'+x[0]+'</span><br><span class="dim">'+x[1]+'</span>';
+      document.querySelector('.wrap').insertBefore(el, document.getElementById('bar').nextSibling.nextSibling);
+      if(SND.on) blip(520,.1);
+      logLine('axioma emitido al azar :: '+x[0]);
+    }
+  });
+
+  /* ============ MOUSE ============ */
+  root.addEventListener('mousemove', (e)=>{
+    const r = root.getBoundingClientRect();
+    const x = (e.clientX-r.left)/r.width;
+    document.getElementById('plasma').style.transform = 'translate('+((x-.5)*18).toFixed(1)+'px,0)';
+  });
+
+  setInterval(()=>{ if(Math.random()<0.22) root.style.setProperty('--scan-op', (0.08+Math.random()*0.22).toFixed(2)); }, 900);
+
+  setTimeout(()=>logLine('UNK v1.0 :: nodo iniciado. mula en marcha.'), 100);
 })();
 </script>
 </body>
