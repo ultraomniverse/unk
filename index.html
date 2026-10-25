@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+
+<!-- ===== SEO ===== -->
+<title>UNK — El límite de lo posible | Contingencia sistémica y libertad epistémica</title>
+<meta name="description" content="UNK es una terminal retro que explica en lenguaje sencillo la contingencia sistémica: todo sistema es una elección, todo problema es relativo a un sistema, y reescribir tus reglas es un acto de libertad. Basado en el paper de Daniel Alejandro Gascón Castaño.">
+<meta name="keywords" content="contingencia sistémica, relatividad de problemas, libertad epistémica, disolver problemas, reescribir sistemas, Sistema de Contingencia Sistémica, SCS, constructivismo radical, filosofía de la psiquiatría, Gödel, Cohen, Turing, Daniel Alejandro Gascón Castaño, UNK">
+<meta name="author" content="Daniel Alejandro Gascón Castaño">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="language" content="Spanish">
+<link rel="canonical" href="https://ultraomniverse.github.io/unk/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="UNK — Universe of New Knowledgment">
+<meta property="og:locale" content="es_CO">
+<meta property="og:title" content="UNK — El límite de lo posible">
+<meta property="og:description" content="Todo sistema es una elección. Todo problema es relativo a un sistema. Cambiar de sistema no resuelve el problema: lo disuelve.">
+<meta property="og:url" content="https://ultraomniverse.github.io/unk/">
+<meta property="og:image" content="https://ultraomniverse.github.io/unk/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Terminal retro verde fosforo con el logotipo UNK">
+<meta property="article:author" content="Daniel Alejandro Gascón Castaño">
+<meta property="article:published_time" content="2026-10-25">
+<meta property="article:section" content="Filosofía">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="UNK — El límite de lo posible">
+<meta name="twitter:description" content="Todo sistema es una elección. Todo problema es relativo a un sistema. Cambiar de sistema no resuelve el problema: lo disuelve.">
+<meta name="twitter:image" content="https://ultraomniverse.github.io/unk/og-image.png">
+
+<!-- Favicon incrustado (SVG en data URI, sin archivo externo) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='10'%20fill='%23000000'/%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20rx='7'%20fill='none'%20stroke='%2300ff41'%20stroke-width='2'%20opacity='0.5'/%3E%3Ctext%20x='11'%20y='42'%20font-family='monospace'%20font-size='30'%20font-weight='700'%20fill='%2300ff41'%3E%26gt;_%3C/text%3E%3Crect%20x='11'%20y='48'%20width='22'%20height='4'%20fill='%2300ff41'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='10'%20fill='%23000000'/%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20rx='7'%20fill='none'%20stroke='%2300ff41'%20stroke-width='2'%20opacity='0.5'/%3E%3Ctext%20x='11'%20y='42'%20font-family='monospace'%20font-size='30'%20font-weight='700'%20fill='%2300ff41'%3E%26gt;_%3C/text%3E%3Crect%20x='11'%20y='48'%20width='22'%20height='4'%20fill='%2300ff41'/%3E%3C/svg%3E">
+
+<!-- Manifest incrustado (JSON en data URI, sin archivo externo) -->
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22:%22UNK%20-%20Universe%20of%20New%20Knowledgment%22,%22short_name%22:%22UNK%22,%22lang%22:%22es%22,%22start_url%22:%22https://ultraomniverse.github.io/unk/%22,%22scope%22:%22https://ultraomniverse.github.io/unk/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23000000%22,%22theme_color%22:%22%2300ff41%22,%22icons%22:%5B%7B%22src%22:%22data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='10'%20fill='%23000000'/%3E%3Crect%20x='4'%20y='4'%20width='56'%20height='56'%20rx='7'%20fill='none'%20stroke='%2300ff41'%20stroke-width='2'%20opacity='0.5'/%3E%3Ctext%20x='11'%20y='42'%20font-family='monospace'%20font-size='30'%20font-weight='700'%20fill='%2300ff41'%3E%26gt;_%3C/text%3E%3Crect%20x='11'%20y='48'%20width='22'%20height='4'%20fill='%2300ff41'/%3E%3C/svg%3E%22,%22sizes%22:%22any%22,%22type%22:%22image/svg+xml%22,%22purpose%22:%22any%22%7D%5D%7D">
+
+<link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+
+<!-- ===== ESTILOS (todo el CSS aqui) ===== -->
+<style>
+:root{
+  --phos:#00ff41;
+  --phos-dim:#0f8a2c;
+  --phos-mid:#00b32e;
+  --bg:#000000;
+  --glow:rgba(0,255,65,.45);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono","Liberation Mono","Courier New",monospace;
+  --crt-h:100vh;
+  --crt-h:100dvh;
+}
+body.ambar{
+  --phos:#ffb000; --phos-dim:#8f6200; --phos-mid:#cc8c00;
+  --glow:rgba(255,176,0,.45);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--phos);
+  font-family:var(--mono);font-size:16px;line-height:1.55;
+  text-shadow:0 0 6px var(--glow);overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:9998;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.28) 0 1px,rgba(0,0,0,0) 1px 3px);
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0) 45%,rgba(0,0,0,.55) 100%);
+}
+a{color:var(--phos);text-decoration:underline;text-underline-offset:3px}
+a:hover,a:focus-visible{background:var(--phos);color:#000;text-shadow:none}
+::selection{background:var(--phos);color:#000;text-shadow:none}
+:focus-visible{outline:1px solid var(--phos);outline-offset:2px}
+.skip{position:absolute;left:-9999px;top:0}
+.skip:focus{left:.5rem;top:.5rem;z-index:10000;background:#000;border:1px solid var(--phos);padding:.3rem .6rem}
+
+.crt{
+  height:var(--crt-h);display:flex;flex-direction:column;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 40%,rgba(0,255,65,.07),transparent 70%),var(--bg);
+  border-bottom:1px solid var(--phos-dim);
+  animation:flicker 6s infinite steps(1);
+}
+body.ambar .crt{background:radial-gradient(ellipse at 50% 40%,rgba(255,176,0,.07),transparent 70%),var(--bg);}
+@keyframes flicker{0%,96%{opacity:1}97%{opacity:.93}98%{opacity:1}}
+.crt-bar{
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
+  padding:.45rem .7rem;border-bottom:1px solid var(--phos-dim);
+  font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;
+}
+.crt-bar .sp{flex:1}
+.led{width:.55em;height:.55em;background:var(--phos);border-radius:50%;box-shadow:0 0 8px var(--phos);flex:0 0 auto}
+.btn{
+  font:inherit;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;
+  background:transparent;color:var(--phos);border:1px solid var(--phos-dim);
+  padding:.2rem .5rem;cursor:pointer;text-shadow:inherit;
+}
+.btn:hover,.btn:focus-visible{background:var(--phos);color:#000;text-shadow:none;outline:none}
+.screen{
+  flex:1;margin:0;padding:.9rem .8rem 1.2rem;
+  overflow-y:auto;overflow-x:hidden;
+  white-space:pre-wrap;overflow-wrap:break-word;word-break:break-word;
+  font-size:clamp(.7rem,2.3vw,.92rem);line-height:1.45;
+  scrollbar-width:thin;scrollbar-color:var(--phos-dim) transparent;
+}
+.screen::-webkit-scrollbar{width:10px}
+.screen::-webkit-scrollbar-track{background:transparent}
+.screen::-webkit-scrollbar-thumb{background:var(--phos-dim)}
+.screen .h{color:var(--phos);font-weight:700;border-bottom:1px dashed var(--phos-dim);display:inline-block}
+.screen .h2{font-weight:700}
+.screen .d{color:var(--phos-dim)}
+.screen .lnk{color:var(--phos);text-decoration:underline;cursor:pointer}
+.screen .lnk:hover{background:var(--phos);color:#000;text-shadow:none}
+.promptline{
+  display:flex;align-items:center;gap:.45rem;
+  padding:.55rem .8rem;border-top:1px solid var(--phos-dim);
+  font-size:clamp(.72rem,2.4vw,.95rem);
+}
+.ps1{white-space:nowrap}
+#cmd{
+  flex:0 0 auto;width:2ch;max-width:calc(100% - 9ch);
+  background:transparent;border:0;outline:0;color:var(--phos);
+  font:inherit;text-shadow:inherit;caret-color:transparent;padding:0;
+}
+#cmd:disabled{opacity:.6}
+.cursor{
+  display:inline-block;width:.62em;height:1.05em;background:var(--phos);
+  animation:blink 1.05s steps(1,end) infinite;box-shadow:0 0 8px var(--phos);
+}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.hint{padding:0 .8rem .5rem;font-size:.66rem;color:var(--phos-dim)}
+.top{position:fixed;right:.8rem;bottom:.8rem;z-index:9000;display:none}
+.top.on{display:block}
+
+#documento{max-width:76ch;margin:0 auto;padding:2.5rem 1.15rem 4rem}
+#documento h1{font-size:clamp(1.35rem,5.2vw,2.1rem);line-height:1.2;margin:0 0 .4rem}
+#documento h2{font-size:clamp(1rem,3.4vw,1.3rem);margin:0 0 .7rem}
+#documento h2::before{content:"> ";color:var(--phos-dim)}
+#documento h3{font-size:.98rem;margin:1.2rem 0 .35rem;text-transform:uppercase;letter-spacing:.05em}
+#documento p,#documento li,#documento dd{font-size:.9rem}
+#documento section{border-top:1px dashed var(--phos-dim);margin-top:2.2rem;padding-top:1.4rem}
+#documento .lead{color:var(--phos-mid)}
+#documento dl dt{font-weight:700;margin-top:.7rem}
+#documento dl dd{margin:0 0 0 1.1rem;color:var(--phos-mid)}
+pre.ascii{font-size:clamp(.5rem,1.9vw,.8rem);line-height:1.1;margin:0 0 1rem;white-space:pre;overflow-x:auto}
+blockquote{border-left:2px solid var(--phos-dim);margin:1rem 0;padding:.2rem 0 .2rem .9rem;color:var(--phos-mid);font-style:italic}
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.8rem 0}
+caption{caption-side:bottom;font-size:.7rem;color:var(--phos-dim);padding-top:.3rem}
+th,td{border:1px solid var(--phos-dim);padding:.3rem .45rem;text-align:left;vertical-align:top}
+th{background:rgba(0,255,65,.08)}
+body.ambar th{background:rgba(255,176,0,.08)}
+code{font-family:var(--mono);background:rgba(0,255,65,.08);padding:.05em .3em}
+ul,ol{padding-left:1.25rem}
+footer{border-top:1px solid var(--phos-dim);padding:1.4rem 1.15rem 3rem;font-size:.75rem;text-align:center;color:var(--phos-mid)}
+
+@media (max-width:520px){
+  .crt-bar{font-size:.62rem;gap:.35rem}
+  .btn{font-size:.62rem;padding:.15rem .35rem}
+  .screen{padding:.7rem .55rem 1rem}
+  .hint{display:none}
+  #documento{padding:2rem .9rem 3rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .crt{animation:none}
+  .cursor{animation:none;opacity:1}
+  html{scroll-behavior:auto}
+}
+@media print{
+  .crt,.top{display:none}
+  body::before,body::after{display:none}
+  body{color:#000;background:#fff;text-shadow:none}
+  a{color:#000}
+}
+</style>
+
+<!-- ===== JSON-LD ===== -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://ultraomniverse.github.io/unk/#website",
+  "name": "UNK — Universe of New Knowledgment",
+  "alternateName": "UNK Terminal",
+  "url": "https://ultraomniverse.github.io/unk/",
+  "inLanguage": "es",
+  "description": "Terminal retro que difunde en lenguaje sencillo la contingencia sistémica, la relatividad de problemas y la libertad epistémica.",
+  "publisher": { "@id": "https://ultraomniverse.github.io/unk/#autor" }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": "https://ultraomniverse.github.io/unk/#autor",
+  "name": "Daniel Alejandro Gascón Castaño",
+  "givenName": "Daniel Alejandro",
+  "familyName": "Gascón Castaño",
+  "email": "gasconalejandro975@gmail.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Medellín", "addressCountry": "CO" },
+  "knowsAbout": ["Contingencia sistémica","Relatividad de problemas","Libertad epistémica","Filosofía de la psiquiatría","Lógica matemática","Gödel","Constructivismo radical"],
+  "description": "Autor del paper 'El límite de lo posible. Contingencia sistémica, relatividad de problemas y la vida en el borde' y del Sistema de Contingencia Sistémica (SCS)."
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "@id": "https://ultraomniverse.github.io/unk/#paper",
+  "headline": "El límite de lo posible. Contingencia sistémica, relatividad de problemas y la vida en el borde",
+  "alternativeHeadline": "UNK — Universe of New Knowledgment",
+  "author": { "@id": "https://ultraomniverse.github.io/unk/#autor" },
+  "datePublished": "2026-10-25",
+  "inLanguage": "es",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "isPartOf": { "@id": "https://ultraomniverse.github.io/unk/#website" },
+  "keywords": "contingencia sistémica, relatividad de problemas, libertad epistémica, Gödel, Cohen, Turing, disolución, piso lógico material ético",
+  "abstract": "Todo sistema es una elección entre muchos posibles, reescribible desde dentro, no total y con un borde indemostrable. De aquí se sigue que los problemas que un sistema no puede resolver no son absolutos, sino relativos a ese sistema: cambiar de sistema no resuelve el problema, lo disuelve.",
+  "about": [
+    { "@type": "Thing", "name": "Contingencia sistémica" },
+    { "@type": "Thing", "name": "Relatividad de problemas" },
+    { "@type": "Thing", "name": "Libertad epistémica" }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://ultraomniverse.github.io/unk/#faq",
+  "mainEntity": [
+    { "@type": "Question", "name": "¿Si todo sistema es contingente, entonces todo vale?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Dentro de un sistema hay verdad y falsedad. Lo que no hay es un sistema privilegiado que decida por todos. Contingente no significa arbitrario: significa que podría ser distinto y que se sostiene por razones." } },
+    { "@type": "Question", "name": "¿Si puedo cambiar de sistema, puedo cambiar la realidad?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. La libertad epistémica no es omnipotencia. Puedes cambiar el sistema desde el que piensas, pero no el mundo físico ni las consecuencias prácticas de tus actos. La libertad es epistémica, no ontológica." } },
+    { "@type": "Question", "name": "¿Crear sistemas nuevos no tiene costo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sí tiene. No todos los sistemas sirven para todo. El principio no dice que todos sean igualmente útiles: dice que todos son contingentes. La utilidad es un criterio dentro de un sistema, no un criterio absoluto." } },
+    { "@type": "Question", "name": "¿Si cada uno tiene su sistema, cómo convivimos?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Ahí empieza la política, no la epistemología. La libertad de crear sistemas choca con la libertad de otros de crear los suyos. El principio no resuelve ese problema: lo ubica." } },
+    { "@type": "Question", "name": "¿Si el principio es contingente, por qué aceptarlo?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Por coherencia performativa: un sistema que se sabe contingente y lo dice es coherente consigo mismo, mientras que uno que se presenta como necesario y no puede demostrarlo no lo es. Además el sistema explica fenómenos que otros no explican y tiene consecuencias prácticas verificables." } },
+    { "@type": "Question", "name": "¿Quién te dio permiso para reescribir tu sistema?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Nadie. Ese es el punto. No hay que pedir permiso a ningún canon, campo, institución o regla externa para crear, aprender, vivir o pensar distinto." } }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "UNK", "item": "https://ultraomniverse.github.io/unk/" },
+    { "@type": "ListItem", "position": 2, "name": "El límite de lo posible", "item": "https://ultraomniverse.github.io/unk/#s-autor" }
+  ]
+}
+</script>
+</head>
+
+<body>
+<a class="skip" href="#documento">Saltar a la terminal / al documento</a>
+
+<!-- ======================= TERMINAL ======================= -->
+<div class="crt" id="crt">
+  <div class="crt-bar">
+    <span class="led" aria-hidden="true"></span>
+    <span><b>UNK://terminal</b> &mdash; 80x25</span>
+    <span class="sp"></span>
+    <button class="btn" id="btn-doc" type="button">[ documento ]</button>
+    <button class="btn" id="btn-theme" type="button">[ ambar ]</button>
+    <button class="btn" id="btn-boot" type="button">[ reboot ]</button>
+  </div>
+
+  <pre class="screen" id="screen" aria-live="polite" aria-label="Salida de la terminal"></pre>
+
+  <form class="promptline" id="prompt-form" autocomplete="off" spellcheck="false">
+    <label class="ps1" for="cmd">C:\UNK&gt;</label>
+    <input id="cmd" name="cmd" type="text" aria-label="Escribe un comando y pulsa Enter"
+           autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false">
+    <span class="cursor" aria-hidden="true"></span>
+  </form>
+
+  <div class="hint">escribe <b>help</b> y pulsa ENTER &nbsp;|&nbsp; TAB completa &nbsp;|&nbsp; flechas = historial</div>
+</div>
+
+<button class="btn top" id="btn-top" type="button">[ ^ ]</button>
+
+<!-- ======================= DOCUMENTO ======================= -->
+<main id="documento">
+<article>
+
+<header>
+<pre class="ascii" aria-hidden="true">
+ _   _   _   _   _  __
+| | | | | \ | | | |/ /
+| | | | |  \| | | ' / 
+| |_| | | |\  | | . \ 
+ \___/  |_| \_| |_|\_\
+</pre>
+<h1>UNK &mdash; Universe of New Knowledgment</h1>
+<p class="lead">Una terminal retro para pensar distinto. Adaptaci&oacute;n en lenguaje sencillo del paper <em>El l&iacute;mite de lo posible. Contingencia sist&eacute;mica, relatividad de problemas y la vida en el borde</em>, de Daniel Alejandro Gasc&oacute;n Casta&ntilde;o (Medell&iacute;n, Colombia, 2026).</p>
+<p>UNK no es un curso, ni una doctrina, ni una aplicaci&oacute;n. Es un <strong>sistema anti-sistema</strong>: un conjunto de reglas que sirve para recordarte que las reglas son elecciones.</p>
+</header>
+
+<noscript>
+  <p class="lead"><strong>Aviso:</strong> JavaScript est&aacute; desactivado. Puedes leer todo el contenido igualmente: la terminal es solo la capa de navegaci&oacute;n.</p>
+</noscript>
+
+<nav aria-label="&Iacute;ndice">
+  <h2>&Iacute;ndice</h2>
+  <ol>
+    <li><a href="#s-unk">Qu&eacute; es UNK</a></li>
+    <li><a href="#s-sistema">Todo sistema es una elecci&oacute;n</a></li>
+    <li><a href="#s-reescribir">Puedes reescribir tus reglas</a></li>
+    <li><a href="#s-disolver">Resolver vs. disolver</a></li>
+    <li><a href="#s-piso">El piso: lo que no se puede reescribir</a></li>
+    <li><a href="#s-libertad">Libertad epist&eacute;mica</a></li>
+    <li><a href="#s-otro">El otro es un sistema</a></li>
+    <li><a href="#s-metodo">Los 7 pasos del m&eacute;todo</a></li>
+    <li><a href="#s-ejemplos">Ejemplos pr&aacute;cticos</a></li>
+    <li><a href="#s-faq">Objeciones frecuentes</a></li>
+    <li><a href="#s-glosario">Glosario</a></li>
+    <li><a href="#s-referencias">Referencias</a></li>
+    <li><a href="#s-tareas">Tareas para el mundo</a></li>
+    <li><a href="#s-autor">Sobre el autor y licencia</a></li>
+  </ol>
+</nav>
+
+<section id="s-unk">
+<h2>Qu&eacute; es UNK</h2>
+<p>UNK parte de una sospecha muy simple, casi tonta: <strong>todo sistema es una elecci&oacute;n</strong>. Podr&iacute;a ser de otra manera. Y si podr&iacute;a ser de otra manera, entonces no estamos atrapados, aunque a veces se sienta as&iacute;.</p>
+<p>Hay un momento en que uno descubre que el suelo que pisaba no era suelo. Era una decisi&oacute;n. Alguien, en alg&uacute;n momento, eligi&oacute; que fuera as&iacute;. Pudo haber sido de otra manera. Y durante a&ntilde;os uno camin&oacute; sobre esa decisi&oacute;n creyendo que era la tierra.</p>
+<p>De esa sospecha se sigue una consecuencia central: los problemas que un sistema no puede resolver <strong>no son problemas absolutos</strong>. Son problemas relativos a ese sistema. Cambiar de sistema no resuelve el problema: lo disuelve.</p>
+<p>Las cinco ideas, y ya:</p>
+<ol>
+  <li>Todo sistema es una elecci&oacute;n, no una ontolog&iacute;a necesaria.</li>
+  <li>Todo problema es relativo a un sistema: cambiar de sistema no lo resuelve, lo disuelve.</li>
+  <li>Toda persona puede reescribir sus reglas (libertad epist&eacute;mica), sin quedar atrapada en el marco &laquo;correcto/incorrecto&raquo; que otros definieron.</li>
+  <li>La agencia se recupera cuando se deja de creer que el sistema propio es el &uacute;nico posible.</li>
+  <li>No hay que pedir permiso a ning&uacute;n canon, campo, instituci&oacute;n o regla externa para crear, aprender, vivir o pensar distinto.</li>
+</ol>
+<blockquote>Ning&uacute;n sistema es total. Todo sistema es una elecci&oacute;n. Y elegir es un acto de libertad.</blockquote>
+</section>
+
+<section id="s-sistema">
+<h2>Todo sistema es una elecci&oacute;n</h2>
+<p>Un <strong>sistema</strong> es un conjunto estructurado de reglas expl&iacute;citas o explicitables, elementos sobre los que operan esas reglas, un criterio de distinci&oacute;n entre lo que el sistema acepta y lo que no, y una pr&aacute;ctica que puede formularse, ejecutarse o reescribirse.</p>
+<p>Tu trabajo es un sistema. Tu rutina es un sistema. La aritm&eacute;tica est&aacute;ndar es un sistema. La idea de &laquo;persona normal&raquo; es un sistema. Ninguno es necesario.</p>
+<p><strong>Contingente no significa arbitrario.</strong> Un sistema contingente no es un sistema que da igual: es un sistema que podr&iacute;a ser de otra manera sin dejar de ser un sistema, y que se sostiene por razones.</p>
+<p>La historia de la filosof&iacute;a occidental puede leerse como la b&uacute;squeda del sistema verdadero. Plat&oacute;n busc&oacute; las Formas. Descartes, el fundamento indudable. Kant, las condiciones de posibilidad de toda experiencia. El C&iacute;rculo de Viena, el lenguaje de la ciencia unificada. En cada caso el proyecto fracas&oacute; por la misma raz&oacute;n estructural: <strong>ning&uacute;n sistema puede fundarse a s&iacute; mismo</strong>.</p>
+<p>Ese patr&oacute;n no es accidental. G&ouml;del le dio forma matem&aacute;tica. Cohen lo convirti&oacute; en una elecci&oacute;n. Turing lo volvi&oacute; un asunto relativo al modelo. Nietzsche ya lo hab&iacute;a dicho en el terreno moral: no hay hechos, solo interpretaciones.</p>
+<p>Ninguno de los tres funda el principio. Son sus <em>casos paradigm&aacute;ticos</em>. El principio se aplica a todo sistema, formal o no.</p>
+<table>
+  <caption>El patr&oacute;n estructural, en cuatro casos</caption>
+  <thead><tr><th>Caso</th><th>El sistema</th><th>Su borde indemostrable</th></tr></thead>
+  <tbody>
+    <tr><td>Plat&oacute;n</td><td>Mundo de las Formas</td><td>La visi&oacute;n directa del Bien</td></tr>
+    <tr><td>Descartes</td><td>Duda met&oacute;dica</td><td>Dios</td></tr>
+    <tr><td>Kant</td><td>Categor&iacute;as del entendimiento</td><td>La cosa en s&iacute;</td></tr>
+    <tr><td>C&iacute;rculo de Viena</td><td>Criterio de verificabilidad</td><td>El propio criterio</td></tr>
+  </tbody>
+</table>
+<blockquote>Si el suelo que pisas es una decisi&oacute;n, entonces no est&aacute;s atrapado. Solo estabas de pie sobre una elecci&oacute;n.</blockquote>
+</section>
+
+<section id="s-reescribir">
+<h2>Puedes reescribir tus reglas</h2>
+<p>Reescribir un sistema es modificar al menos una de sus reglas desde dentro, preservando los teoremas ya demostrados. No es destruirlo: es modificarlo conservando su coherencia.</p>
+<p>Ejemplo: toma un sistema que uses a diario y escr&iacute;belo como reglas.</p>
+<pre class="ascii">sistema MI_RUTINA {
+  regla 1: si es lunes, entonces trabajo de 9 a 18
+  regla 2: si alguien me corrige, entonces me equivoco
+  regla 3: si no encajo, entonces el problema es mio
+}</pre>
+<p>&iquest;Cu&aacute;l de esas tres reglas es necesaria? Ninguna. Las tres son contingencias heredadas. Reescribe la tercera:</p>
+<pre class="ascii">regla 3: si no encajo, entonces el sistema no me contiene</pre>
+<p>Mismo mundo. Otra vida.</p>
+<h3>Protocolo de reescritura</h3>
+<ol>
+  <li>Identifica el sistema.</li>
+  <li>Escribe sus reglas.</li>
+  <li>Elige una regla a reescribir.</li>
+  <li>Verifica que la reescritura preserve los teoremas anteriores.</li>
+  <li>Aplica la reescritura.</li>
+  <li>Eval&uacute;a las consecuencias.</li>
+</ol>
+</section>
+
+<section id="s-disolver">
+<h2>Resolver vs. disolver</h2>
+<p><strong>Resolver</strong> un problema es encontrar su soluci&oacute;n dentro del sistema que lo formul&oacute;. <strong>Disolver</strong> un problema es mostrar que el problema era una funci&oacute;n del sistema, y que en otro sistema no existe.</p>
+<p>Disolver no es hacer trampa. No es cambiar de tema. Es reconocer que el problema viv&iacute;a en el marco, no en el mundo.</p>
+<p>Ejemplo matem&aacute;tico: la hip&oacute;tesis del continuo no se resolvi&oacute;. Cohen demostr&oacute; que es independiente de ZFC: verdadera en algunos modelos, falsa en otros. Dej&oacute; de ser una pregunta con respuesta &uacute;nica y se convirti&oacute; en una elecci&oacute;n de sistema.</p>
+<p>Ejemplo cotidiano: el problema &laquo;no soy constante, algo anda mal conmigo&raquo; solo existe dentro del sistema que iguala productividad con valor personal. Cambia el sistema y la inconstancia deja de ser un defecto.</p>
+<h3>Protocolo de disoluci&oacute;n</h3>
+<ol>
+  <li>Identifica el sistema que formula el problema.</li>
+  <li>Escribe las reglas de ese sistema.</li>
+  <li>Identifica qu&eacute; reglas vuelven el problema insoluble.</li>
+  <li>Construye un sistema alternativo donde el problema se disuelve.</li>
+  <li>Verifica que en el sistema alternativo el problema ya no existe.</li>
+</ol>
+<p>Disolver no elimina: <strong>reubica</strong>. El problema no desaparece, cambia de estatus. Deja de ser un obst&aacute;culo y se convierte en una elecci&oacute;n.</p>
+</section>
+
+<section id="s-piso">
+<h2>El piso: lo que no se puede reescribir</h2>
+<p>Si todo sistema es contingente y reescribible, &iquest;somos libres de todo? No. Hay un piso. Y el piso no es un l&iacute;mite externo: es la condici&oacute;n de posibilidad de la libertad misma.</p>
+<p>El piso no es un sistema. Si lo fuera, ser&iacute;a contingente y reescribible, y no podr&iacute;a cumplir su funci&oacute;n. Es la condici&oacute;n material de posibilidad de todo sistema. Por eso no se puede reescribir: no hay sistema desde el cual reescribirlo.</p>
+<h3>Piso l&oacute;gico</h3>
+<p>No contradicci&oacute;n, coherencia interna, reglas expl&iacute;citas. No dice qu&eacute; sistema construir; dice c&oacute;mo construir uno que funcione. Si un sistema admitiera contradicciones, cualquier proposici&oacute;n ser&iacute;a demostrable y el sistema colapsar&iacute;a: no ser&iacute;a un sistema, ser&iacute;a ruido.</p>
+<h3>Piso material</h3>
+<p>No puedes volar. No puedes no morir. No puedes respirar bajo el agua sin ayuda. La materia impone. Este piso separa la libertad epist&eacute;mica de la omnipotencia, y se verifica emp&iacute;ricamente.</p>
+<h3>Piso &eacute;tico</h3>
+<p>No puedes destruir a otros como regla de tu juego. Sin esto, los sistemas no coexisten: se aniquilan. Tres argumentos independientes convergen:</p>
+<ul>
+  <li><strong>Emp&iacute;rico:</strong> los sistemas que permiten la destrucci&oacute;n indiscriminada colapsan, porque generan contra-sistemas que los destruyen o agotan los recursos que necesitan.</li>
+  <li><strong>L&oacute;gico:</strong> si la regla es &laquo;destruye a otros&raquo;, entonces tu sistema tambi&eacute;n es destruible por la misma regla. La universalizaci&oacute;n de la regla la vuelve incoherente.</li>
+  <li><strong>&Eacute;tico:</strong> reconocer al otro como sistema es la condici&oacute;n de la coexistencia. La reciprocidad es la estructura m&iacute;nima del reconocimiento.</li>
+</ul>
+<p>La libertad no es ausencia de piso. Es la capacidad de moverse sobre &eacute;l. El piso no te limita: te sostiene.</p>
+<table>
+  <caption>Dentro del piso y sobre el piso</caption>
+  <thead><tr><th>No reescribible</th><th>Reescribible</th></tr></thead>
+  <tbody>
+    <tr><td>No contradicci&oacute;n</td><td>Aritm&eacute;tica est&aacute;ndar</td></tr>
+    <tr><td>Gravedad</td><td>Geometr&iacute;a euclidiana</td></tr>
+    <tr><td>Mortalidad</td><td>Idea de la muerte</td></tr>
+    <tr><td>Prohibici&oacute;n del asesinato</td><td>C&oacute;digos penales espec&iacute;ficos</td></tr>
+    <tr><td>Capacidad de sufrir</td><td>Criterios de diagn&oacute;stico</td></tr>
+    <tr><td>Paso del tiempo</td><td>Calendarios</td></tr>
+    <tr><td>Existencia de otros</td><td>Formas de organizaci&oacute;n social</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="s-libertad">
+<h2>Libertad epist&eacute;mica</h2>
+<p>La libertad epist&eacute;mica es la capacidad de cambiar de sistema. No es omnipotencia. No es hacer lo que quieras. Es poder moverte entre marcos, reescribirlos, habitarlos sabiendo que son contingentes.</p>
+<p>La libertad <em>ontol&oacute;gica</em> es la capacidad de cambiar la realidad. La libertad <em>epist&eacute;mica</em> es la capacidad de cambiar el sistema desde el que se piensa la realidad.</p>
+<p>Consecuencias pr&aacute;cticas: no est&aacute;s obligado a jugar el juego de otro; no est&aacute;s obligado a aceptar el marco de otro; no est&aacute;s obligado a resolver los problemas que otro te pone. Puedes cambiar el problema cambiando el sistema.</p>
+<h3>La desigualdad de la libertad epist&eacute;mica</h3>
+<p>Esta libertad no se distribuye igual. Cambiar de sistema requiere conocer el sistema actual (educaci&oacute;n), imaginar otro (tiempo, creatividad), tener recursos para migrar (dinero, redes, salud) y soportar el costo social (burla, exilio, exclusi&oacute;n). Decir &laquo;puedes cambiar de sistema&raquo; sin reconocer esto es un privilegio disfrazado de filosof&iacute;a.</p>
+<p>Por eso el principio exige una pol&iacute;tica de la libertad epist&eacute;mica: educaci&oacute;n, tiempo, recursos, tolerancia.</p>
+<h3>No hay personalidad can&oacute;nica</h3>
+<p>James Bond no es mejor que el monje. El cient&iacute;fico fr&iacute;o no es mejor que el poeta. Puedes elegir, inventar, reescribir la tuya. Pero hay un piso &eacute;tico-material que no es opinable.</p>
+<p><strong>Toma el control de tu vida.</strong></p>
+</section>
+
+<section id="s-otro">
+<h2>El otro es un sistema irreducible</h2>
+<p>El otro no es un elemento dentro de mi sistema. Es <em>otro sistema</em>, con sus propias reglas, sus propios bordes, su propia libertad epist&eacute;mica. Reducirlo a elemento de mi sistema es violencia epist&eacute;mica. Levinas lo formul&oacute; con precisi&oacute;n: el otro resiste toda totalizaci&oacute;n.</p>
+<p>Consecuencia: mi reescritura afecta a otros sistemas. No puedo reescribirme de cualquier manera.</p>
+<p>Consecuencia pol&iacute;tica: la pol&iacute;tica no es un obst&aacute;culo para la libertad epist&eacute;mica, es su condici&oacute;n. Sin otros, no hay sistemas que comparar, no hay contraste, no hay disoluci&oacute;n posible.</p>
+</section>
+
+<section id="s-metodo">
+<h2>Los 7 pasos del m&eacute;todo</h2>
+<p>No es un algoritmo. Es un procedimiento que requiere juicio. Hazlo en un cuaderno, mientras tomas algo. Nadie te va a corregir.</p>
+<ol>
+  <li><strong>Reconoce que algo es un sistema.</strong> Toma algo que te moleste o te parezca inevitable. Pregunta: &iquest;es un hecho bruto o es un sistema? Si es un sistema, &iquest;cu&aacute;les son sus reglas?</li>
+  <li><strong>Escr&iacute;belo expl&iacute;citamente.</strong> Reglas visibles, aunque no sean perfectas.</li>
+  <li><strong>&iquest;Necesario o contingente?</strong> Para cada regla: si puedes imaginarla distinta sin contradicci&oacute;n, es contingente.</li>
+  <li><strong>&iquest;Qu&eacute; sistema alternativo existe?</strong> Escribe al menos una alternativa por regla contingente. No tienes que elegirla: basta con ver que existe.</li>
+  <li><strong>&iquest;Se resuelve o se disuelve?</strong> Si el problema desaparece al cambiar de sistema, es relativo. Si sigue ah&iacute;, es del piso.</li>
+  <li><strong>Dise&ntilde;a un acto concreto.</strong> Hoy o esta semana. Concreto, peque&ntilde;o, con fecha, verificable.</li>
+  <li><strong>Reescribe las reglas del propio m&eacute;todo.</strong> Los 7 pasos son contingentes. Ad&aacute;ptalos.</li>
+</ol>
+</section>
+
+<section id="s-ejemplos">
+<h2>Ejemplos pr&aacute;cticos</h2>
+
+<h3>Vida cotidiana</h3>
+<p><strong>Queja:</strong> &laquo;no me alcanza el tiempo&raquo;. <strong>Sistema:</strong> tiempo = recurso que hay que llenar. <strong>Disoluci&oacute;n:</strong> tiempo = forma de habitar. Cambia la m&eacute;trica y el problema cambia de forma.</p>
+
+<h3>Educaci&oacute;n</h3>
+<p><strong>Sistema:</strong> aprender = memorizar y aprobar. <strong>Regla oculta:</strong> el que no aprueba, no sabe. <strong>Reescritura:</strong> aprender = construir sistemas; se eval&uacute;a la capacidad de crear, no la de recordar.</p>
+
+<h3>Trabajo</h3>
+<p><strong>Sistema:</strong> el organigrama define tu valor. <strong>Contingencia:</strong> el organigrama es una decisi&oacute;n administrativa, no una ley natural. <strong>Acto concreto:</strong> propone por escrito una regla distinta.</p>
+
+<h3>Terapia</h3>
+<p><strong>Sistema:</strong> hay una personalidad sana y yo no llego. Foucault mostr&oacute; que la distinci&oacute;n normal/patol&oacute;gico es hist&oacute;rica, no natural. Canguilhem mostr&oacute; que lo normal no es un hecho, es una norma. <strong>Disoluci&oacute;n:</strong> el sufrimiento es real; la clasificaci&oacute;n es una elecci&oacute;n. La terapia deja de ser correcci&oacute;n de un defecto y se convierte en reescritura de un sistema.</p>
+
+<h3>Creencias</h3>
+<p><strong>Sistema:</strong> hay una forma correcta de vivir. <strong>Contingencia:</strong> no hay canon, hay pisos. Puedes vivir distinto sin estar equivocado.</p>
+</section>
+
+<section id="s-faq">
+<h2>Objeciones frecuentes</h2>
+
+<h3>&iquest;Si todo sistema es contingente, entonces todo vale?</h3>
+<p>No. Dentro de un sistema hay verdad y falsedad. Lo que no hay es un sistema privilegiado que decida por todos. Contingente no significa arbitrario.</p>
+
+<h3>&iquest;Si puedo cambiar de sistema, puedo cambiar la realidad?</h3>
+<p>No. La libertad es epist&eacute;mica, no ontol&oacute;gica. Puedes cambiar el sistema, no el mundo f&iacute;sico ni las consecuencias pr&aacute;cticas de tus actos.</p>
+
+<h3>&iquest;Crear sistemas nuevos no tiene costo?</h3>
+<p>S&iacute; tiene. No todos los sistemas sirven para todo. La utilidad es un criterio dentro de un sistema, no un criterio absoluto.</p>
+
+<h3>&iquest;Si cada uno tiene su sistema, c&oacute;mo convivimos?</h3>
+<p>Ah&iacute; empieza la pol&iacute;tica, no la epistemolog&iacute;a. El principio no resuelve ese problema: lo ubica. Y la presencia del otro no es un obst&aacute;culo: es la condici&oacute;n de la pluralidad.</p>
+
+<h3>&iquest;Si el principio se aplica a todo, no distingue nada?</h3>
+<p>Distingue en otro nivel: entre sistemas que se presentan como necesarios y sistemas que se reconocen como contingentes. No borra las diferencias: las reubica.</p>
+
+<h3>&iquest;Si el principio es contingente, por qu&eacute; aceptarlo?</h3>
+<p>Por <strong>coherencia performativa</strong>. Un sistema que se sabe contingente y lo dice es coherente consigo mismo; uno que se presenta como necesario y no puede fundarse (Plat&oacute;n, Descartes, Kant, el C&iacute;rculo de Viena) es incoherente. Adem&aacute;s el SCS explica lo que otros no explican, es coherente y tiene consecuencias verificables.</p>
+
+<h3>&iquest;Qui&eacute;n te dio permiso?</h3>
+<p>Nadie. Ese es el punto.</p>
+</section>
+
+<section id="s-glosario">
+<h2>Glosario</h2>
+<dl>
+  <dt>Sistema</dt><dd>Conjunto estructurado de reglas, elementos, criterios y pr&aacute;cticas.</dd>
+  <dt>Contingencia</dt><dd>Propiedad de un sistema de poder ser de otra manera.</dd>
+  <dt>Reescribibilidad</dt><dd>Capacidad de un sistema de modificar sus reglas desde dentro.</dd>
+  <dt>No totalidad</dt><dd>Propiedad de un sistema de no agotar lo concebible.</dd>
+  <dt>Relatividad de problemas</dt><dd>Propiedad de un problema de ser relativo a un sistema.</dd>
+  <dt>Libertad epist&eacute;mica</dt><dd>Capacidad de cambiar de sistema. Su ejercicio es desigual.</dd>
+  <dt>Proceso</dt><dd>Secuencia de estados de un sistema a lo largo del tiempo, con reescritura posible.</dd>
+  <dt>Piso</dt><dd>Condiciones m&iacute;nimas (l&oacute;gicas, materiales, &eacute;ticas) que ning&uacute;n sistema puede reescribir. No es un sistema.</dd>
+  <dt>Disolver</dt><dd>Mostrar que un problema es relativo a un sistema, no absoluto.</dd>
+  <dt>Coherencia performativa</dt><dd>Propiedad de un sistema que se sabe contingente y lo dice, siendo coherente consigo mismo.</dd>
+  <dt>SCS</dt><dd>Sistema de Contingencia Sist&eacute;mica.</dd>
+  <dt>SGR / SGR-L</dt><dd>Sistema Generativo Reflexivo (matem&aacute;tica) y su versi&oacute;n para lenguajes (computaci&oacute;n).</dd>
+  <dt>Meta-te&oacute;rico</dt><dd>Que habla de sistemas, no de objetos.</dd>
+  <dt>Outputs Maximus</dt><dd>Trabajos previos del autor donde se propuso por primera vez la teor&iacute;a de sistemas.</dd>
+</dl>
+</section>
+
+<section id="s-referencias">
+<h2>Referencias</h2>
+<ul>
+  <li>Canguilhem, G. (1966). <em>Le normal et le pathologique</em>. PUF.</li>
+  <li>Cohen, P. J. (1963). The independence of the continuum hypothesis. <em>PNAS</em>, 50(6), 1143&ndash;1148.</li>
+  <li>Feyerabend, P. (1975). <em>Against Method</em>. Verso.</li>
+  <li>Foucault, M. (1961). <em>Histoire de la folie &agrave; l'&acirc;ge classique</em>. Plon.</li>
+  <li>G&ouml;del, K. (1931). &Uuml;ber formal unentscheidbare S&auml;tze der Principia Mathematica. <em>Monatshefte f&uuml;r Mathematik und Physik</em>, 38, 173&ndash;198.</li>
+  <li>Kuhn, T. S. (1962). <em>The Structure of Scientific Revolutions</em>. University of Chicago Press.</li>
+  <li>Lakatos, I. (1976). <em>Proofs and Refutations</em>. Cambridge University Press.</li>
+  <li>Levinas, E. (1961). <em>Totalit&eacute; et infini</em>. Nijhoff.</li>
+  <li>Nietzsche, F. (1887). <em>Zur Genealogie der Moral</em>. C. G. Naumann.</li>
+  <li>Popper, K. (1959). <em>The Logic of Scientific Discovery</em>. Hutchinson.</li>
+  <li>Szasz, T. (1961). <em>The Myth of Mental Illness</em>. Harper &amp; Row.</li>
+  <li>Turing, A. M. (1936). On computable numbers. <em>Proc. London Math. Soc.</em>, 42(1), 230&ndash;265.</li>
+  <li>von Glasersfeld, E. (1984). An introduction to radical constructivism. En <em>The Invented Reality</em>. Norton.</li>
+  <li>Wittgenstein, L. (1953). <em>Philosophische Untersuchungen</em>. Blackwell.</li>
+</ul>
+</section>
+
+<section id="s-tareas">
+<h2>Tareas para el mundo</h2>
+<p>Este mapa no se completa escribiendo. Solo se completa viviendo.</p>
+<ol>
+  <li><strong>Formar la comunidad.</strong> Que existan al menos 20 personas que usen el sistema regularmente. Criterio de &eacute;xito: que alguien publique algo sin que t&uacute; lo pidas.</li>
+  <li><strong>Formar disc&iacute;pulos.</strong> Que existan al menos 3 personas que lo extiendan por su cuenta. Criterio: que publiquen una aplicaci&oacute;n que t&uacute; no hab&iacute;as pensado.</li>
+  <li><strong>Fundar instituciones.</strong> Libro, c&aacute;tedra, congreso, revista. Criterio: que se ense&ntilde;e en una universidad.</li>
+  <li><strong>Generar impacto.</strong> Que se aplique en educaci&oacute;n, terapia y pol&iacute;tica. Criterio: no poder seguir el rastro de todas las aplicaciones.</li>
+  <li><strong>Aceptar la contingencia del propio sistema.</strong> Criterio: que el sistema cambie por las cr&iacute;ticas. Que no se vuelva dogma.</li>
+</ol>
+</section>
+
+<section id="s-autor">
+<h2>Sobre el autor y licencia</h2>
+<p><strong>Daniel Alejandro Gasc&oacute;n Casta&ntilde;o.</strong> Medell&iacute;n, Colombia. 25 de octubre de 2026. Contacto: <a href="mailto:gasconalejandro975@gmail.com">gasconalejandro975@gmail.com</a>.</p>
+<p>Paper original: <em>El l&iacute;mite de lo posible. Contingencia sist&eacute;mica, relatividad de problemas y la vida en el borde</em> (preprint, Zenodo).</p>
+<p>Todo el contenido de este sitio est&aacute; bajo licencia <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">Creative Commons Atribuci&oacute;n 4.0 Internacional (CC-BY-4.0)</a>. Puedes copiar, adaptar y reescribir, citando la fuente. Sin pedir permiso.</p>
+<blockquote>No hay conclusi&oacute;n. Hay umbral. Y una vez visto, se habita.</blockquote>
+</section>
+
+</article>
+</main>
+
+<footer>
+  <p><strong>UNK &mdash; Universe of New Knowledgment</strong></p>
+  <p>Ning&uacute;n sistema es total. Todo sistema es una elecci&oacute;n. Y elegir es un acto de libertad.</p>
+  <p>CC-BY-4.0 &middot; Daniel Alejandro Gasc&oacute;n Casta&ntilde;o &middot; <a href="#documento">documento</a></p>
+</footer>
+
+<!-- ===== TERMINAL: todo el JS aqui ===== -->
+<script>
+(function () {
+  'use strict';
+
+  var screenEl = document.getElementById('screen');
+  var input    = document.getElementById('cmd');
+  var form     = document.getElementById('prompt-form');
+  var PS1      = 'C:\\UNK>';
+
+  /* Banner verificado: 22 columnas x 5 filas, solo ASCII.
+     String.raw preserva las barras invertidas. */
+  var BANNER = String.raw`
+ _   _   _   _   _  __
+| | | | | \ | | | |/ /
+| | | | |  \| | | ' / 
+| |_| | | |\  | | . \ 
+ \___/  |_| \_| |_|\_\
+`;
+
+  /* Marcadores de linea:  "# " titulo  |  "= " termino  |  "- " atenuado */
+  var FILES = {
+    unk:{ f:'UNK.TXT', d:'Que es UNK', l:[
+      '# QUE ES UNK',
+      'UNK = Universe of New Knowledgment.',
+      'Es una terminal para pensar distinto.',
+      'No es un curso. No es una doctrina. No es una app.',
+      'Es un sistema anti-sistema: reglas que recuerdan',
+      'que las reglas son elecciones.',
+      '',
+      '- Base: "El limite de lo posible. Contingencia sistemica,',
+      '- relatividad de problemas y la vida en el borde"',
+      '- Daniel Alejandro Gascon Castano, Medellin, 2026.',
+      '',
+      'Cinco ideas, y ya:',
+      ' 1. Todo sistema es una eleccion, no una verdad necesaria.',
+      ' 2. Todo problema es relativo al sistema que lo formula.',
+      ' 3. Cambiar de sistema no resuelve: disuelve.',
+      ' 4. Puedes reescribir tus reglas. Nadie te da permiso.',
+      ' 5. La agencia vuelve cuando dejas de creer que tu',
+      '    sistema es el unico posible.',
+      '',
+      'Escribe HELP para los comandos.',
+      'Escribe LEER para bajar al documento completo.'
+    ]},
+    sistema:{ f:'SISTEMA.TXT', d:'Todo sistema es una eleccion', l:[
+      '# TODO SISTEMA ES UNA ELECCION',
+      'Un sistema es un conjunto estructurado de reglas,',
+      'elementos, criterios y practicas que se sostienen entre si.',
+      '',
+      'Tu trabajo es un sistema. Tu rutina es un sistema.',
+      'La aritmetica estandar es un sistema.',
+      'La idea de "persona normal" es un sistema.',
+      '',
+      'Ninguno de ellos es necesario. Todos podrian ser de otra',
+      'manera sin dejar de funcionar. Eso se llama CONTINGENCIA.',
+      '',
+      '- Contingente NO significa arbitrario.',
+      '- Significa: podria ser distinto y se sostiene por razones.',
+      '',
+      'Platon busco las Formas. Descartes, el fundamento indudable.',
+      'Kant, las condiciones de posibilidad. El Circulo de Viena,',
+      'la ciencia unificada. Todos fracasaron por lo mismo:',
+      'ningun sistema puede fundarse a si mismo.',
+      '',
+      'Godel lo volvio teorema. Cohen lo volvio eleccion.',
+      'Turing lo volvio modelo. Nietzsche ya lo habia dicho',
+      'sobre la moral: no hay hechos, solo interpretaciones.',
+      '',
+      '> Si el suelo que pisas es una decision, entonces',
+      '> no estas atrapado. Solo estabas de pie sobre una eleccion.'
+    ]},
+    reescribir:{ f:'REESCRIB.TXT', d:'Reescribir las reglas', l:[
+      '# REESCRIBIR LAS REGLAS',
+      'Reescribir es cambiar una regla desde adentro sin romper',
+      'lo que ya funcionaba. No es destruir: es modificar.',
+      '',
+      ' sistema MI_RUTINA {',
+      '   regla 1: si es lunes, entonces trabajo de 9 a 18',
+      '   regla 2: si alguien me corrige, entonces me equivoco',
+      '   regla 3: si no encajo, entonces el problema es mio',
+      ' }',
+      '',
+      'Cual de esas tres reglas es necesaria? Ninguna.',
+      'Las tres son contingencias heredadas.',
+      '',
+      'Reescribe la tercera:',
+      '',
+      ' regla 3: si no encajo, entonces el sistema no me contiene',
+      '',
+      'Mismo mundo. Otra vida.',
+      '',
+      '- Protocolo: 1) identifica el sistema 2) escribe sus reglas',
+      '- 3) elige una regla 4) verifica que no rompas los teoremas',
+      '- previos 5) aplica 6) evalua las consecuencias.'
+    ]},
+    disolver:{ f:'DISOLVER.TXT', d:'Resolver vs disolver', l:[
+      '# RESOLVER VS DISOLVER',
+      'RESOLVER: encontrar la solucion dentro del sistema.',
+      'DISOLVER: mostrar que el problema era funcion del sistema,',
+      'y que en otro sistema no existe.',
+      '',
+      'Disolver no es hacer trampa. No es cambiar de tema.',
+      'Es reconocer que el problema vivia en el marco.',
+      '',
+      'La hipotesis del continuo no se resolvio: se disolvio.',
+      'Cohen mostro que es verdadera en unos modelos y falsa en',
+      'otros. Dejo de ser una pregunta con respuesta unica y se',
+      'volvio una eleccion de sistema.',
+      '',
+      'Ejemplo cotidiano:',
+      '  problema: "no soy constante, algo anda mal conmigo"',
+      '  sistema: productividad = valor personal',
+      '  disolucion: si el valor no depende de la constancia,',
+      '  la inconstancia deja de ser un defecto.',
+      '',
+      '- Disolver no elimina: reubica.',
+      '- El problema no desaparece, cambia de estatus.',
+      '- Deja de ser un muro y se vuelve una eleccion.'
+    ]},
+    piso:{ f:'PISO.TXT', d:'Lo que no se puede reescribir', l:[
+      '# EL PISO: LO QUE NO SE PUEDE REESCRIBIR',
+      'El piso no es un sistema: es la condicion para que haya',
+      'sistemas. Por eso no se reescribe.',
+      '',
+      'PISO LOGICO     no contradiccion, coherencia interna',
+      'PISO MATERIAL   no puedes volar, no puedes no morir',
+      'PISO ETICO      no puedes destruir a otros como regla',
+      '',
+      'Tres razones para el piso etico, convergentes:',
+      ' - empirica: los depredadores generan contra-sistemas',
+      ' - logica: si la regla es destruir, tu tambien eres',
+      '   destruible por la misma regla',
+      ' - etica: reconocer al otro como sistema es la condicion',
+      '   de la convivencia',
+      '',
+      'La libertad no es ausencia de piso:',
+      'es la capacidad de moverse sobre el.',
+      'El piso no te limita: te sostiene.'
+    ]},
+    libertad:{ f:'LIBERTAD.TXT', d:'Libertad epistemica', l:[
+      '# LIBERTAD EPISTEMICA',
+      'Capacidad de cambiar de sistema. No es omnipotencia.',
+      'No es hacer lo que quieras. Es poder moverte entre marcos.',
+      '',
+      'No estas obligado a jugar el juego de otro.',
+      'No estas obligado a aceptar el marco de otro.',
+      'No estas obligado a resolver los problemas de otro.',
+      'Puedes cambiar el problema cambiando el sistema.',
+      '',
+      '- ADVERTENCIA: esta libertad no se reparte igual.',
+      '- Cambiar de sistema exige educacion, tiempo, recursos',
+      '- para migrar y aguante para el costo social.',
+      '- Decir "puedes cambiar de sistema" sin ver esto es un',
+      '- privilegio disfrazado de filosofia.',
+      '',
+      'No hay personalidad canonica.',
+      'James Bond no es mejor que el monje.',
+      'El cientifico frio no es mejor que el poeta.',
+      '',
+      'Toma el control de tu vida.'
+    ]},
+    otro:{ f:'OTRO.TXT', d:'El otro es un sistema', l:[
+      '# EL OTRO ES UN SISTEMA',
+      'El otro no es un elemento de mi sistema.',
+      'Es otro sistema: con sus reglas, sus bordes, su libertad.',
+      '',
+      'Reducirlo a pieza de mi sistema es violencia epistemica.',
+      'Levinas: el otro resiste toda totalizacion.',
+      'Siempre queda un resto que no puedo capturar.',
+      '',
+      'Consecuencia: mi reescritura afecta a otros sistemas.',
+      'Consecuencia politica: la politica no es un obstaculo',
+      'para la libertad, es la condicion de la pluralidad.'
+    ]},
+    metodo:{ f:'METODO.TXT', d:'Los 7 pasos', l:[
+      '# EL METODO: 7 PASOS',
+      'No es un algoritmo. Es un procedimiento con juicio.',
+      '',
+      'PASO 1 - Reconoce que algo es un sistema',
+      '         es un hecho bruto o es un sistema?',
+      'PASO 2 - Escribelo (reglas visibles, aunque imperfectas)',
+      'PASO 3 - Necesario o contingente?',
+      '         si lo imaginas distinto sin contradiccion:',
+      '         es contingente',
+      'PASO 4 - Que sistema alternativo existe?',
+      '         no tienes que elegirlo, solo ver que existe',
+      'PASO 5 - Se resuelve o se disuelve?',
+      '         si desaparece al cambiar de sistema, es relativo',
+      'PASO 6 - Disena un acto concreto, con fecha, verificable',
+      'PASO 7 - Reescribe el propio metodo',
+      '',
+      'Hazlo en un cuaderno, tomando algo. Nadie te corrige.'
+    ]},
+    ejemplos:{ f:'EJEMPLOS.TXT', d:'Casos practicos', l:[
+      '# EJEMPLOS PRACTICOS',
+      '',
+      'VIDA COTIDIANA  "no me alcanza el tiempo"',
+      '  sistema: tiempo = recurso que hay que llenar',
+      '  disolucion: tiempo = forma de habitar',
+      '',
+      'EDUCACION  aprender = memorizar y aprobar',
+      '  regla oculta: el que no aprueba, no sabe',
+      '  reescritura: aprender = construir sistemas',
+      '',
+      'TRABAJO  el organigrama define tu valor',
+      '  contingencia: es una decision administrativa',
+      '  acto: propone por escrito una regla distinta',
+      '',
+      'TERAPIA  hay una personalidad sana y yo no llego',
+      '  Foucault: la distincion es historica, no natural',
+      '  Canguilhem: lo normal no es un hecho, es una norma',
+      '  disolucion: el sufrimiento es real; la clasificacion',
+      '  es una eleccion',
+      '',
+      'CREENCIAS  hay una forma correcta de vivir',
+      '  contingencia: no hay canon, hay pisos'
+    ]},
+    faq:{ f:'FAQ.TXT', d:'Objeciones frecuentes', l:[
+      '# OBJECIONES FRECUENTES',
+      '',
+      'Q: Si todo es contingente, todo da igual?',
+      'A: No. Dentro de un sistema hay verdad y falsedad.',
+      '   Lo que no hay es un sistema privilegiado.',
+      '   Contingente no es arbitrario.',
+      '',
+      'Q: Puedo cambiar la realidad?',
+      'A: No. La libertad es epistemica, no ontologica.',
+      '',
+      'Q: Crear sistemas no tiene costo?',
+      'A: Si. No todos sirven para todo.',
+      '',
+      'Q: Y si cada uno tiene su sistema?',
+      'A: Ahi empieza la politica, no la epistemologia.',
+      '',
+      'Q: Si el principio se aplica a todo, no distingue nada?',
+      'A: Distingue entre sistemas que se dicen necesarios',
+      '   y sistemas que se reconocen contingentes.',
+      '',
+      'Q: Si el principio es contingente, por que aceptarlo?',
+      'A: Coherencia performativa. Un sistema que se sabe',
+      '   contingente y lo dice es coherente. Uno que se dice',
+      '   necesario y no puede fundarse, no.',
+      '',
+      'Q: Quien te dio permiso?',
+      'A: Nadie. Ese es el punto.'
+    ]},
+    glosario:{ f:'GLOSARIO.TXT', d:'Glosario', l:[
+      '# GLOSARIO',
+      '= Sistema          reglas, elementos, criterios, practicas',
+      '= Contingencia     poder ser de otra manera',
+      '= Reescribibilidad modificar las reglas desde dentro',
+      '= No totalidad     no agotar lo concebible',
+      '= Disolver         mostrar que el problema es relativo',
+      '= Piso             condicion minima. NO es un sistema',
+      '= Libertad epist.  capacidad de cambiar de sistema',
+      '= Proceso          secuencia de estados con reescritura',
+      '= SCS              Sistema de Contingencia Sistemica',
+      '= SGR / SGR-L      version matematica y computacional',
+      '= Meta-teorico     que habla de sistemas, no de objetos',
+      '= Coherencia perf. un sistema que se sabe contingente',
+      '= Outputs Maximus  trabajos previos del autor'
+    ]},
+    referencias:{ f:'REFS.TXT', d:'Referencias', l:[
+      '# REFERENCIAS',
+      'Canguilhem (1966) Le normal et le pathologique',
+      'Cohen (1963) The independence of the continuum hypothesis',
+      'Feyerabend (1975) Against Method',
+      'Foucault (1961) Histoire de la folie a l age classique',
+      'Godel (1931) Uber formal unentscheidbare Satze',
+      'Kuhn (1962) The Structure of Scientific Revolutions',
+      'Lakatos (1976) Proofs and Refutations',
+      'Levinas (1961) Totalite et infini',
+      'Nietzsche (1887) Zur Genealogie der Moral',
+      'Popper (1959) The Logic of Scientific Discovery',
+      'Szasz (1961) The Myth of Mental Illness',
+      'Turing (1936) On computable numbers',
+      'von Glasersfeld (1984) Radical constructivism',
+      'Wittgenstein (1953) Philosophische Untersuchungen'
+    ]},
+    tareas:{ f:'TAREAS.TXT', d:'Tareas para el mundo', l:[
+      '# TAREAS PARA EL MUNDO',
+      'El libro es el mapa. El territorio esta afuera.',
+      'El territorio no se escribe: se construye.',
+      '',
+      ' 1. Formar la comunidad (20 personas)',
+      ' 2. Formar discipulos (3 personas que lo extiendan)',
+      ' 3. Fundar instituciones',
+      ' 4. Generar impacto fuera del circulo',
+      ' 5. Aceptar la contingencia del propio sistema',
+      '',
+      'Todas: estado pendiente.',
+      'Solo pueden completarse viviendo.'
+    ]},
+    autor:{ f:'AUTOR.TXT', d:'Sobre el autor', l:[
+      '# AUTOR',
+      'Daniel Alejandro Gascon Castano',
+      'Medellin, Colombia',
+      '',
+      'gasconalejandro975@gmail.com',
+      'avicola56@gmail.com',
+      '',
+      'Paper: "El limite de lo posible. Contingencia sistemica,',
+      'relatividad de problemas y la vida en el borde".',
+      'Preprint en Zenodo. Licencia CC-BY-4.0.',
+      '25 de octubre de 2026.'
+    ]},
+    licencia:{ f:'LICENCIA.TXT', d:'Licencia', l:[
+      '# LICENCIA',
+      'Contenido bajo CC-BY-4.0',
+      'https://creativecommons.org/licenses/by/4.0/',
+      '',
+      'Puedes copiar, adaptar y reescribir, citando la fuente.',
+      'Sin pedir permiso. Ese es el punto.'
+    ]}
+  };
+
+  var ALIAS = {
+    'ayuda':'help','?':'help','dir':'ls','lista':'ls',
+    'abrir':'cat','ver':'cat','open':'cat','mostrar':'cat',
+    'doc':'leer','documento':'leer','read':'leer',
+    'limpiar':'clear','cls':'clear','limpia':'clear',
+    'ambar':'color','tema':'color','paleta':'color',
+    'fecha':'date','lluvia':'matrix','rain':'matrix',
+    'salir':'exit','quit':'exit',
+    'principio':'sistema','contingencia':'sistema',
+    'problema':'disolver','problemas':'disolver',
+    'pasos':'metodo','7pasos':'metodo','protocolo':'metodo',
+    'objeciones':'faq','preguntas':'faq',
+    'refs':'referencias','bib':'referencias',
+    'about':'unk','info':'unk','acerca':'unk','inicio':'unk'
+  };
+
+  var HIST = [], hIdx = -1, cancel = false, chain = Promise.resolve();
+  var booted = false, inputLocked = false;
+
+  function esc(s){
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function bottom(){ screenEl.scrollTop = screenEl.scrollHeight; }
+  function append(html){ screenEl.insertAdjacentHTML('beforeend', html); bottom(); }
+
+  function renderLine(raw){
+    if (raw === '') return '\n';
+    if (raw.slice(0,2) === '# ') return '<span class="h">'  + esc(raw.slice(2)) + '</span>\n';
+    if (raw.slice(0,2) === '= ') return '<span class="h2">' + esc(raw.slice(2)) + '</span>\n';
+    if (raw.slice(0,2) === '- ') return '<span class="d">'  + esc(raw.slice(2)) + '</span>\n';
+    return esc(raw) + '\n';
+  }
+
+  /* Impresion linea a linea. Si se cancela, vuelca el resto de golpe. */
+  function printLines(lines, delay){
+    return new Promise(function(resolve){
+      var i = 0;
+      (function step(){
+        if (cancel){
+          if (i < lines.length) append(lines.slice(i).map(renderLine).join(''));
+          resolve(); return;
+        }
+        if (i >= lines.length){ resolve(); return; }
+        append(renderLine(lines[i++]));
+        if (!delay || i >= lines.length) step();
+        else setTimeout(step, delay);
+      })();
+    });
+  }
+
+  function printFile(key){
+    var e = FILES[key];
+    append('<span class="d">--- ' + e.f + ' ---</span>\n');
+    return printLines(e.l, 14).then(function(){ append('\n'); });
+  }
+
+  function link(cmd, label){
+    return '<span class="lnk" data-cmd="' + cmd + '">' + (label || cmd) + '</span>';
+  }
+
+  var CMD = {};
+
+  CMD.help = function(){
+    var rows = [
+      ['ls','lista los archivos del sistema'],
+      ['cat <archivo>','muestra un archivo'],
+      ['leer','baja al documento completo'],
+      ['terminal','vuelve arriba a la terminal'],
+      ['',''],
+      ['unk','que es UNK'],
+      ['sistema','todo sistema es una eleccion'],
+      ['reescribir','reescribir las reglas'],
+      ['disolver','resolver vs disolver'],
+      ['piso','lo que no se puede reescribir'],
+      ['libertad','libertad epistemica'],
+      ['otro','el otro es un sistema'],
+      ['metodo','los 7 pasos'],
+      ['ejemplos','casos practicos'],
+      ['faq','objeciones frecuentes'],
+      ['glosario','glosario'],
+      ['referencias','referencias del paper'],
+      ['tareas','tareas para el mundo'],
+      ['autor','sobre el autor'],
+      ['licencia','licencia']
+    ];
+    var out = '<span class="h">COMANDOS</span>\n';
+    rows.forEach(function(r){
+      if (!r[0]){ out += '\n'; return; }
+      out += '  ' + link(r[0] === 'cat <archivo>' ? 'ls' : r[0], r[0]) +
+             ' '.repeat(Math.max(1, 14 - r[0].length)) +
+             '<span class="d">' + r[1] + '</span>\n';
+    });
+    out += '\n<span class="d">sistema: ' + link('clear') + '  ' + link('boot') + '  ' +
+           link('color') + '  ' + link('date') + '  ' + link('whoami') + '  ' +
+           link('neofetch') + '  ' + link('matrix') + '  ' + link('tree') + '  ' +
+           link('history') + '  ' + link('sudo') + '  ' + link('exit') + '</span>\n';
+    out += '\nTIP: TAB completa. Flechas arriba/abajo = historial.\n';
+    append(out);
+    return Promise.resolve();
+  };
+
+  CMD.ls = function(){
+    var out = '<span class="h">/sistemas/posibles/tu-sistema</span>\n';
+    Object.keys(FILES).forEach(function(k){
+      var e = FILES[k];
+      out += '  ' + link('cat ' + k, e.f) +
+             ' '.repeat(Math.max(1, 15 - e.f.length)) +
+             '<span class="d">' + e.d + '</span>\n';
+    });
+    out += '\n<span class="d">usa "cat &lt;archivo&gt;" para abrir uno</span>\n';
+    append(out);
+    return Promise.resolve();
+  };
+
+  CMD.cat = function(arg){
+    var k = (arg || '').trim().toLowerCase().replace(/\.txt$/, '');
+    if (!k){ append('uso: cat <archivo>\n'); return CMD.ls(); }
+    if (FILES[k]) return printFile(k);
+    append('cat: ' + esc(k) + ': archivo no encontrado\n');
+    append('prueba con ' + link('ls', 'LS') + '\n');
+    return Promise.resolve();
+  };
+
+  CMD.leer = function(){
+    append('abriendo documento...\n');
+    var d = document.getElementById('documento');
+    if (d) d.scrollIntoView({ behavior:'smooth', block:'start' });
+    return Promise.resolve();
+  };
+
+  CMD.terminal = function(){
+    window.scrollTo({ top:0, behavior:'smooth' });
+    append('volviendo a la terminal.\n');
+    return Promise.resolve();
+  };
+
+  CMD.clear = function(){ screenEl.innerHTML = ''; return Promise.resolve(); };
+
+  CMD.color = function(){
+    document.body.classList.toggle('ambar');
+    append('paleta: ' + (document.body.classList.contains('ambar') ? 'ambar P3' : 'fosforo verde') + '\n');
+    return Promise.resolve();
+  };
+
+  CMD.whoami = function(){
+    append('un sistema contingente, reescribible y no total.\ncon un piso. y con permiso propio.\n');
+    return Promise.resolve();
+  };
+
+  CMD.pwd = function(){ append('/sistemas/posibles/tu-sistema\n'); return Promise.resolve(); };
+
+  CMD.echo = function(a){ append(esc(a || '') + '\n'); return Promise.resolve(); };
+
+  CMD.date = function(){
+    append(new Date().toISOString().slice(0,19).replace('T',' ') + ' UTC\n');
+    append('el tiempo es piso. el calendario es sistema.\n');
+    return Promise.resolve();
+  };
+
+  CMD.history = function(){
+    if (!HIST.length){ append('(vacio)\n'); return Promise.resolve(); }
+    append(HIST.map(function(h,i){ return '  ' + (i+1) + '  ' + esc(h); }).join('\n') + '\n');
+    return Promise.resolve();
+  };
+
+  CMD.tree = function(){
+    append(
+      '<span class="d">/sistemas/posibles</span>\n' +
+      '|-- canon/            (vacio)\n' +
+      '|-- piso/\n' +
+      '|   |-- logico\n' +
+      '|   |-- material\n' +
+      '|   `-- etico\n' +
+      '|-- tu-sistema/\n' +
+      '|   |-- reglas.txt        &lt;- reescribible\n' +
+      '|   |-- problemas.txt     &lt;- relativos\n' +
+      '|   `-- bordes.txt        &lt;- indemostrables\n' +
+      '`-- otro-sistema/\n' +
+      '    `-- (no es objeto)\n'
+    );
+    return Promise.resolve();
+  };
+
+  CMD.neofetch = function(){
+    append(
+      '   _______________________\n' +
+      '  |  U N K   O S   1 . 0  |\n' +
+      '  |_______________________|\n' +
+      '\n' +
+      '  usuario@unk\n' +
+      '  -----------\n' +
+      '  SO: UNK OS 1.0 (base: SCS)\n' +
+      '  Kernel: contingencia-sistemica\n' +
+      '  Shell: libertad-epistemica\n' +
+      '  Resolucion: relativa al sistema\n' +
+      '  Uptime: desde que dejaste de pedir permiso\n' +
+      '  Canon: no encontrado\n' +
+      '  Piso: logico / material / etico\n'
+    );
+    return Promise.resolve();
+  };
+
+  CMD.sudo = function(){
+    append('[sudo] password for tu: ******\npermiso concedido. aunque no hacias falta.\n');
+    return Promise.resolve();
+  };
+
+  CMD.exit = function(){ append('no hay salida. solo umbral.\n'); return Promise.resolve(); };
+
+  CMD.matrix = function(){
+    var cols = Math.max(30, Math.floor(screenEl.clientWidth / 8));
+    var rows = 20, drops = [], i;
+    for (i = 0; i < cols; i++) drops.push(Math.floor(Math.random() * rows));
+    var CH = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    var DR = '@#$%&*';
+    return new Promise(function(res){
+      var f = 0;
+      var t = setInterval(function(){
+        if (cancel){ clearInterval(t); append('\n'); res(); return; }
+        var buf = [], y, x, line;
+        for (y = 0; y < rows; y++){
+          line = '';
+          for (x = 0; x < cols; x++){
+            line += (drops[x] === y)
+              ? DR.charAt(Math.floor(Math.random() * DR.length))
+              : (Math.random() < 0.05 ? CH.charAt(Math.floor(Math.random() * CH.length)) : ' ');
+          }
+          buf.push(line);
+        }
+        for (i = 0; i < cols; i++){
+          drops[i]++;
+          if (drops[i] > rows + Math.floor(Math.random() * 8)) drops[i] = 0;
+        }
+        screenEl.innerHTML = buf.join('\n');
+        f++;
+        if (f >= 45){ clearInterval(t); append('\n'); res(); }
+      }, 90);
+    });
+  };
+
+  function echoLine(raw){
+    append('<span class="d">' + esc(PS1) + '</span> ' + esc(raw) + '\n');
+  }
+
+  function execute(raw){
+    var parts = raw.trim().split(/\s+/);
+    var cmd = (parts[0] || '').toLowerCase();
+    var arg = parts.slice(1).join(' ');
+    echoLine(raw);
+    if (!cmd) return Promise.resolve();
+    if (ALIAS[cmd]) cmd = ALIAS[cmd];
+    if (CMD[cmd]) return CMD[cmd](arg);
+    if (FILES[cmd]) return printFile(cmd);
+    append('comando no reconocido: ' + esc(cmd) + '\n' +
+           'prueba con ' + link('help','HELP') + ' o ' + link('ls','LS') + '.\n');
+    return Promise.resolve();
+  }
+
+  function submit(raw){
+    cancel = true;
+    chain = chain.then(function(){
+      cancel = false;
+      return execute(raw);
+    }).catch(function(e){
+      cancel = false;
+      append('error: ' + esc((e && e.message) || e) + '\n');
+    });
+  }
+
+  function syncWidth(){
+    input.style.width = Math.max(2, input.value.length + 1) + 'ch';
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (inputLocked) return;
+    var v = input.value;
+    if (!v.trim()){ echoLine(''); }
+    HIST.push(v);
+    hIdx = HIST.length;
+    input.value = '';
+    syncWidth();
+    submit(v);
+  });
+
+  input.addEventListener('input', syncWidth);
+
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowUp'){
+      e.preventDefault();
+      if (hIdx > 0){ hIdx--; input.value = HIST[hIdx] || ''; syncWidth(); }
+    } else if (e.key === 'ArrowDown'){
+      e.preventDefault();
+      if (hIdx < HIST.length - 1){ hIdx++; input.value = HIST[hIdx] || ''; }
+      else { hIdx = HIST.length; input.value = ''; }
+      syncWidth();
+    } else if (e.key === 'Tab'){
+      e.preventDefault();
+      var v = input.value.toLowerCase();
+      var pool = Object.keys(CMD).concat(Object.keys(FILES));
+      var m = pool.filter(function(c){ return c.indexOf(v) === 0; });
+      if (m.length === 1){ input.value = m[0] + ' '; syncWidth(); }
+      else if (m.length > 1){ append('<span class="d">' + m.join('  ') + '</span>\n'); }
+    }
+  });
+
+  screenEl.addEventListener('click', function(e){
+    var t = e.target;
+    if (t && t.dataset && t.dataset.cmd){
+      HIST.push(t.dataset.cmd);
+      hIdx = HIST.length;
+      submit(t.dataset.cmd);
+    }
+  });
+
+  function boot(){
+    screenEl.innerHTML = '';
+    inputLocked = true;
+    input.disabled = true;
+
+    var seq = [
+      ['UNK BIOS v1.0  (c) 2026 Daniel Alejandro Gascon Castano', 70],
+      ['', 30],
+      ['Iniciando comprobacion de hardware .......... [OK]', 55],
+      ['CPU: LOGICA FORMAL .......................... [OK]', 55],
+      ['MEMORIA CONTINGENTE 640K .................... [OK]', 55],
+      ['BUSCANDO CANON UNIVERSAL .................... [NO ENCONTRADO]', 130],
+      ['BUSCANDO FUNDAMENTO INDUDABLE ............... [NO ENCONTRADO]', 130],
+      ['DISCO: /sistemas/posibles ................... [OK]', 55],
+      ['CARGANDO SCS.SYS ............................ [OK]', 55],
+      ['CARGANDO SGR.SYS ............................ [OK]', 45],
+      ['CARGANDO SGR-L.SYS .......................... [OK]', 45],
+      ['MONTANDO PISO: logico / material / etico .... [OK]', 80],
+      ['INICIANDO TERMINAL ..........................', 130],
+      ['', 40]
+    ];
+
+    var i = 0;
+    return new Promise(function(res){
+      (function step(){
+        if (i >= seq.length){ res(); return; }
+        append(esc(seq[i][0]) + '\n');
+        var d = seq[i][1];
+        i++;
+        setTimeout(step, d);
+      })();
+    }).then(function(){
+      append('<span class="h">' + esc(BANNER.replace(/^\n|\n$/g, '')) + '</span>\n\n');
+      return printLines([
+        'UNK - Universe of New Knowledgment',
+        'Ningun sistema es total. Todo sistema es una eleccion.',
+        'Y elegir es un acto de libertad.',
+        '',
+        'Escribe HELP para ver los comandos.',
+        'Escribe LEER para bajar al documento completo.'
+      ], 60);
+    }).then(function(){
+      inputLocked = false;
+      input.disabled = false;
+      try { input.focus({ preventScroll:true }); } catch(_) {}
+    });
+  }
+
+  var btnDoc   = document.getElementById('btn-doc');
+  var btnTheme = document.getElementById('btn-theme');
+  var btnBoot  = document.getElementById('btn-boot');
+  var btnTop   = document.getElementById('btn-top');
+
+  if (btnDoc)   btnDoc.addEventListener('click', function(){ submit('leer'); });
+  if (btnTheme) btnTheme.addEventListener('click', function(){ submit('color'); });
+  if (btnBoot)  btnBoot.addEventListener('click', function(){ if (booted) boot(); });
+
+  if (btnTop){
+    btnTop.addEventListener('click', function(){ window.scrollTo({ top:0, behavior:'smooth' }); });
+    window.addEventListener('scroll', function(){
+      btnTop.classList.toggle('on', window.scrollY > window.innerHeight * 0.6);
+    }, { passive:true });
+  }
+
+  booted = true;
+  boot();
+})();
+</script>
+</body>
+</html>
