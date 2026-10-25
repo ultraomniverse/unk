@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UNK — United Network of Knowledgment</title>
+<title>UNK — El Principio de Reescribibilidad</title>
 <style>
 :root{--bg:#04050a;--fg:#dff7f0;--fgm:#7fa89f;--card:#0a0d14;--bd:#1b2130;--cy:#00ffc8;--mg:#ff2fd0;--am:#ffcc00}
 *{box-sizing:border-box}
@@ -37,12 +37,16 @@ pre.ascii{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,monospac
 .card h3{font-size:14px;margin-bottom:6px}
 .card p{font-size:13px;margin:0;color:var(--fgm);line-height:1.55}
 details{border:1px solid var(--bd);border-radius:10px;margin-bottom:8px;background:var(--card);overflow:hidden}
-details[open]{border-color:var(--cy)}
+details[open]{border-color:var(--mg)}
 summary{cursor:pointer;padding:12px 14px;font-size:14px;font-weight:500;list-style:none}
 summary::-webkit-details-marker{display:none}
-summary:before{content:"+ ";color:var(--mg);font-family:ui-monospace,monospace}
-details[open] summary:before{content:"\2212 "}
+summary:before{content:"\00D7 ";color:var(--mg);font-family:ui-monospace,monospace;font-weight:700}
+details[open] summary:before{content:"\2713 ";color:var(--cy)}
+details[open] summary{color:var(--fgm);text-decoration:line-through}
 details .body{padding:0 14px 14px;font-size:13.5px;color:var(--fgm);line-height:1.6}
+details .body b{color:var(--fg)}
+.ax{border-left:3px solid var(--cy);padding:10px 0 10px 14px;margin:16px 0;font-family:ui-monospace,monospace;font-size:13px;color:#7bffd0}
+.ax b{color:var(--am)}
 .mod{margin-bottom:22px}
 .mod .lbl{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--am);margin-bottom:6px}
 textarea,select{width:100%;font-family:ui-monospace,monospace;font-size:12.5px;padding:10px;border-radius:8px;border:1px solid var(--bd);background:#0a0d14;color:var(--fg);resize:vertical}
@@ -54,13 +58,13 @@ label{display:block;font-family:ui-monospace,monospace;font-size:10px;letter-spa
 .out{margin-top:14px;display:none}
 .out.on{display:block}
 pre.code{font-family:ui-monospace,monospace;font-size:11.5px;line-height:1.5;background:#05060a;border:1px solid var(--bd);border-radius:8px;padding:12px;color:#7bffd0;white-space:pre-wrap;overflow-wrap:break-word;margin:0}
-.floor{border-left:3px solid var(--mg)}
 .quote{font-size:16px;font-style:italic;border-left:2px solid var(--cy);padding-left:14px;margin:18px 0}
 .big{font-size:34px;line-height:1.1;font-weight:500}
 .creator{border:1px solid var(--cy);border-radius:12px;padding:20px;background:#05060a}
 .creator .nm{font-size:30px;color:var(--cy);letter-spacing:.02em}
 .creator p{color:#9ff3dc;font-size:14px}
 .creator .sig{font-family:ui-monospace,monospace;font-size:11px;color:var(--mg);letter-spacing:.2em;text-transform:uppercase}
+.no{border-left:3px solid var(--mg)}
 hr.sep{border:0;border-top:1px dashed var(--bd);margin:44px 0}
 footer{font-family:ui-monospace,monospace;font-size:11px;color:var(--fgm);text-align:center;padding:34px 0 26px;letter-spacing:.1em}
 .chaosbtn{position:relative;z-index:5;font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;background:transparent;color:var(--mg);border:1px solid var(--mg);padding:6px 12px;border-radius:99px;cursor:pointer;margin-bottom:14px}
@@ -73,7 +77,7 @@ body.chaos .g{animation-duration:.6s}
 <body>
 <div class="wrap">
 
-<h2 class="sr">UNK — United Network of Knowledgment, sitio sobre el Sistema de Contingencia Sistémica</h2>
+<h2 class="sr">UNK — United Network of Knowledgment. Demolición de seis idioteces y el Principio de Reescribibilidad.</h2>
 <button class="chaosbtn" id="chaos">activar modo alucinógeno</button>
 
 <div class="term rev" style="text-align:center;padding:26px 14px">
@@ -84,119 +88,196 @@ body.chaos .g{animation-duration:.6s}
  ╚██████╔╝██║ ╚████║██║  ██╗
   ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝</pre>
 <div style="font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.42em;color:#ff2fd0;margin-top:14px">UNITED NETWORK OF KNOWLEDGMENT</div>
-<div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.2em;color:#7bffd0;margin-top:8px">EL LÍMITE DE LO POSIBLE &nbsp;·&nbsp; SISTEMA DE CONTINGENCIA SISTÉMICA</div>
+<div style="font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.2em;color:#7bffd0;margin-top:8px">EL PRINCIPIO DE REESCRIBIBILIDAD &nbsp;·&nbsp; NADA DE ESTO ES ASÍ</div>
 </div>
 
 <div class="nav">
-<a href="#man">manifiesto</a><a href="#pil">pilares</a><a href="#mod">módulos</a><a href="#piso">el piso</a><a href="#dis">el disolutor</a><a href="#met">el método</a><a href="#obj">objeciones</a><a href="#cre">el creador</a>
+<a href="#idi">las seis idioteces</a><a href="#piso">el piso</a><a href="#onto">ontología</a><a href="#juego">el juego</a><a href="#mut">mutación</a><a href="#mod">módulos</a><a href="#dis">el disolutor</a><a href="#met">el método</a><a href="#no">límites</a><a href="#cre">el creador</a>
 </div>
 
-<div class="sect" id="man">
+<div class="sect" id="idi">
 <div class="kick">00 / apertura</div>
-<h1 class="h2 g">Estás caminando sobre una decisión y crees que es el suelo.</h1>
-<p class="p fire">Alguien, en algún momento, eligió que las cosas fueran así. Pudo haber sido de otra manera. Y durante años caminaste sobre esa elección creyendo que era la tierra firme, el hecho, la ley natural, la única forma de vivir que existe.</p>
-<p class="p fire">Este sitio no viene a darte la razón. Viene a quitarte el suelo para mostrarte que el suelo era un acuerdo. Y que un acuerdo <b>se puede reescribir desde adentro</b>.</p>
-<div class="quote">Ningún sistema es total.<br>Todo sistema es una elección.<br>Y elegir es un acto de libertad.</div>
-<p class="p fire">Si un sistema no te deja resolver un problema, no es que el problema sea imposible. Es que el problema es <b>relativo a ese sistema</b>. No lo resuelvas. <b>Disuélvelo.</b> Cambiá de sistema y el problema deja de existir: se convierte en una decisión.</p>
-<p class="p fire">Y esto no te deja en el vacío. Te deja en el <b>borde</b>. El único lugar desde donde se ve todo lo que hay. No es una pared. Es un horizonte.<span class="cur"></span></p>
-</div>
+<h1 class="h2 g">Seis idioteces que te hicieron creer.</h1>
+<p class="p fire">No son seis ideas sueltas. Son un <b>paquete</b>. Vienen juntas, se sostienen entre sí, y todas empujan en la misma dirección: que te sientas chico, que no toques nada, que dejes la mesa como está.</p>
+<p class="p fire">Abrí cada una. Del otro lado está la verdad, y la verdad es un solo movimiento: <b>reescribir</b>.</p>
 
-<div class="sect" id="pil">
-<div class="kick">01 / el principio</div>
-<h2 class="h2">Cinco pilares. Ninguno obligatorio.</h2>
-<p class="p muted" style="font-size:14px">El Sistema de Contingencia Sistémica (SCS) es un principio meta-teórico de segundo orden: no habla de cosas, habla de los marcos con los que mirás las cosas.</p>
+<details><summary>«El universo es limitado.»</summary><div class="body"><b>Falso.</b> No es una caja cerrada con las paredes ya contadas. Dicen "limitado" y vos entendés "techo" — y con el techo viene la resignación. Pero el universo no te puso un techo: te puso un piso. Que es otra cosa.</div></details>
+<details><summary>«El conocimiento es ilimitado.»</summary><div class="body"><b>Mentira cómoda.</b> Si fuera un mar infinito, tu única tarea sería navegarlo y descubrir lo que ya está. Pero no: el conocimiento no es ilimitado, es <b>abierto</b>. No es océano dado, es territorio que se produce. Nadie lo dejó ahí para que lo encuentres.</div></details>
+<details><summary>«La ciencia avanza de a poco, campo por campo, y tarda años.»</summary><div class="body"><b>Falso, y es la idiotez más cara de todas.</b> La ciencia no avanza: se reescribe. Y al reescribir no descubre algo que ya estaba — hace que algo <b>sea</b>. Eso tiene un nombre viejo: ontología. Tarda años no porque el campo sea lento, sino porque nadie se anima a reescribirlo.</div></details>
+<details><summary>«Los humanos somos chicos y limitados, por eso nunca seremos dioses del mundo.»</summary><div class="body"><b>No sos chico.</b> Estás sentado en una silla que te queda chica. La medida no es tuya: te la pusieron. Y una vez que escribís los sistemas del mundo —porque el mundo, en la parte escribible, es lo que escribimos— sos dios <i>de ese</i> mundo. No de la física. Del mundo.</div></details>
+<details><summary>«Las ciencias vienen de la naturaleza y son incambiables.»</summary><div class="body"><b>Las ciencias no son de la naturaleza. Son nuestras.</b> Las escribimos nosotros, con operadores y axiomas, en un libro, con fecha. Si las hubiéramos sacado del suelo como papas, no se podrían tocar. Como las escribimos, las reescribimos.</div></details>
+<details><summary>«Nada es reescribible.»</summary><div class="body"><b>Todo es reescribible.</b> Hasta esta lista. Sobre todo esta lista. Si mañana encontrás una séptima idiotez, la agregás y la demueles: el sistema que demuele idioteces también se deja demoler.</div></details>
 
-<details open><summary>I. Contingencia — podría ser de otra manera</summary><div class="body">Todo sistema es una elección entre muchos sistemas posibles. No hay un sistema necesario, un canon, una forma correcta y única. La contingencia no es arbitrariedad: es un sistema que se sostiene por razones y que igual podría haber sido distinto.</div></details>
-<details><summary>II. Reescribibilidad — se cambia desde adentro</summary><div class="body">Las reglas del sistema pueden modificarse desde el propio sistema, conservando lo ya demostrado. Reescribir no es destruir: es modificar conservando la coherencia. Nadie necesita permiso de afuera.</div></details>
-<details><summary>III. No totalidad — nunca agota lo concebible</summary><div class="body">Siempre queda algo afuera, y siempre hay otro sistema capaz de formularlo. La incompletitud de Gödel es un caso particular de algo mucho más grande: ningún marco se cierra sobre sí mismo.</div></details>
-<details><summary>IV. Relatividad de problemas — el problema es del marco</summary><div class="body">Si un sistema no puede resolver un problema, ese problema es relativo al sistema, no absoluto. Cambiar de sistema no resuelve el problema: lo <b>disuelve</b>. Deja de ser obstáculo y se vuelve elección.</div></details>
-<details><summary>V. Libertad epistémica — poder moverte entre marcos</summary><div class="body">No es omnipotencia. No es cambiar la realidad. Es poder cambiar el sistema desde el que pensás la realidad. Y su ejercicio es desigual: requiere educación, tiempo, recursos y aguante social. Decir "podés cambiar de sistema" sin ver eso es privilegio disfrazado de filosofía.</div></details>
-</div>
-
-<div class="sect" id="mod">
-<div class="kick">02 / módulos ascii</div>
-<h2 class="h2">Cuatro máquinas que nunca se quedan quietas.</h2>
-
-<div class="mod"><div class="lbl">módulo 01 · el borde</div><div class="term"><pre class="ascii" id="m-donut" style="text-align:center"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Un toro que gira sobre su propio eje. No tiene adentro ni afuera privilegiado: cada punto es superficie. Así funciona un sistema que se reescribe.</p></div>
-
-<div class="mod"><div class="lbl">módulo 02 · lluvia de sistemas</div><div class="term"><canvas id="m-rain" width="660" height="180" style="width:100%;display:block"></canvas></div></div>
-
-<div class="mod"><div class="lbl">módulo 03 · mandala gödel</div><div class="term" style="text-align:center"><pre class="ascii" id="m-mandala" style="font-size:11px;line-height:11px;display:inline-block;text-align:left"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Interferencia de dos ondas: una radial, una angular. Del choque sale un patrón que nunca se repite igual. Toda estructura es una interferencia, no una esencia.</p></div>
-
-<div class="mod"><div class="lbl">módulo 04 · onda del límite</div><div class="term"><pre class="ascii" id="m-onda"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">El borde no es una línea quieta. Es una oscilación. Se habita moviéndose.</p></div>
+<div class="ax" style="margin-top:20px">Seis idioteces. Un solo movimiento las tumba a todas: <b>reescribir</b>.</div>
 </div>
 
 <div class="sect" id="piso">
-<div class="kick">03 / lo que no se reescribe</div>
-<h2 class="h2">¿Somos libres de todo? No. Hay un piso.</h2>
-<p class="p">El piso no es un sistema: es la condición de posibilidad de todo sistema. Por eso no se puede reescribir — no hay desde dónde. Y no es una cárcel: es lo que te sostiene para que puedas saltar.</p>
-<div class="grid3">
-<div class="card floor"><h3>piso lógico</h3><p>No contradicción. Coherencia. Sin esto, todo se vuelve demostrable y el sistema colapsa en ruido.</p></div>
-<div class="card floor"><h3>piso material</h3><p>No volás. Morís. La gravedad impone. Tu sistema puede ser contingente; el mundo físico no se reescribe con palabras.</p></div>
-<div class="card floor"><h3>piso ético</h3><p>No podés destruir a otros como regla del juego. Si lo hacés, otros sistemas con la misma regla te destruyen a vos. La reciprocidad es la estructura mínima.</p></div>
+<div class="kick">01 / el único no-negociable</div>
+<h2 class="h2">Sin techo, pero con piso.</h2>
+<p class="p fire">Y acá viene la objeción que te van a tirar en la cara, y con razón: <i>«si el universo no tiene techo, ¿por qué el piso no es un techo con otro nombre?»</i>. Justo. No se contesta con retórica. Se contesta con una prueba.</p>
+
+<div class="term" style="margin:18px 0"><pre class="ascii" style="font-size:10px;line-height:14px">         T E C H O                        P I S O
+························      ┌──────────────────────┐
+·     está AFUERA      ·      │    está ADENTRO      │
+·     y EXCLUYE        ·      │    y SOSTIENE        │
+·  (afuera del sistema)·      │  (adentro: sostiene) │
+························      │  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  │
+                              └──────────────────────┘
+           ↑                              ↑
+  si lo saco: GANO MÁS          si lo saco: NO QUEDA NADA</pre></div>
+
+<p class="p fire">La prueba es la <b>sustracción</b>. Sacá el techo: ganás espacio —había cosas que no alcanzabas y ahora sí—. El techo te estaba restando. Sacá el piso: no ganás nada, porque no queda nada. Sin piso no hay sistema: hay ruido. El piso no te resta: te da el todo.</p>
+
+<div class="ax">Un techo es un límite desde <b>afuera</b>. Un piso es una base desde <b>adentro</b>. Uno excluye. El otro constituye.</div>
+
+<p class="p">Y no es un juego de palabras: es una diferencia de lugar. El techo está <i>fuera</i> del sistema —es una pared del mundo contra la que el sistema choca—. El piso está <i>dentro</i>: es lo que hace que el sistema sea sistema y no un montón de signos tirados.</p>
+
+<p class="p">Segundo movimiento. El techo te dice <b>hasta dónde</b>. El piso te dice <b>cuándo vale</b>. Y lo que no vale, no existe. El techo es cuantitativo —más lejos, más cerca—. El piso es cualitativo —bien formado, mal formado—. No compiten: miden cosas distintas.</p>
+
+<p class="p fire">Tercer movimiento, el más fuerte. <b>El piso no prohíbe: construye.</b> Mirá el axioma más famoso del piso, la no-contradicción. «No podés afirmar P y no-P» suena a prohibición. Pero trae una cláusula que nadie lee: <i>en el mismo respecto</i>. Podés afirmar P y no-P en respectos distintos —de hecho lo hacés todo el día—. Entonces el piso no te cierra: te obliga a precisar.</p>
+
+<div class="quote">La gramática no te prohíbe decir cosas.<br>Es lo que hace que decir algo sea decir algo.<br>Sin gramática no hablás menos: no hablás.</div>
+
+<p class="p fire">Cuarto movimiento, y este desarma el argumento entero de una vez. <b>El piso no es un sistema.</b> Contingencia y piso no compiten porque juegan en niveles distintos: el piso es la condición de que haya sistemas; los sistemas son lo contingente. Si el piso fuera un sistema, sí: sería el sistema necesario, y adiós contingencia. Pero no lo es: es el meta-nivel. Por eso podés reescribir todos los sistemas sin tocar el piso. Y por eso el piso no te limita la reescritura: la habilita.</p>
+
+<div class="ax">El piso no reduce el número de sistemas posibles. Lo <b>multiplica</b>. Cada sistema bien formado que escribís es un resultado exacto más — y la buena formación la da el piso.</div>
+
+<p class="p fire">Y por último, la libertad. ¿El piso te quita libertad? Al contrario. La libertad es poder moverte entre marcos y reescribirlos. Sin piso no podés escribir nada exacto, así que tenés <b>menos</b> libertad. Con piso escribís exacto, así que tenés <b>más</b>. El piso no es el precio de la libertad: es su instrumento.</p>
+
+<p class="p">Y ahora sí, la fórmula. El piso, escrito por otros hace más de un siglo, en un libro que casi nadie terminó de leer —<i>Principia Mathematica</i>:</p>
+<div class="ax">Todo sistema que tenga un uso que sirva a algo debe partir de <b>operadores con axiomas</b>, cuyas reglas sean <b>claras y no rompibles</b>, y que den como resultado un <b>resultado exacto</b>.</div>
+<p class="p muted">Axiomas claros. Reglas no rompibles. Resultado exacto. Sin piso, la libertad no es libertad: es deriva.</p>
+<div class="quote" style="border:0;text-align:center">Un techo te frena.<br>Un piso te lanza.<br>Y lo que te lanza no te limita: te hace saltar.</div>
 </div>
-<p class="p muted" style="margin-top:14px;font-size:13.5px">Y hay algo más que queda afuera del principio, y el principio lo admite con rigor: el dolor, la muerte, el amor, el tiempo, la finitud. No son "necesarios". Son <b>otra cosa</b>.</p>
+
+<div class="sect" id="onto">
+<div class="kick">02 / la palabra que se olvidaron</div>
+<h2 class="h2">La ciencia no avanza. Crea ser.</h2>
+<p class="p fire">Te dijeron que la ciencia avanza. Que cada generación pone un ladrillo. Que hay campos que maduran lento, y que así, ladrillo sobre ladrillo, algún día, quizás, sabremos. Suena humilde. Es una trampa.</p>
+<p class="p fire">La ciencia no avanza: <b>se reescribe</b>. Y cuando reescribe, no encuentra algo que ya estaba esperando en un cajón. Hace que algo <b>sea</b>.</p>
+<div class="quote">Un descubrimiento dice:<br>«esto estaba y no lo veíamos».<br><br>Una reescritura dice:<br>«esto no estaba, y ahora es».</div>
+<p class="p fire">La primera te deja igual. La segunda te cambia el mundo —porque el mundo, en la parte escribible, es exactamente lo que escribimos.</p>
+<p class="p">Por eso los logros científicos no son "avances de un campo". Son <b>actos de creación de ser</b>. Eso es ontología, y se la sacaron de encima para que no la veas.</p>
+</div>
+
+<div class="sect" id="juego">
+<div class="kick">03 / el diagnóstico</div>
+<h2 class="h2">Y encima, el sistema se volvió un juego.</h2>
+<p class="p fire">Acá está lo que duele. Casi todos los sistemas que gobiernan la vida de la gente no sirven al <b>resultado</b>. Sirven al <b>juego</b>.</p>
+<p class="p fire">Te sientan a jugar BlackJack. Y el punto no es la plata. El punto es <b>seguir jugando</b>. Podrían darte el dinero directamente y la mesa se vendría abajo. Porque el sistema no está hecho para darte el premio: está hecho para que sigas sentado.</p>
+<div class="quote">El jugador ya no quiere el premio.<br>Quiere seguir jugando.</div>
+<p class="p fire">Por eso el planeta no avanza. Avanzar significa cerrar el juego. Y cerrar el juego significa que alguien —el que reparte— deja de repartir.</p>
+<p class="p">Dejá de jugar y te van a llamar tramposo. No lo sos. Solo viste que el resultado estaba puesto antes de la mesa.</p>
+</div>
+
+<div class="sect" id="mut">
+<div class="kick">04 / la palanca y el mecanismo</div>
+<h2 class="h2">Contingencia primero. Después, mutación.</h2>
+<p class="p">Si ningún sistema es necesario —si todos son <b>contingentes</b>— entonces no estás atado a una línea, a un orden, a un camino único. Podés reescribir el camino. Podés crear la ciencia que falta.</p>
+<div class="ax">Contingente no significa arbitrario. Significa: pudo ser de otra manera, y por eso puede volver a serlo.</div>
+<p class="p fire">Pero de la contingencia sola no sale nada. Sale una libertad abstracta que no sirve para vivir. De la contingencia, cuando la agarrás con el piso lógico, sale otra cosa: <b>mutación</b>.</p>
+<p class="p fire">Mutación: tomás el sistema, le cambiás los operadores <b>respetando las reglas del piso</b>, y el resultado es un sistema nuevo que hace lo que el viejo no podía. No rompés la lógica: la usás para torcer el marco.</p>
+<p class="p fire">Ahí es donde hackeás la realidad —no la realidad física, la <b>realidad de los marcos</b>— y la moldeás, en la medida exacta en que se puede, a tu imagen y semejanza.</p>
+<p class="p">Tus medios y tus fines se alinean con tu perspectiva. Tu método instrumental deja de ser el que te dieron y pasa a ser <b>el tuyo</b>. Único. Y con él conseguís la expectativa de logro que querías. Y después otra. Y después otra.</p>
+</div>
+
+<div class="sect" id="ag">
+<div class="kick">05 / el destino</div>
+<h2 class="h2">No somos chicos. Somos dioses del mundo.</h2>
+<p class="p fire">Del mundo, no de la física. Eso es lo que se entiende mal y por eso suena a delirio. No vas a mover una montaña con la mente. Pero vas a reescribir los sistemas con los que el mundo se organiza —y eso es ser dios <i>de ese</i> mundo.</p>
+<p class="p fire">Recuperar el volante. Ser más próspero, disfrutar más, terminar mejor. Y sobre todo: dejar de vivir bajo la <b>teoría de la incapacidad</b>.</p>
+<p class="p">Esa voz que dice <i>no se puede, siempre fue así, quién sos vos</i>. Esa voz no es un hecho. Es un sistema. Y los sistemas se reescriben.</p>
+<div class="quote">El sistema no te tiene.<br>Vos tenés el sistema.<br>Hasta que lo reescribís.</div>
+</div>
+
+<div class="sect" id="mod">
+<div class="kick">06 / módulos ascii</div>
+<h2 class="h2">Cinco máquinas que nunca se quedan quietas.</h2>
+
+<div class="mod"><div class="lbl">módulo 01 · la superficie</div><div class="term"><pre class="ascii" id="m-donut" style="text-align:center"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Un toro girando. Sin adentro ni afuera privilegiado: todo es superficie. Un sistema no se atraviesa, se recorre y se reescribe.</p></div>
+
+<div class="mod"><div class="lbl">módulo 02 · lluvia de axiomas</div><div class="term"><canvas id="m-rain" width="660" height="170" style="width:100%;display:block"></canvas></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Cada glifo es una regla cayendo. Las que no aguantan el piso, se estrellan abajo.</p></div>
+
+<div class="mod"><div class="lbl">módulo 03 · interferencia exacta</div><div class="term" style="text-align:center"><pre class="ascii" id="m-mandala" style="font-size:11px;line-height:11px;display:inline-block;text-align:left"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Dos ondas que se cruzan. Ninguna esencia: puro choque calibrado. Todo resultado exacto es una interferencia bien puesta.</p></div>
+
+<div class="mod"><div class="lbl">módulo 04 · el borde sin techo</div><div class="term"><pre class="ascii" id="m-onda"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">El borde respira y no cierra nunca. No hay última línea: hay borde, y el borde se corre.</p></div>
+
+<div class="mod"><div class="lbl">módulo 05 · la mesa del juego</div><div class="term"><pre class="ascii" id="m-mesa" style="text-align:center;font-size:12px;line-height:15px"></pre></div><p class="p muted" style="font-size:12.5px;margin-top:8px">Baraja eterna. El sistema nunca te da el premio: te da otra mano. Y abajo, marcada, la línea que sí importa.</p></div>
 </div>
 
 <div class="sect" id="dis">
-<div class="kick">04 / herramienta</div>
-<h2 class="h2">El disolutor de problemas</h2>
-<p class="p">Escribí el problema que no podés resolver. Elegí el sistema que lo sostiene. Apretá. El problema no va a desaparecer: va a cambiar de estatus.</p>
+<div class="kick">07 / herramienta</div>
+<h2 class="h2">El disolutor de juegos</h2>
+<p class="p">Escribí el problema que no podés resolver. Elegí el sistema que lo sostiene. La máquina te muestra <b>qué juego estás jugando</b>, <b>qué premio te ocultan</b> y <b>dónde tiene la grieta</b>. Después lo muta.</p>
 <label for="dprob">tu problema</label>
-<textarea id="dprob" placeholder="Ej: siento que no rindo lo suficiente y que por eso no valgo..."></textarea>
-<label for="dsis">el sistema que lo formula</label>
+<textarea id="dprob" placeholder="Ej: trabajo todo el día y siento que nunca alcanza, que siempre me falta algo..."></textarea>
+<label for="dsis">el sistema que te lo hace jugar</label>
 <select id="dsis">
 <option value="trabajo">el trabajo asalariado</option>
 <option value="escuela">la escuela / el mérito</option>
-<option value="familia">la familia y lo que "se espera" de vos</option>
-<option value="mente">la psiquiatría y el diagnóstico</option>
-<option value="amor">el amor romántico</option>
+<option value="familia">la familia y el guion heredado</option>
+<option value="mente">la normalidad y el diagnóstico</option>
+<option value="amor">el amor que te completa</option>
 <option value="dinero">el dinero como medida de todo</option>
 </select>
-<button class="btn" id="dgo">disolver</button>
+<button class="btn" id="dgo">diagnosticar y disolver</button>
 <div class="out" id="dout">
 <pre class="code" id="dcode"></pre>
-<button class="btn alt" id="drew">ahora reescribí sus reglas</button>
+<button class="btn alt" id="drew">mutar el sistema (reescribir sus axiomas)</button>
 <div class="out" id="drewout"><pre class="code" id="drewcode"></pre></div>
 </div>
 </div>
 
 <div class="sect" id="met">
-<div class="kick">05 / método</div>
+<div class="kick">08 / método</div>
 <h2 class="h2">Siete pasos. Ninguno es ley.</h2>
 <div class="grid2">
-<div class="card"><h3>01 · reconocer</h3><p>Toma algo que te moleste. ¿Es un hecho bruto o es un sistema? Si es sistema, ¿cuáles son sus reglas?</p></div>
-<div class="card"><h3>02 · formular</h3><p>Escribilo como si fuera código. No tiene que ser perfecto. Tiene que ser <b>visible</b>.</p></div>
-<div class="card"><h3>03 · preguntar</h3><p>¿Es necesario o contingente? Si podés imaginar la regla distinta sin contradicción, es contingente.</p></div>
-<div class="card"><h3>04 · imaginar</h3><p>Escribí al menos una alternativa. No tenés que elegirla. Solo ver que existe.</p></div>
-<div class="card"><h3>05 · distinguir</h3><p>¿El problema desaparece si cambiás de sistema? Si desaparece, es relativo. Si sigue, es del piso.</p></div>
-<div class="card"><h3>06 · actuar</h3><p>Un acto concreto, chico, con fecha, verificable. Hoy o esta semana. No mañana.</p></div>
+<div class="card"><h3>01 · nombrar el juego</h3><p>¿Qué sistema estás jugando ahora mismo, sin haberlo elegido? Escribí su nombre. Ya con nombrarlo perdés una mano.</p></div>
+<div class="card"><h3>02 · escribir sus axiomas</h3><p>Sus operadores, sus reglas, su supuesto resultado. Si no podés escribirlos, no entendiste el sistema: te entendió él.</p></div>
+<div class="card"><h3>03 · buscar la grieta</h3><p>¿Dónde el sistema no da resultado exacto? Ahí no hay piso: ahí hay costumbre. La grieta es tu puerta.</p></div>
+<div class="card"><h3>04 · probar contingencia</h3><p>¿Pudo haber sido de otra manera sin romper la lógica? Si sí, es contingente. Y lo contingente se reescribe.</p></div>
+<div class="card"><h3>05 · mutar</h3><p>Cambiá el operador. Conservá los axiomas que aguantan. El resultado tiene que seguir siendo exacto, pero hacer algo nuevo.</p></div>
+<div class="card"><h3>06 · verificar</h3><p>¿El problema se disolvió o solo se movió? Si se movió, la mutación fue cosmética. Volvé al paso 05.</p></div>
 </div>
-<div class="card" style="margin-top:12px"><h3>07 · reescribir el método</h3><p>Estos siete pasos también son contingentes. Reescribilos según tu propia experiencia. El método que no se deja reescribir ya es dogma.</p></div>
+<div class="card" style="margin-top:12px"><h3>07 · actuar con fecha</h3><p>Un acto chico, concreto, esta semana, que solo tenga sentido dentro del sistema mutado. No mañana. Esta semana. Y estos siete pasos también son contingentes: reescribilos.</p></div>
+</div>
+
+<div class="sect" id="no">
+<div class="kick">09 / honestidad</div>
+<h2 class="h2">Lo que este principio NO es.</h2>
+<p class="p muted" style="font-size:14px">Un sistema que se cree todopoderoso es tan idiota como el que se cree limitado.</p>
+<div class="grid2">
+<div class="card no"><h3>no es omnipotencia</h3><p>No movés montañas con la mente. Sos dios del mundo —de los sistemas—, no de la física. El piso sigue ahí.</p></div>
+<div class="card no"><h3>no es "todo vale"</h3><p>Sin axiomas claros y reglas no rompibles no hay resultado exacto. Libertad sin piso es capricho.</p></div>
+<div class="card no"><h3>no es solipsismo</h3><p>El piso lógico es común a todos. Dos personas que mutan distinto igual comparten la misma lógica. Ahí nace la convivencia.</p></div>
+<div class="card no"><h3>no es gratis</h3><p>Reescribir cuesta. Cuesta tiempo, cuesta soltar lo aprendido, cuesta el desprecio del que todavía juega. Se paga.</p></div>
+</div>
 </div>
 
 <div class="sect" id="obj">
-<div class="kick">06 / objeciones</div>
+<div class="kick">10 / objeciones</div>
 <h2 class="h2">Todo lo que te van a decir. Y la respuesta.</h2>
-<details><summary>"Entonces todo da igual."</summary><div class="body">No. Toda verdad es relativa a un sistema, pero dentro de un sistema hay verdad y falsedad. Lo que no hay es un sistema privilegiado que decida por todos.</div></details>
-<details><summary>"Cambiar de sistema tiene costos."</summary><div class="body">Correcto. No todos los sistemas son igual de útiles. La utilidad es un criterio dentro de un sistema, no un criterio absoluto. Y el costo de migrar es desigual.</div></details>
-<details><summary>"Si cambiás el sistema, cambiás la realidad."</summary><div class="body">No. La libertad es epistémica, no ontológica. Cambiás el marco, no la gravedad.</div></details>
-<details><summary>"Si cada uno tiene su sistema, ¿cómo convivimos?"</summary><div class="body">Ahí empieza la política, no la epistemología. El principio no resuelve ese problema: lo ubica. Pero el otro no es un obstáculo: es la condición de la pluralidad.</div></details>
-<details><summary>"Si se aplica a todo, no distingue nada."</summary><div class="body">No borra diferencias: las reubica. La distinción relevante no es entre dominios, sino entre sistemas que se creen necesarios y sistemas que se saben contingentes.</div></details>
-<details><summary>"El propio principio es contingente. ¿Por qué aceptarlo?"</summary><div class="body">Por coherencia performativa. Un sistema que se sabe contingente y lo dice es coherente consigo mismo. Uno que se presenta como necesario y no puede fundarse, miente. Además, contingente no es arbitrario: el SCS explica lo que otros no, se aplica a sí mismo y produce resultados verificables.</div></details>
+<details><summary>"Si todo es contingente, nada tiene valor."</summary><div class="body">Al contrario. Si todo fuera necesario, tu elección no valdría nada. Que sea contingente es lo que hace que elegir signifique algo.</div></details>
+<details><summary>"El universo sin techo suena a fantasía."</summary><div class="body">Lo fantasioso es el techo. Nadie lo midió. Se usa como excusa para que no empujes. Y si lo tuviera, no importaría: lo que te frena nunca fue el techo, fue el piso —y el piso es base, no límite.</div></details>
+<details><summary>"El piso es un techo con otro nombre."</summary><div class="body">Probalo por sustracción. Sacá un techo y ganás espacio: te estaba restando. Sacá el piso y no queda nada: no te restaba. Además el piso no es un sistema, es el meta-nivel — por eso no compite con la contingencia. Y no prohíbe: construye.</div></details>
+<details><summary>"Decir que la ciencia crea ser es arrogancia."</summary><div class="body">Es lo contrario de la arrogancia: la arrogancia es creer que la ciencia copia un mundo ya terminado. Decir que la escribe es devolverle el trabajo al que la escribe, que sos vos.</div></details>
+<details><summary>"¿Y si el propio principio es contingente?"</summary><div class="body">Lo es, y lo dice. Pero se apoya en el piso, que no lo es. Coherencia performativa: un sistema que se sabe contingente y lo declara es coherente consigo mismo.</div></details>
+<details><summary>"Reescribir sistemas es de iluminados."</summary><div class="body">No. Requiere tiempo, educación y aguante —y eso es desigual, hay que decirlo. Pero no requiere genio. Requiere el piso y la terquedad.</div></details>
 </div>
 
 <div class="sect" id="cre">
-<div class="kick">07 / quién hizo esto</div>
+<div class="kick">11 / quién corrigió la puntería</div>
 <h2 class="h2">El creador</h2>
 <div class="creator">
 <div class="sig">fundador de UNK</div>
 <div class="nm">Alexander Perelman</div>
-<p style="margin-top:10px">Esto no lo hizo una institución. No lo hizo una editorial. No lo hizo un comité. Lo hizo una persona que se cansó de creer que el suelo era suelo.</p>
-<p><b>Alexander Perelman habla desde Rusia.</b> No desde una cátedra ni desde una capital amable: desde el frío, desde la distancia, desde un lugar donde el sistema también se cae a pedazos y hay que rearmarlo cada invierno. Y desde ahí, lejos de todo lo que le dijeron que era obligatorio, levantó UNK —United Network of Knowledgment— con una sola sospecha clavada en el pecho: que casi todo lo que nos vendieron como <i>necesario</i> era apenas una <i>elección</i> que alguien dejó de cuestionar.</p>
-<p>UNK no es un templo ni una escuela. Es una red de conocimiento donde el conocimiento no se adora: se reescribe. Su primer texto es <b>"El límite de lo posible"</b>, de Daniel Alejandro Gascón Castaño — escrito también lejos de casa, entre inviernos largos y terquedad. La primera piedra del sistema que este sitio pone en tus manos.</p>
+<p style="margin-top:10px">Esto no nació de un paper. Nació de un paper que <b>apuntaba a la luna</b> —torcido, inexacto, pero apuntaba. Y un tiro torcido a la luna sigue siendo un tiro a la luna.</p>
+<p>El texto <b>"El límite de lo posible"</b>, de Daniel Alejandro Gascón Castaño, fue la primera puntería. Marcó el rumbo: el límite, la contingencia, la reescritura. Pero apuntaba de lejos.</p>
+<p><b>Alexander Perelman corrige la puntería.</b> Y hace lo que el paper no hacía: no solo apunta exacto a la luna — te sube a ella y te sienta en la misma. Con piso lógico, con axiomas, con resultado exacto. Con una máquina que sirve para vivir, no para citar en un congreso.</p>
+<p><b>Y Perelman habla desde Rusia.</b> No desde una cátedra ni desde una capital amable: desde el frío, desde la distancia, desde un lugar donde el sistema también se cae a pedazos y hay que rearmarlo cada invierno. Desde ahí —lejos de todo lo que le juraron obligatorio— levantó UNK, United Network of Knowledgment, con una sola sospecha clavada en el pecho: que casi todo lo que nos vendieron como <i>necesario</i> era apenas una <i>elección</i> que alguien dejó de cuestionar.</p>
+<p>UNK no es un templo ni una escuela. Es una red donde el conocimiento no se adora: se reescribe.</p>
 <p class="sig" style="margin-top:16px">dedicatoria</p>
-<p>Para el que lee esto y alguna vez sintió que el problema era suyo.<br>No era tuyo. Era del sistema. Y los sistemas se reescriben.</p>
+<p>Para el que lee esto y alguna vez sintió que el problema era suyo.<br>No era tuyo. Era del juego. Y el juego se puede cerrar.</p>
 <p>Para el hombre que me enseñó, sin decirlo, que se puede empezar de nuevo a cualquier edad.<br>Esto es para vos, viejo. Todavía se puede. Siempre se puede.</p>
 </div>
 </div>
@@ -204,14 +285,14 @@ body.chaos .g{animation-duration:.6s}
 <hr class="sep">
 
 <div class="sect" id="fin" style="text-align:center">
-<div class="kick">08 / umbral</div>
-<h1 class="big g" style="margin:10px 0 16px">Si llegaste hasta acá, ya no podés volver atrás.</h1>
-<p class="p" style="font-size:16px">No porque te hayamos convencido. Sino porque viste el límite. Y una vez visto, se habita.</p>
-<div class="quote" style="border:0;text-align:center;font-style:normal;font-size:15px;letter-spacing:.02em">Ningún sistema es total.<br>Todo sistema es una elección.<br>Y elegir es un acto de libertad.</div>
+<div class="kick">12 / umbral</div>
+<h1 class="big g" style="margin:10px 0 16px">El universo no tiene techo. Tiene piso. Y vos tenés las dos manos.</h1>
+<p class="p" style="font-size:16px">Seis idioteces menos. Una mesa vista. Y una mano que, a partir de ahora, es tuya.</p>
+<div class="quote" style="border:0;text-align:center;font-style:normal;font-size:15px;letter-spacing:.02em">No sos chico.<br>Estás en una silla que te queda chica.<br>Y las sillas se cambian.</div>
 <p class="p fire" style="font-size:20px;font-weight:500">FUCK.</p>
 </div>
 
-<footer>UNK · united network of knowledgment · nodo 001 · desde rusia<br>sistema de contingencia sistémica · v3.0 · 25.10.2026<br><span style="color:#00ffc8">tomá el control de tu vida</span></footer>
+<footer>UNK · united network of knowledgment · nodo 001 · desde rusia<br>el principio de reescribibilidad · v5.1 · 25.10.2026<br><span style="color:#00ffc8">tomá el control de tu vida</span></footer>
 
 </div>
 
@@ -223,9 +304,7 @@ body.chaos .g{animation-duration:.6s}
     chaos.textContent=document.body.classList.contains('chaos')?'desactivar modo alucinógeno':'activar modo alucinógeno';
   });
 
-  var charsD=".,-~:;=!*#$@";
-  var donut=document.getElementById('m-donut');
-  var A=0,B=0,W=80,H=22;
+  var charsD=".,-~:;=!*#$@",donut=document.getElementById('m-donut'),A=0,B=0,W=80,H=22;
   function frameDonut(){
     var b=new Array(W*H),z=new Array(W*H),i,j;
     for(i=0;i<W*H;i++){b[i]=' ';z[i]=0;}
@@ -233,9 +312,7 @@ body.chaos .g{animation-duration:.6s}
       for(i=0;i<6.283;i+=0.02){
         var c=Math.sin(i),d=Math.cos(j),e=Math.sin(A),f=Math.sin(j),g=Math.cos(A),
         h=d+2,D=1/(c*h*e+f*g+5),l=Math.cos(i),m=Math.cos(B),n=Math.sin(B),t=c*h*g-f*e;
-        var x=Math.floor(W/2+30*D*(l*h*m-t*n));
-        var y=Math.floor(H/2+11*D*(l*h*n+t*m));
-        var o=x+W*y;
+        var x=Math.floor(W/2+30*D*(l*h*m-t*n)),y=Math.floor(H/2+11*D*(l*h*n+t*m)),o=x+W*y;
         var N=Math.floor(8*((f*e-c*d*g)*m-c*d*e-f*g-l*d*n));
         if(y>0&&y<H&&x>0&&x<W&&D>z[o]){z[o]=D;b[o]=charsD[N>0?N:0];}
       }
@@ -251,18 +328,17 @@ body.chaos .g{animation-duration:.6s}
   var glyphs="01UNK\u03A3\u0394\u03BB\u221E\u2298{}[]<>/#$@";
   var cols=Math.floor(660/13),drops=[];
   for(var q=0;q<cols;q++){drops[q]=Math.random()*-40;}
-  rx.fillStyle='#05060a';rx.fillRect(0,0,660,180);
+  rx.fillStyle='#05060a';rx.fillRect(0,0,660,170);
   function frameRain(){
-    rx.fillStyle='rgba(5,6,10,0.16)';rx.fillRect(0,0,660,180);
+    rx.fillStyle='rgba(5,6,10,0.16)';rx.fillRect(0,0,660,170);
     rx.font='13px ui-monospace,monospace';
     for(var k=0;k<cols;k++){
-      var ch=glyphs[Math.floor(Math.random()*glyphs.length)];
-      var yy=drops[k]*15;
-      if(yy>0&&yy<190){
+      var ch=glyphs[Math.floor(Math.random()*glyphs.length)],yy=drops[k]*15;
+      if(yy>0&&yy<180){
         rx.fillStyle=Math.random()>0.9?'#ff2fd0':(Math.random()>0.75?'#ffcc00':'#00ffc8');
         rx.fillText(ch,k*13+2,yy);
       }
-      if(yy>180&&Math.random()>0.975)drops[k]=0;
+      if(yy>170&&Math.random()>0.975)drops[k]=0;
       drops[k]+=1;
     }
   }
@@ -276,8 +352,7 @@ body.chaos .g{animation-duration:.6s}
       for(var x=0;x<MW;x++){
         var nx=(x-MW/2),ny=(y-MH/2)*1.9;
         var r=Math.sqrt(nx*nx+ny*ny)/(MW/2),a=Math.atan2(ny,nx);
-        var v=Math.sin(r*10-mt)*Math.cos(a*6+mt*0.8);
-        v=Math.abs(v);
+        var v=Math.abs(Math.sin(r*10-mt)*Math.cos(a*6+mt*0.8));
         s+=mchars[Math.max(0,Math.min(9,Math.floor(v*9)))];
       }
       s+='\n';
@@ -286,7 +361,7 @@ body.chaos .g{animation-duration:.6s}
   }
   frameMand();setInterval(frameMand,62);
 
-  var ond=document.getElementById('m-onda'),ot=0,OW=74,OH=16;
+  var ond=document.getElementById('m-onda'),ot=0,OW=74,OH=15;
   function frameOnda(){
     var L=[];
     for(var y=0;y<OH;y++){
@@ -302,13 +377,32 @@ body.chaos .g{animation-duration:.6s}
   }
   frameOnda();setInterval(frameOnda,72);
 
+  var mesa=document.getElementById('m-mesa');
+  var suits="\u2660\u2665\u2666\u2663",vals="0123456789JQKA",MW2=42;
+  function frameMesa(){
+    var L=[];
+    for(var y=0;y<5;y++){
+      var s='';
+      for(var x=0;x<MW2;x++){
+        var r=Math.random();
+        var ch = r>0.5 ? vals[Math.floor(Math.random()*vals.length)] : suits[Math.floor(Math.random()*4)];
+        s+=ch+' ';
+      }
+      L.push(s);
+    }
+    L.splice(2,0,'\u2500'.repeat(MW2*2));
+    L.splice(4,0,'\u2500'.repeat(MW2*2));
+    mesa.textContent=L.join('\n');
+  }
+  frameMesa();setInterval(frameMesa,110);
+
   var SYS={
-    trabajo:{n:"el trabajo asalariado",r:["tu valor = lo que produc\u00EDs","descansar = perder","tu tiempo le pertenece a otro"],x:"una regla que dice que el valor se mide por el rendimiento, no por el sostenimiento",alt:"un sistema donde el valor se mide por lo que sosten\u00E9s, no por lo que rend\u00EDs",code:"regla_valor: produccion(x) -> valor(x)\nregla_valor: sostenimiento(x) -> valor(x)   // reescrita"},
-    escuela:{n:"la escuela y el m\u00E9rito",r:["nota = inteligencia","error = fracaso","ordenar = entender"],x:"una regla que confunde medir con saber",alt:"un sistema donde se eval\u00FAa la capacidad de crear sistemas, no la memoria",code:"regla_saber: memorizar(x) -> saber(x)\nregla_saber: reescribir(x) -> saber(x)   // reescrita"},
-    familia:{n:"la familia y lo que 'se espera'",r:["lo que se espera = lo correcto","cambiar = traicionar","el pasado manda"],x:"una regla que vuelve obligatorio el guion heredado",alt:"un sistema donde la herencia es punto de partida y no de llegada",code:"regla_herencia: guion(x) -> destino(x)\nregla_herencia: eleccion(x) -> destino(x)   // reescrita"},
-    mente:{n:"la psiquiatr\u00EDa y el diagn\u00F3stico",r:["lo normal = sano","desviar = enfermar","la etiqueta explica a la persona"],x:"una regla que trata la norma como hecho natural",alt:"un sistema donde el diagn\u00F3stico clasifica pero no descubre",code:"regla_estado: desviacion(x) -> enfermedad(x)\nregla_estado: diferencia(x) -> sistema(x)   // reescrita"},
-    amor:{n:"el amor rom\u00E1ntico",r:["el otro completa","durar = funcionar","el celo = prueba de amor"],x:"una regla que espera que otra persona cierre tu sistema",alt:"un sistema de dos sistemas completos que se eligen sin fusionarse",code:"regla_union: incompleto(a) + incompleto(b) -> uno(a,b)\nregla_union: sistema(a) + sistema(b) -> dos(a,b)   // reescrita"},
-    dinero:{n:"el dinero como medida de todo",r:["tener = valer","pobreza = culpa","todo se traduce a precio"],x:"una regla que hace del n\u00FAmero la vara de la vida entera",alt:"un sistema donde el dinero es una herramienta y no un veredicto",code:"regla_valia: cantidad(x) -> valor(x)\nregla_valia: vida(x) -> valor(x)   // reescrita"}
+    trabajo:{n:"el trabajo asalariado",juego:"el juego de rendir",premio:"una vida que nunca llega, porque siempre falta un poco m\u00E1s de rendimiento",r:["valor = producci\u00F3n","descanso = p\u00E9rdida","tu tiempo es de otro"],g:"mide el valor con el rendimiento y nunca con el sostenimiento: el resultado nunca se cierra, y el sistema lo necesita abierto",m:"regla_valor: sostenimiento(x) -> valor(x)"},
+    escuela:{n:"la escuela y el m\u00E9rito",juego:"el juego de la nota",premio:"saber, que nunca se entrega porque hay que seguir cursando",r:["nota = inteligencia","error = fracaso","memorizar = entender"],g:"confunde medir con saber: premia la memoria y llama 'saber' al resultado de un examen",m:"regla_saber: reescribir(x) -> saber(x)"},
+    familia:{n:"la familia y el guion heredado",juego:"el juego de la pertenencia",premio:"pertenecer sin tener que elegir nada",r:["lo esperado = lo correcto","cambiar = traicionar","el pasado manda"],g:"vuelve obligatorio el guion: la herencia deja de ser punto de partida y se vuelve destino",m:"regla_herencia: eleccion(x) -> destino(x)"},
+    mente:{n:"la normalidad y el diagn\u00F3stico",juego:"el juego de estar normal",premio:"una salud que se define por parecerse al promedio",r:["normal = sano","desviar = enfermar","la etiqueta explica a la persona"],g:"trata la norma estad\u00EDstica como hecho natural: lo frecuente se vuelve lo correcto",m:"regla_estado: diferencia(x) -> sistema(x)"},
+    amor:{n:"el amor que te completa",juego:"el juego de completarse",premio:"un otro que te cierre por fin",r:["el otro completa","durar = funcionar","celo = amor"],g:"espera que otra persona cierre tu sistema, y le exige lo que vos no te das",m:"regla_union: sistema(a) + sistema(b) -> dos(a,b)"},
+    dinero:{n:"el dinero como medida de todo",juego:"el juego de valer por tener",premio:"libertad, que se posterga hasta el pr\u00F3ximo n\u00FAmero",r:["tener = valer","pobreza = culpa","todo tiene precio"],g:"hace del n\u00FAmero la vara de la vida entera: traduce lo inconmensurable a precio",m:"regla_valia: vida(x) -> valor(x)"}
   };
   var dgo=document.getElementById('dgo'),dout=document.getElementById('dout'),dcode=document.getElementById('dcode'),drew=document.getElementById('drew'),drewout=document.getElementById('drewout'),drewcode=document.getElementById('drewcode');
   function typeOut(el,txt){
@@ -316,28 +410,30 @@ body.chaos .g{animation-duration:.6s}
     var iv=setInterval(function(){
       el.textContent=txt.slice(0,i);i+=3;
       if(i>=txt.length+3){clearInterval(iv);el.textContent=txt;}
-    },14);
+    },12);
   }
   dgo.addEventListener('click',function(){
     var prob=(document.getElementById('dprob').value||'esto que me tiene atrapado').trim();
     var s=SYS[document.getElementById('dsis').value];
     var txt=
-"PROTOCOLO DE DISOLUCI\u00D3N \u2014 en curso\n"+
-"------------------------------------\n\n"+
-"1. SISTEMA QUE FORMULA EL PROBLEMA:\n   "+s.n+".\n\n"+
-"2. SUS REGLAS (escritas):\n"+s.r.map(function(r,i){return "   r"+(i+1)+". "+r;}).join("\n")+"\n\n"+
-"3. LA REGLA QUE LO VUELVE INSOLUBLE:\n   "+s.x+".\n\n"+
-"4. SISTEMA ALTERNATIVO:\n   "+s.alt+".\n\n"+
-"5. VERIFICACI\u00D3N:\n   En el sistema alternativo, esto:\n   \u00AB"+prob+"\u00BB\n   ...no se resuelve: SE DISUELVE.\n   Sigue existiendo, pero dej\u00F3 de ser un obst\u00E1culo.\n   Ahora es una elecci\u00F3n.\n\n"+
-"6. ACTO CONCRETO:\n   Hac\u00E9 una cosa, chica, esta semana, que solo tenga sentido\n   dentro del sistema nuevo. Con fecha. Verificable.\n\n"+
-"   >> El problema no era tuyo. Era del marco.";
+"DIAGN\u00D3STICO Y DISOLUCI\u00D3N \u2014 en curso\n"+
+"----------------------------------------\n\n"+
+"1. EL SISTEMA: "+s.n+".\n\n"+
+"2. EL JUEGO QUE TE HACE JUGAR: "+s.juego+".\n\n"+
+"3. EL PREMIO QUE TE OCULTAN: "+s.premio+".\n\n"+
+"4. SUS AXIOMAS (escritos):\n"+s.r.map(function(r,i){return "   op"+(i+1)+". "+r;}).join("\n")+"\n\n"+
+"5. LA GRIETA \u2014 la regla que no aguanta el piso:\n   "+s.g+".\n\n"+
+"6. MUTACI\u00D3N PROPUESTA:\n   "+s.m+"\n\n"+
+"7. VERIFICACI\u00D3N:\n   En el sistema mutado, esto:\n   \u00AB"+prob+"\u00BB\n   ...deja de ser obst\u00E1culo. Deja de ser una mano que perd\u00E9s.\n   Se vuelve una decisi\u00F3n tuya.\n\n"+
+"8. ACTO CONCRETO:\n   Una cosa, chica, esta semana, que solo tenga sentido\n   dentro del sistema mutado. Con fecha. Verificable.\n\n"+
+"   >> No estabas perdiendo. Estabas jugando un juego\n      que no elegiste.";
     dout.classList.add('on');drewout.classList.remove('on');
     typeOut(dcode,txt);
   });
   drew.addEventListener('click',function(){
     var s=SYS[document.getElementById('dsis').value];
-    var p=s.code.split("\n");
-    var txt="sistema [ tu_vida ] {\n  // reglas heredadas\n  "+p[0]+"\n\n  // reglas reescritas\n  "+p[1]+"\n}\n\n// teoremas previos: preservados\n// coherencia: preservada\n// permiso requerido de afuera: ninguno";
+    var txt=
+"sistema [ el_tuyo ] {\n\n  // axiomas heredados (contingentes)\n  "+s.r[0]+"\n  "+s.r[1]+"\n\n  // piso l\u00F3gico (no rompible)\n  axioma: claridad\n  axioma: no_contradiccion\n  axioma: resultado_exacto\n\n  // mutaci\u00F3n\n  "+s.m+"\n}\n\n// teoremas previos: preservados\n// coherencia: preservada\n// permiso requerido de afuera: ninguno\n// resultado: exacto, y por fin tuyo";
     drewout.classList.add('on');typeOut(drewcode,txt);
   });
 })();
