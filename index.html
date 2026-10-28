@@ -1,697 +1,517 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>UNK — United Network of Knowledgment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trazo — Generador de firmas</title>
+<meta name="description" content="Escribe tu nombre, elige un estilo y descarga tu firma en PNG con fondo transparente.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Marck+Script&family=Kalam:wght@400&family=Caveat:wght@500&family=Dancing+Script:wght@500&family=UnifrakturMaguntia&family=Monsieur+La+Doulaise&family=Italianno&family=Pinyon+Script&family=Sacramento&family=Shadows+Into+Light&family=Herr+Von+Muellerhoff&family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600;700&display=swap');
+  :root{
+    --paper:#f3ede1;
+    --paper-2:#e9e1d1;
+    --card:#fbf7ef;
+    --ink:#1a1613;
+    --ink-soft:#544a3f;
+    --ink-faint:#8b8072;
+    --rule:#d9cfba;
+    --rule-2:#c2b49a;
+    --accent:#7a1f2b;
+    --accent-2:#9c7c2c;
+    --ui:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --display:"Fraunces",Georgia,serif;
+    --shadow:0 1px 0 rgba(0,0,0,.05), 0 18px 40px -26px rgba(26,22,19,.5);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);font-family:var(--ui);font-size:15px;
+    -webkit-font-smoothing:antialiased;line-height:1.55;
+    background-image:radial-gradient(circle at 12% 0%, rgba(156,124,44,.09), transparent 40%),
+                     radial-gradient(circle at 92% 96%, rgba(122,31,43,.07), transparent 42%);
+    min-height:100vh;
+  }
+  a{color:var(--accent)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1rem,3vw,2rem) 3rem}
 
-:root{
-  --bg:#04060a;
-  --fg:#9dff2e;
-  --acc1:#ff00d4;
-  --acc2:#00f0ff;
-  --warn:#ffcc00;
-  --hair:rgba(157,255,46,.22);
-  --scan-op:.14;
-  --hueSpeed:12s;
-  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --tech:'Share Tech Mono',var(--mono);
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg)}
-#unk{
-  position:relative;
-  width:100%;
-  max-width:760px;
-  margin:0 auto;
-  background:var(--bg);
-  color:var(--fg);
-  font-family:var(--mono);
-  font-size:13px;
-  line-height:1.55;
-  overflow:hidden;
-  border-left:1px solid var(--hair);
-  border-right:1px solid var(--hair);
-  text-shadow:0 0 6px color-mix(in srgb, var(--fg) 55%, transparent);
-  transition:background .6s linear;
-}
-#rain{position:absolute;inset:0;width:100%;height:100%;opacity:.42;z-index:0;pointer-events:none}
-#plasma{position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:
-    radial-gradient(60% 40% at 12% 8%, color-mix(in srgb,var(--acc1) 26%,transparent), transparent 70%),
-    radial-gradient(50% 35% at 88% 22%, color-mix(in srgb,var(--acc2) 22%,transparent), transparent 70%),
-    radial-gradient(70% 50% at 50% 100%, color-mix(in srgb,var(--fg) 14%,transparent), transparent 75%);
-  animation:hueSpin var(--hueSpeed) linear infinite;
-  mix-blend-mode:screen;
-}
-@keyframes hueSpin{to{filter:hue-rotate(360deg)}}
-#scan{position:absolute;inset:0;z-index:3;pointer-events:none;
-  background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,.55) 3px, rgba(0,0,0,.55) 4px);
-  opacity:var(--scan-op);
-  mix-blend-mode:multiply;
-}
-#sweep{position:absolute;left:0;right:0;height:120px;z-index:4;pointer-events:none;
-  background:linear-gradient(to bottom, transparent, color-mix(in srgb,var(--acc2) 12%,transparent), transparent);
-  animation:sweepDown 7s linear infinite;
-}
-@keyframes sweepDown{0%{top:-140px}100%{top:100%}}
-#grain{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.16;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='120' height='120' filter='url(%23n)' opacity='.5'/></svg>");
-}
-#vig{position:absolute;inset:0;z-index:5;pointer-events:none;
-  background:radial-gradient(120% 90% at 50% 45%, transparent 45%, rgba(0,0,0,.85) 100%);
-}
-.wrap{position:relative;z-index:6;padding:0 18px 60px}
+  header.top{
+    display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;
+    padding:1.6rem 0 1.2rem;border-bottom:1px solid var(--rule);
+  }
+  .mark{
+    width:40px;height:40px;border:1.5px solid var(--ink);border-radius:50%;
+    display:grid;place-items:center;font-family:"Great Vibes",cursive;font-size:1.5rem;line-height:1;
+    padding-bottom:.35rem;flex:0 0 auto;color:var(--ink);
+  }
+  .titles{display:flex;flex-direction:column;line-height:1.1}
+  .titles b{font-family:var(--display);font-weight:700;font-size:1.35rem;letter-spacing:-.01em}
+  .titles span{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-top:.28rem}
+  .topnote{margin-left:auto;font-size:.74rem;color:var(--ink-faint);max-width:34ch;text-align:right}
+  @media (max-width:720px){.topnote{display:none}}
 
-#bar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:6px;align-items:center;
-  padding:8px 10px;margin:0 -18px 0;background:rgba(0,0,0,.82);
-  border-bottom:1px solid var(--hair);backdrop-filter:blur(4px);
-  font-family:var(--tech);font-size:11px;letter-spacing:.06em}
-#bar .brand{color:var(--acc1);margin-right:auto;font-weight:700;letter-spacing:.2em}
-.btn{cursor:pointer;user-select:none;border:1px solid var(--hair);color:var(--fg);
-  background:rgba(0,0,0,.4);padding:4px 9px;font-family:var(--tech);font-size:11px;
-  letter-spacing:.08em;transition:.15s}
-.btn:hover{background:var(--fg);color:#04060a;text-shadow:none;box-shadow:0 0 14px var(--fg)}
-.btn.on{background:var(--acc1);color:#04060a;text-shadow:none;border-color:var(--acc1)}
+  .intro{max-width:60ch;margin:1.6rem 0 2rem;color:var(--ink-soft)}
+  .intro h1{font-family:var(--display);font-weight:700;font-size:clamp(1.7rem,3.6vw,2.4rem);line-height:1.1;letter-spacing:-.02em;margin:0 0 .5rem;color:var(--ink)}
+  .intro p{margin:0;font-size:.95rem}
 
-h1,h2,h3{font-family:var(--tech);font-weight:400;letter-spacing:.06em;margin:0}
-h2{font-size:20px;color:var(--fg);margin:46px 0 4px;text-transform:uppercase}
-h2::before{content:'';display:block;height:1px;background:linear-gradient(90deg,var(--acc1),transparent);margin-bottom:10px}
-h3{font-size:14px;color:var(--acc2);text-transform:uppercase;margin:22px 0 6px;letter-spacing:.14em}
-p{margin:0 0 13px}
-.dim{color:color-mix(in srgb,var(--fg) 58%,transparent)}
-.hot{color:var(--acc1)}
-.cold{color:var(--acc2)}
-.warnc{color:var(--warn)}
-.big{font-family:var(--tech);font-size:30px;line-height:1.1;letter-spacing:.02em}
-.lead{font-size:15px}
-hr{border:0;height:1px;background:var(--hair);margin:26px 0}
-.sig{font-family:var(--tech);color:var(--acc1);letter-spacing:.1em}
+  .studio{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:clamp(1rem,3vw,2rem);align-items:start}
+  @media (max-width:880px){.studio{grid-template-columns:1fr}}
 
-pre.ascii{font-family:var(--tech);white-space:pre;overflow:visible;
-  font-size:11px;line-height:1.06;letter-spacing:0;margin:0;color:var(--fg);text-shadow:0 0 8px currentColor}
-pre.ascii.acc{color:var(--acc2)}
-pre.ascii.mag{color:var(--acc1)}
-pre.ascii.small{font-size:9px;color:color-mix(in srgb,var(--fg) 70%,transparent)}
-pre.anim{animation:col 9s linear infinite}
-@keyframes col{0%{color:var(--acc2)}33%{color:var(--fg)}66%{color:var(--acc1)}100%{color:var(--acc2)}}
-.asciiBox{border:1px dashed var(--hair);padding:12px;background:rgba(0,0,0,.35);overflow-x:auto}
+  .panel{background:var(--card);border:1px solid var(--rule-2);border-radius:5px;padding:1.25rem;box-shadow:var(--shadow)}
+  .field{margin-bottom:1.3rem}
+  .field:last-child{margin-bottom:0}
+  label.lab{display:block;font-size:.66rem;letter-spacing:.17em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;margin-bottom:.45rem}
+  #name{
+    width:100%;padding:.75rem .85rem;font-family:"Caveat",cursive;font-size:1.6rem;line-height:1.1;
+    color:var(--ink);background:#fff;border:1px solid var(--rule-2);border-radius:3px;
+  }
+  #name:focus{outline:2px solid rgba(156,124,44,.55);outline-offset:1px;border-color:var(--ink-faint)}
+  #name::placeholder{font-family:var(--ui);font-size:.9rem;color:var(--ink-faint)}
+  .hint{font-size:.7rem;color:var(--ink-faint);margin-top:.35rem}
 
-.gl{position:relative;display:inline-block}
-.gl::before,.gl::after{content:attr(data-t);position:absolute;left:0;top:0;width:100%;text-shadow:none}
-.gl::before{color:var(--acc1);animation:gA 2.6s infinite steps(2,end);transform:translate(-2px,0)}
-.gl::after{color:var(--acc2);animation:gB 3.1s infinite steps(2,end);transform:translate(2px,0)}
-@keyframes gA{0%,88%,100%{clip-path:inset(0 0 100% 0)}89%{clip-path:inset(10% 0 55% 0)}93%{clip-path:inset(62% 0 12% 0)}96%{clip-path:inset(30% 0 40% 0)}}
-@keyframes gB{0%,84%,100%{clip-path:inset(100% 0 0 0)}86%{clip-path:inset(48% 0 30% 0)}91%{clip-path:inset(20% 0 62% 0)}97%{clip-path:inset(70% 0 8% 0)}}
+  .styles{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
+  .st{
+    cursor:pointer;border:1px solid var(--rule);border-radius:3px;background:#fff;
+    padding:.5rem .35rem .45rem;text-align:center;position:relative;overflow:hidden;
+    transition:border-color .12s, background .12s;
+  }
+  .st:hover{border-color:var(--rule-2);background:#fffdf8}
+  .st .demo{display:block;font-size:1.3rem;line-height:1.1;color:var(--ink);height:1.5rem;overflow:hidden;white-space:nowrap}
+  .st .nm{display:block;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-top:.3rem}
+  .st[aria-pressed="true"]{border-color:var(--accent);background:#fdf4f3;box-shadow:inset 0 0 0 1px var(--accent)}
+  .st[aria-pressed="true"] .nm{color:var(--accent);font-weight:600}
 
-.tick{overflow:hidden;white-space:nowrap;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
-  background:rgba(0,0,0,.5);padding:5px 0;margin:14px 0;font-family:var(--tech);font-size:11px;letter-spacing:.16em}
-.tick span{display:inline-block;padding-left:100%;animation:slide 34s linear infinite;color:var(--acc2)}
-.tick.rev span{animation-direction:reverse;color:var(--acc1)}
-@keyframes slide{to{transform:translateX(-100%)}}
+  .row{display:flex;gap:.9rem;flex-wrap:wrap}
+  .row > .field{flex:1 1 120px;margin-bottom:0}
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
-.card{border:1px solid var(--hair);background:rgba(0,0,0,.55);padding:11px 12px;position:relative;transition:.2s}
-.card:hover{border-color:var(--fg);transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--acc1)}
-.card .n{font-family:var(--tech);color:var(--acc1);font-size:11px;letter-spacing:.2em}
-.card .t{font-family:var(--tech);color:var(--fg);font-size:12.5px;margin:3px 0 5px;text-transform:uppercase;letter-spacing:.05em}
-.card p{font-size:11.5px;margin:0;color:color-mix(in srgb,var(--fg) 72%,transparent)}
+  .swatches{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+  .sw{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--rule-2);cursor:pointer;padding:0}
+  .sw[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+  input[type="color"]{width:26px;height:26px;padding:0;border:1px solid var(--rule-2);border-radius:50%;background:none;cursor:pointer}
+  input[type="color"]::-webkit-color-swatch-wrapper{padding:0}
+  input[type="color"]::-webkit-color-swatch{border:none;border-radius:50%}
 
-.term{border:1px solid var(--hair);background:rgba(0,0,0,.65);padding:12px;font-family:var(--tech);font-size:12px}
-.term .ps1{color:var(--acc1)}
-input,textarea{width:100%;background:rgba(0,0,0,.6);border:1px solid var(--hair);color:var(--fg);
-  font-family:var(--tech);font-size:13px;padding:8px 10px;outline:none;margin:8px 0}
-input:focus,textarea:focus{border-color:var(--acc1);box-shadow:0 0 12px color-mix(in srgb,var(--acc1) 40%,transparent)}
-#out{min-height:74px;white-space:pre-wrap;color:var(--acc2);border-left:2px solid var(--acc1);padding-left:10px;margin-top:8px}
-#log{height:104px;overflow:hidden;font-size:10.5px;color:color-mix(in srgb,var(--fg) 65%,transparent);line-height:1.5}
-#log b{color:var(--acc1);font-weight:400}
+  input[type="range"]{width:100%;accent-color:var(--accent)}
 
-.mod{margin-bottom:20px}
-.mod .lbl{font-family:var(--tech);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--warn);margin-bottom:6px}
-.mod .term{text-align:center;padding:10px}
-.mod pre{display:inline-block;text-align:left;font-size:10px;line-height:11px}
+  .bgs{display:flex;gap:.4rem}
+  .bg{
+    flex:1;cursor:pointer;border:1px solid var(--rule-2);border-radius:3px;height:34px;padding:0;
+    background-size:12px 12px;
+  }
+  .bg[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink)}
+  .bg.t{background-image:linear-gradient(45deg,#ddd 25%,transparent 25%),linear-gradient(-45deg,#ddd 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#ddd 75%),linear-gradient(-45deg,transparent 75%,#ddd 75%);background-position:0 0,0 6px,6px -6px,-6px 0;background-color:#fff}
+  .bg.w{background:#fff}
+  .bg.c{background:#f6efdf}
+  .bg.d{background:#15120f}
 
-.sigblock{border:1px solid var(--hair);padding:16px;background:
-  linear-gradient(135deg, rgba(255,0,212,.06), transparent 40%), rgba(0,0,0,.5)}
-::selection{background:var(--acc1);color:#04060a;text-shadow:none}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:1.3rem}
+  .btn{
+    font-family:var(--ui);font-size:.8rem;font-weight:500;cursor:pointer;border-radius:3px;
+    padding:.72rem .8rem;border:1px solid var(--rule-2);background:#fff;color:var(--ink);
+    display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+  }
+  .btn:hover{background:var(--paper-2)}
+  .btn svg{width:15px;height:15px}
+  .btn.primary{grid-column:1 / -1;background:var(--ink);color:#fdf9f1;border-color:var(--ink);font-weight:600;letter-spacing:.02em}
+  .btn.primary:hover{background:#000}
+  .btn.ghost{background:transparent}
+
+  .stage{
+    background:var(--card);border:1px solid var(--rule-2);border-radius:5px;padding:1.1rem;box-shadow:var(--shadow);
+    position:sticky;top:1rem;
+  }
+  @media (max-width:880px){.stage{position:static}}
+  .canvasbox{
+    border-radius:3px;overflow:hidden;display:grid;place-items:center;min-height:240px;padding:1rem;
+    background-size:16px 16px;
+    background-image:linear-gradient(45deg,#e3ddd0 25%,transparent 25%),linear-gradient(-45deg,#e3ddd0 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e3ddd0 75%),linear-gradient(-45deg,transparent 75%,#e3ddd0 75%);
+    background-position:0 0,0 8px,8px -8px,-8px 0;background-color:#fff;
+  }
+  canvas{max-width:100%;height:auto;display:block}
+  .stagefoot{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-top:.8rem;font-size:.7rem;color:var(--ink-faint)}
+  .stagefoot b{color:var(--ink-soft);font-weight:600}
+  .status{min-height:1.1rem;font-size:.72rem;color:var(--accent);margin-top:.5rem}
+
+  footer.bot{border-top:1px solid var(--rule);margin-top:2.5rem;padding-top:1.1rem;font-size:.72rem;color:var(--ink-faint);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div id="unk">
-  <canvas id="rain"></canvas>
-  <div id="plasma"></div>
-  <div id="grain"></div>
-  <div id="scan"></div>
-  <div id="sweep"></div>
-  <div id="vig"></div>
-
-  <div class="wrap">
-    <div id="bar">
-      <span class="brand">UNK ▓▓▓ v1.0</span>
-      <span class="btn" data-act="pal">PALETA</span>
-      <span class="btn" data-act="glitch">GLITCH+</span>
-      <span class="btn" data-act="calm">CALMA</span>
-      <span class="btn" data-act="sound">SONIDO:OFF</span>
-      <span class="btn" data-act="axioma">AXIOMA RANDOM</span>
+  <header class="top">
+    <div class="mark" aria-hidden="true">T</div>
+    <div class="titles">
+      <b>Trazo</b>
+      <span>Generador de firmas</span>
     </div>
+    <p class="topnote">Escribe, elige y descarga. Todo ocurre en tu navegador: nada se sube a ningún servidor.</p>
+  </header>
 
-    <div style="text-align:center;padding:26px 0 6px">
-<pre class="ascii mag" style="display:inline-block;font-size:12px">
- ██╗   ██╗███╗   ██╗██╗  ██╗
- ██║   ██║████╗  ██║██║ ██╔╝
- ██║   ██║██╔██╗ ██║█████╔╝
- ██║   ██║██║╚██╗██║██╔═██╗
- ╚██████╔╝██║ ╚████║██║  ██╗
-  ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝</pre>
-      <div class="big gl" data-t="UNITED NETWORK OF KNOWLEDGMENT">UNITED NETWORK OF KNOWLEDGMENT</div>
-      <div class="dim" style="font-family:var(--tech);letter-spacing:.32em;font-size:11px;margin-top:8px">
-        R E E S C R I B I B I L I D A D &nbsp;·&nbsp; C O N T I N G E N C I A &nbsp;·&nbsp; A G E N C I A
+  <section class="intro">
+    <h1>Tu nombre, con pulso propio</h1>
+    <p>Doce estilos de escritura, rúbricas y plumines. Descarga en PNG con fondo transparente para usarla en documentos, correo o donde quieras.</p>
+  </section>
+
+  <div class="studio">
+
+    <form class="panel" id="form" autocomplete="off">
+      <div class="field">
+        <label class="lab" for="name">Nombre a firmar</label>
+        <input id="name" type="text" maxlength="42" placeholder="Escribe un nombre…" value="Daniel Gascón" aria-describedby="namehint">
+        <p class="hint" id="namehint">Hasta 42 caracteres. La vista se actualiza al escribir.</p>
+      </div>
+
+      <div class="field">
+        <span class="lab" id="stylelab">Estilo</span>
+        <div class="styles" role="group" aria-labelledby="stylelab" id="styles"></div>
+      </div>
+
+      <div class="row field">
+        <div class="field">
+          <span class="lab" id="inklab">Tinta</span>
+          <div class="swatches" role="group" aria-labelledby="inklab" id="inks"></div>
+        </div>
+        <div class="field">
+          <span class="lab" id="bglab">Fondo</span>
+          <div class="bgs" role="group" aria-labelledby="bglab" id="bgs">
+            <button type="button" class="bg t" data-bg="transparent" aria-pressed="true" aria-label="Fondo transparente"></button>
+            <button type="button" class="bg w" data-bg="#ffffff" aria-pressed="false" aria-label="Fondo blanco"></button>
+            <button type="button" class="bg c" data-bg="#f6efdf" aria-pressed="false" aria-label="Fondo marfil"></button>
+            <button type="button" class="bg d" data-bg="#15120f" aria-pressed="false" aria-label="Fondo oscuro"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="lab" for="weight">Grosor del plumín</label>
+        <input id="weight" type="range" min="1" max="6" step="0.5" value="2.6">
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn ghost" id="shake">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4v5h5M20 20v-5h-5"/><path d="M20 9a8 8 0 0 0-14-3M4 15a8 8 0 0 0 14 3"/></svg>
+          Otra variante
+        </button>
+        <button type="button" class="btn ghost" id="copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+          Copiar
+        </button>
+        <button type="submit" class="btn primary" id="save">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12M7 11l5 5 5-5M4 20h16"/></svg>
+          Guardar firma en PNG
+        </button>
+      </div>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </form>
+
+    <div class="stage">
+      <div class="canvasbox">
+        <canvas id="cv" role="img" aria-label="Vista previa de la firma"></canvas>
+      </div>
+      <div class="stagefoot">
+        <span>Salida <b>3×</b> · PNG con transparencia</span>
+        <span id="dims">—</span>
       </div>
     </div>
 
-    <div class="tick"><span>▓ NO SOMOS LOS DUEÑOS DEL UNIVERSO ▓ LO QUE SE ESCRIBE SE REESCRIBE ▓ SI DEJÁS DE JUGAR EL JUEGO, EL JUEGO SE CAE ▓ LA ÚNICA TEORÍA QUE HAY QUE MATAR ES LA TEORÍA DE LA INCAPACIDAD ▓</span></div>
-
-    <div style="display:flex;gap:14px;align-items:flex-start">
-<pre class="ascii acc" style="font-size:10px;flex:0 0 210px">
-        /\     /\
-       /  \   /  \
-      /    \ /    \
-     |  o   V   o  |
-     |      ___    |
-     |     (   )   |
-      \     ---   /
-       \    | |  /
-        \   | | /
-         \  | |/
-          |||||
-       ___|||||___
-      /   |||||   \
-     /    |||||    \
-    |     |||||     |
-    |_____|||||_____|
-     |  |       |  |
-     |  |       |  |
-    _|  |_     _|  |_
-   (__)(__)   (__)(__)
-</pre>
-      <div>
-        <h3 style="margin-top:0">// la mula de carga</h3>
-        <p>UNK no es un templo. Es una <span class="hot">mula</span>: un animal de carga que camina por donde no hay camino, con las orejas paradas, cargando ideas que el statu quo no quiso llevar nunca.</p>
-        <p class="dim">La mula no discute con el terreno. Lo pisa, lo mide y sigue. Carga peso muerto y lo convierte en distancia.</p>
-        <p class="dim">Si estás leyendo esto, ya estás arriba de la mula. Agarrate.</p>
-      </div>
-    </div>
-
-    <h2>01 · manifiesto</h2>
-    <p class="lead">Arranco con la verdad incómoda: <span class="warnc">la naturaleza del universo es limitada.</span></p>
-    <p>Y adentro de esa limitación, los humanos se fabricaron un cuento de hadas con tres capítulos:</p>
-    <p class="dim">I. Que somos los únicos seres vivos del universo.<br>
-    II. Que somos los dueños de la casa.<br>
-    III. Que las ciencias, como vienen de la naturaleza, son incambiables.</p>
-    <p>Los tres son cómodos. Los tres son falsos. Y el tercero es el más peligroso, porque convierte a la ciencia en una <span class="hot">religión con guardapolvo</span>: bajó del cielo, está escrita, y nadie la toca.</p>
-    <p>Yo no compro ese cuento de hadas. No porque sea rebelde, sino porque es <em>mal argumento</em>. Si algo viene de la naturaleza y a la vez es incambiable, entonces la naturaleza es una sola cosa y nosotros somos sus inquilinos. Y ahí se te muere la libertad antes de empezar.</p>
-    <p class="big cold">La libertad de alterar la psique de la realidad tiene límites. Sí. Pero el límite no es el techo: es la <span class="hot">cancha</span>.</p>
-
-    <h2>02 · reescribibilidad</h2>
-    <p>En 1910 dos tipos —Bertrand Russell y Alfred North Whitehead— publicaron un ladrillo llamado <em>Principia Mathematica</em>. Adentro dejaron escrita una fórmula que dice, en criollo:</p>
-    <div class="term" style="margin:14px 0">
-      <span class="ps1">unk@axioma:~$</span> cat ley_fundamental.log<br><br>
-      <span class="cold">"Todo sistema que sirva para algo debe partir de operadores<br>
-      con axiomas, con reglas claras y no rompibles, y dar como<br>
-      resultado un resultado exacto."</span>
-    </div>
-    <p>Perfecto. Impecable. Y acá está la bomba que nadie mira de frente:</p>
-    <p class="big">Que un sistema dé un resultado exacto <span class="hot">no significa que sea el único sistema posible.</span></p>
-    <p>Significa que es <em>un</em> sistema que funciona. Y a partir de ahí la pregunta deja de ser <span class="dim">"¿qué es verdad?"</span> y pasa a ser la única pregunta que importa:</p>
-    <p class="big" style="color:var(--acc1)">¿QUÉ QUERÉS ESCRIBIR VOS?</p>
-    <p>Eso es <strong style="font-weight:600">REESCRIBIBILIDAD</strong>: la propiedad de todo lo escrito de poder ser vuelto a escribir, sin romper el piso lógico, pero sin quedarse jamás con el primer borrador.</p>
-    <p class="dim">El piso es lógico. El techo lo ponés vos. Y el techo, por definición, todavía no existe.</p>
-
-    <div class="tick rev"><span>▓ LA CIENCIA NO BAJÓ DEL CIELO ▓ LA CIENCIA SE ESCRIBE ▓ TODO LO ESCRITO ES BORRADOR ▓ EL BORRADOR SE TIRA ▓</span></div>
-
-    <h2>03 · contingencia</h2>
-    <p>Introduzco el concepto que hace temblar a los que venden certezas: <span class="hot">contingencia</span>.</p>
-    <p>Quizás —y esto es lo que expande la libertad— <em>todo sistema es contingente</em>. No hay una sola línea. No hay un solo orden. No hay una sola escalera con los escalones ya cortados.</p>
-    <p>Significa que no estamos limitados a un camino: <span class="cold">podemos reescribir los caminos</span>. Y las ciencias. Y crear nuevos, a nuestro más mínimo y diverso antojo, siempre sobre la lógica básica, siempre apuntando a un resultado útil.</p>
-    <div class="grid">
-      <div class="card"><div class="n">[ A ]</div><div class="t">sistema cerrado</div><p>Hay un solo camino. Se camina. Se obedece. El resultado ya está decidido antes de que entres.</p></div>
-      <div class="card"><div class="n">[ B ]</div><div class="t">sistema contingente</div><p>Hay infinitos caminos. Se reescriben. Se hackean. El resultado se negocia con tu propia vida.</p></div>
-    </div>
-    <p>Recuperar agencia es exactamente eso: hacernos con posibilidades que los sistemas que otros declararon como únicos <span class="hot">no permitían</span>. Una mutación. Ilimitada. Que te deja hackear un poco la realidad y moldearla a tu imagen y semejanza en la forma en que puedas.</p>
-    <p>Que tus medios y tus fines se alineen con <em>tu</em> perspectiva y con <em>tu</em> método instrumentalista único. No los medios de otro. No los fines de otro. Los tuyos. Y que de ahí salga la expectativa de logro que buscás, y después más, y después más.</p>
-
-    <h2>04 · el juego</h2>
-    <p>Mirá el planeta y decime si no es un casino.</p>
-    <p>BlackJack. Apuestas plata, te dan cartas, ganás o perdés, y la plata da vueltas. Vueltas. Vueltas. Todo el sistema montado para que se juegue <em>el juego</em>.</p>
-    <p class="big">Pero nadie pregunta lo obvio:<br><span class="hot">¿por qué tengo que jugar?</span></p>
-    <p>Podrían darte la plata directamente. Ganás, perdés, volvés a ganar, volvés a perder, y el orden sigue intacto porque el objetivo nunca fue el resultado: el objetivo fue <span class="cold">que sigas jugando</span>.</p>
-    <p>Si se dejara de jugar el juego, ¿no avanzaría más el planeta? Y sí. Avanzaría. Pero eso jodería al sistema y al statu quo. Y el statu quo tiene un miedo puntual: que el mundo avance <em>sin pedirle permiso</em>.</p>
-    <div class="asciiBox" style="margin:16px 0">
-<pre class="ascii small">  ┌─────────────────────────────────────────────────────────┐
-  │  REGLA NO ESCRITA DEL CASINO:                           │
-  │  el juego debe seguir siendo jugado, incluso por los    │
-  │  que ya entendieron que es un juego.                    │
-  │                                                         │
-  │  TU MOVIMIENTO:  dejar de apostar. empezar a escribir.  │
-  └─────────────────────────────────────────────────────────┘</pre>
-    </div>
-
-    <h2>05 · axiomas unk</h2>
-    <p class="dim">Reglas claras. No rompibles. Piso, no techo.</p>
-    <div class="grid" id="axiomas"></div>
-
-    <h2>06 · la máquina de reescribir</h2>
-    <p>Escribí algo que creas fijo. La máquina lo va a agarrar, lo va a sacudir y te lo va a devolver reescrito. Después te devuelve la pelota a vos.</p>
-    <div class="term">
-      <span class="ps1">unk@reescribidor:~$</span> ./reescribir --entrada="lo que ya no aguanto"<br>
-      <input id="inp" placeholder="escribí una frase que creas fija..." value="esto siempre fue así y siempre va a ser así">
-      <span class="btn" id="go" style="display:inline-block">▶ REESCRIBIR REALIDAD</span>
-      <span class="dim" style="font-size:10.5px;margin-left:8px">realidades reescritas: <span id="ctr" class="warnc">0</span></span>
-      <div id="out">_ esperando entrada del operador _</div>
-    </div>
-
-    <div class="term" style="margin-top:14px">
-      <span class="ps1">unk@consola:~$</span> tail -f /var/log/contingencia.log
-      <div id="log"></div>
-    </div>
-
-    <h2>07 · módulos ascii</h2>
-    <p class="dim">Cinco máquinas que no se quedan quietas.</p>
-
-    <div class="mod">
-      <div class="lbl">módulo 01 · el toro</div>
-      <div class="term"><pre class="ascii anim" id="m-donut"></pre></div>
-    </div>
-
-    <div class="mod">
-      <div class="lbl">módulo 02 · lluvia de axiomas</div>
-      <div class="term" style="padding:8px"><div style="height:158px"><canvas id="m-rain" style="width:100%;height:100%;display:block"></canvas></div></div>
-    </div>
-
-    <div class="mod">
-      <div class="lbl">módulo 03 · interferencia exacta</div>
-      <div class="term"><pre class="ascii anim" id="m-mandala"></pre></div>
-    </div>
-
-    <div class="mod">
-      <div class="lbl">módulo 04 · el borde sin techo</div>
-      <div class="term"><pre class="ascii anim" id="m-onda"></pre></div>
-    </div>
-
-    <div class="mod">
-      <div class="lbl">módulo 05 · la mesa del juego</div>
-      <div class="term"><pre class="ascii anim" id="m-mesa"></pre></div>
-    </div>
-
-    <h3>// fragmentos de la consola</h3>
-    <div class="asciiBox">
-<pre class="ascii acc small">unk@nucleo:~$ grep -r "libertad" /sistema/
-/sistema/normas.txt:    "hacé esto, no aquello, y no preguntes"
-/sistema/trabajo.txt:   "esperá tu turno, alguien ya lo pensó"
-/sistema/edad.txt:      "a tu edad ya es tarde para empezar"
-/sistema/suerte.txt:    "hay gente que nace con permiso"
-
-unk@nucleo:~$ rm -rf /sistema/*.txt
-unk@nucleo:~$ touch /sistema/mio.txt
-unk@nucleo:~$ echo "todo esto lo escribo yo" &gt; /sistema/mio.txt
-unk@nucleo:~$ ls -la /sistema/
--rw-r--r--  mio.txt      <span class="warnc">reescribible</span>
--rw-r--r--  statu_quo    <span class="dim">contingente</span>
--rw-r--r--  imposible    <span class="hot">EN REVISIÓN</span></pre>
-    </div>
-
-    <h2>08 · carta al que lee</h2>
-    <p class="lead">Si estás leyendo esto y sentís que llegaste tarde: <span class="hot">mentira.</span></p>
-    <p>No llegaste tarde. Llegaste justo a la parte donde se agarra el lápiz.</p>
-    <p>Te enseñaron que la vida es un tablero con reglas puestas antes de que nacieras. Te enseñaron a mover las fichas. A esperar el turno. A no hacer ruido. Nadie te dijo que podías redibujar el tablero, ni romperlo, ni poner la mesa en otra parte.</p>
-    <p>Todo lo que creíste fijo — el trabajo, el orden, la edad, la suerte, "lo que se puede y lo que no" — es un sistema <em>escrito</em>. Y por lo tanto, reescribible. Cada uno de esos muros tiene una costura. Y toda costura se deshace.</p>
-    <p>No hace falta que creas nada. Hace falta que escribas algo.</p>
-    <p class="big cold">Agarrá el lápiz. Mirá lo que hay.<br>Y volvé a escribirlo.</p>
-
-    <h2>09 · creador</h2>
-    <div class="sigblock">
-      <div class="sig" style="font-size:22px">ALEXANDER PERELMAN</div>
-      <div class="dim" style="font-family:var(--tech);letter-spacing:.22em;font-size:10.5px;margin:6px 0 14px">FUNDADOR · PRIMER REESCRIBIDOR · UNK</div>
-      <p>Perelman no descubrió nada. <span class="hot">Se dio cuenta.</span> Que es peor.</p>
-      <p>Se dio cuenta de que el casino seguía funcionando porque todos seguían apostando, y de que la mesa estaba torcida a propósito. Se dio cuenta de que a la ciencia le habían puesto guardapolvo de sacristía para que nadie la tocara. Y se dio cuenta de que la única teoría realmente peligrosa —la que sostiene todas las demás— es la <span class="warnc">teoría de la incapacidad</span>: esa vocecita que dice "vos no podés".</p>
-      <p>Entonces construyó UNK. No como doctrina: como <em>herramienta</em>. No como respuesta: como <em>permiso</em>.</p>
-      <p class="dim">Esto es suyo. Y ahora que lo leíste, un poco tuyo también. Así funciona la reescritura: no se gasta cuando se comparte, se multiplica.</p>
-      <div style="margin-top:14px;border-top:1px solid var(--hair);padding-top:10px;font-family:var(--tech);font-size:10.5px" class="dim">
-        UNK · UNITED NETWORK OF KNOWLEDGMENT<br>
-        nodo 01 · la mula sigue caminando
-      </div>
-    </div>
-
-    <hr>
-    <div style="text-align:center;font-family:var(--tech);font-size:10.5px" class="dim">
-      <pre class="ascii small" style="display:inline-block">▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀</pre>
-      <div style="margin-top:8px">ESCRITO POR UN SISTEMA QUE SE SABE CONTINGENTE</div>
-      <div style="margin-top:4px" class="warnc">NO SOMOS LOS ÚNICOS. NO SOMOS LOS DUEÑOS. NO SOMOS EL FINAL.</div>
-    </div>
   </div>
+
+  <footer class="bot">
+    <span>Trazo · generador de firmas · sin cuentas, sin servidores</span>
+    <span>Tipografías bajo SIL Open Font License</span>
+  </footer>
 </div>
 
 <script>
 (function(){
-  const root = document.getElementById('unk');
-  const CV = document.getElementById('rain');
-  const ctx = CV.getContext('2d');
-  let W=0,H=0,cols=[],fontSize=15,glitchMul=1;
+  "use strict";
 
-  function resize(){
-    W = root.clientWidth; H = root.scrollHeight;
-    CV.width = W; CV.height = H;
-    const n = Math.floor(W/fontSize);
-    cols = new Array(n).fill(0).map(()=>Math.random()*-120);
+  var cv = document.getElementById('cv');
+  var ctx = cv.getContext('2d');
+  var nameEl = document.getElementById('name');
+  var weightEl = document.getElementById('weight');
+  var statusEl = document.getElementById('status');
+  var dimsEl = document.getElementById('dims');
+  var SCALE = 3;
+
+  var STYLES = [
+    {id:'clasica',  label:'Clásica',    font:'Great Vibes',          rot:-0.030, skew:-0.02, wave:0,     spacing:0.010, flour:'line'},
+    {id:'ejecutiva',label:'Ejecutiva',  font:'Marck Script',         rot:-0.055, skew:-0.13, wave:0,     spacing:0.000, flour:'underline'},
+    {id:'pulso',    label:'Pulso firme',font:'Kalam',                rot:-0.020, skew:-0.05, wave:0,     spacing:0.015, flour:'none'},
+    {id:'rapida',   label:'Rápida',     font:'Caveat',               rot:-0.070, skew:-0.16, wave:0.018, spacing:0.010, flour:'none'},
+    {id:'ondulada', label:'Ondulada',   font:'Dancing Script',       rot:-0.030, skew:-0.08, wave:0.055, spacing:0.020, flour:'wave'},
+    {id:'gotica',   label:'Gótica',     font:'UnifrakturMaguntia',   rot: 0.000, skew:0.00,  wave:0,     spacing:0.020, flour:'none'},
+    {id:'ornamento',label:'Ornamental', font:'Monsieur La Doulaise', rot:-0.020, skew:-0.05, wave:0,     spacing:0.025, flour:'swash'},
+    {id:'italiana', label:'Italiana',   font:'Italianno',            rot:-0.035, skew:-0.10, wave:0,     spacing:0.030, flour:'line'},
+    {id:'monograma',label:'Monograma',  font:'Pinyon Script',        rot: 0.000, skew:0.00,  wave:0,     spacing:0.030, flour:'double', mono:true},
+    {id:'ligera',   label:'Ligera',     font:'Sacramento',           rot:-0.020, skew:-0.06, wave:0.020, spacing:0.030, flour:'none'},
+    {id:'tecnica',  label:'Técnica',    font:'Shadows Into Light',   rot: 0.000, skew:0.00,  wave:0,     spacing:0.040, flour:'none'},
+    {id:'sello',    label:'Sello',      font:'Herr Von Muellerhoff', rot: 0.000, skew:0.00,  wave:0,     spacing:0.050, flour:'double'}
+  ];
+
+  var INKS = ['#14110f','#1b3a5c','#7a1f2b','#0f5132','#4a2c6b','#8a6a1f','#2f4858'];
+  var state = { style:0, ink:'#14110f', bg:'transparent', seed:1234 };
+
+  /* ---------- construcción de controles ---------- */
+  var stylesBox = document.getElementById('styles');
+  STYLES.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'st';
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.innerHTML = '<span class="demo" style="font-family:\'' + s.font + '\',cursive">Ab</span><span class="nm">' + s.label + '</span>';
+    b.addEventListener('click', function(){
+      state.style = i;
+      Array.prototype.forEach.call(stylesBox.children, function(c, j){
+        c.setAttribute('aria-pressed', j === i ? 'true' : 'false');
+      });
+      ensureFont(s.font).then(function(){ state.seed = Math.random()*1e6|0; render(); });
+    });
+    stylesBox.appendChild(b);
+  });
+
+  var inksBox = document.getElementById('inks');
+  INKS.forEach(function(c, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'sw';
+    b.style.background = c;
+    b.dataset.ink = c;
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.setAttribute('aria-label', 'Tinta ' + c);
+    b.addEventListener('click', function(){
+      state.ink = c;
+      Array.prototype.forEach.call(inksBox.querySelectorAll('.sw'), function(x){
+        x.setAttribute('aria-pressed', x.dataset.ink === c ? 'true' : 'false');
+      });
+      render();
+    });
+    inksBox.appendChild(b);
+  });
+  var custom = document.createElement('input');
+  custom.type = 'color';
+  custom.value = '#14110f';
+  custom.setAttribute('aria-label', 'Color de tinta personalizado');
+  custom.addEventListener('input', function(){
+    state.ink = custom.value;
+    Array.prototype.forEach.call(inksBox.querySelectorAll('.sw'), function(x){ x.setAttribute('aria-pressed','false'); });
+    render();
+  });
+  inksBox.appendChild(custom);
+
+  document.getElementById('bgs').addEventListener('click', function(e){
+    var b = e.target.closest('.bg'); if (!b) return;
+    state.bg = b.dataset.bg;
+    Array.prototype.forEach.call(this.children, function(c){ c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); });
+    render();
+  });
+
+  weightEl.addEventListener('input', render);
+  nameEl.addEventListener('input', render);
+  document.getElementById('shake').addEventListener('click', function(){
+    state.seed = Math.random()*1e6|0;
+    render();
+    say('Variante regenerada.');
+  });
+
+  /* ---------- utilidades ---------- */
+  function mulberry32(a){
+    return function(){
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
   }
-  const GLYPHS = "UNKREESCRIBIR0101▓▒░█▄▀◘◙Ω∆≈≡≠∞¬±§†‡¡¿？アカサタナハマヤラワｦｧｨｩｪｫｬｭｮｯ".split("");
-  function draw(){
-    ctx.fillStyle = "rgba(4,6,10,0.16)";
-    ctx.fillRect(0,0,W,H);
-    const cs = getComputedStyle(root);
-    const fg = cs.getPropertyValue('--fg').trim() || '#9dff2e';
-    const a1 = cs.getPropertyValue('--acc1').trim() || '#ff00d4';
-    const a2 = cs.getPropertyValue('--acc2').trim() || '#00f0ff';
-    ctx.font = fontSize+"px 'Share Tech Mono', monospace";
-    for(let i=0;i<cols.length;i++){
-      const x = i*fontSize, y = cols[i]*fontSize;
-      const g = GLYPHS[(Math.random()*GLYPHS.length)|0];
-      ctx.fillStyle = Math.random()<0.06 ? a1 : (Math.random()<0.1 ? a2 : fg);
-      ctx.globalAlpha = 0.35 + Math.random()*0.6;
-      ctx.fillText(g, x, y);
+  var rnd = mulberry32(1);
+  function say(m){ statusEl.textContent = m; }
+
+  function ensureFont(font){
+    if (document.fonts && document.fonts.load){
+      return document.fonts.load('400 96px "' + font + '"').catch(function(){});
+    }
+    return Promise.resolve();
+  }
+
+  /* ---------- dibujo de rúbricas ---------- */
+  function flourish(type, w, fs, color, lw){
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    var y = fs * 0.46;
+    var a = -w/2, b = w/2;
+
+    function stroke(width){
+      ctx.lineWidth = width;
+      ctx.stroke();
+    }
+
+    if (type === 'line'){
+      ctx.beginPath();
+      ctx.lineWidth = lw;
+      ctx.moveTo(a, y + fs*0.02);
+      ctx.bezierCurveTo(a + w*0.3, y - fs*0.03, b - w*0.3, y + fs*0.05, b, y);
+      stroke(lw);
+    } else if (type === 'underline'){
+      ctx.beginPath();
+      ctx.moveTo(a, y);
+      ctx.bezierCurveTo(a + w*0.35, y + fs*0.035, b - w*0.25, y - fs*0.02, b + fs*0.05, y - fs*0.05);
+      stroke(lw * 0.9);
+      ctx.beginPath();
+      ctx.moveTo(b + fs*0.05, y - fs*0.05);
+      ctx.quadraticCurveTo(b + fs*0.16, y - fs*0.09, b + fs*0.12, y + fs*0.02);
+      stroke(lw * 0.7);
+    } else if (type === 'wave'){
+      ctx.beginPath();
+      var steps = 60;
+      for (var i = 0; i <= steps; i++){
+        var x = a + (w * i / steps);
+        var yy = y + Math.sin(i * 0.55) * fs * 0.045;
+        i ? ctx.lineTo(x, yy) : ctx.moveTo(x, yy);
+      }
+      stroke(lw * 0.8);
+    } else if (type === 'swash'){
+      ctx.beginPath();
+      ctx.moveTo(a - fs*0.35, y - fs*0.16);
+      ctx.bezierCurveTo(a - fs*0.1, y + fs*0.18, a + w*0.4, y + fs*0.1, b + fs*0.08, y - fs*0.06);
+      ctx.quadraticCurveTo(b + fs*0.3, y - fs*0.16, b + fs*0.16, y + fs*0.06);
+      stroke(lw * 0.85);
+    } else if (type === 'double'){
+      ctx.beginPath();
+      ctx.moveTo(a, y);
+      ctx.lineTo(b, y);
+      stroke(lw * 0.75);
+      ctx.beginPath();
+      ctx.moveTo(a + w*0.06, y + fs*0.07);
+      ctx.lineTo(b - w*0.02, y + fs*0.07);
+      stroke(lw * 0.5);
+    }
+    ctx.restore();
+  }
+
+  /* ---------- render ---------- */
+  function render(){
+    var raw = nameEl.value.replace(/\s+/g, ' ').trim();
+    var text = raw || 'Tu nombre';
+    var st = STYLES[state.style];
+    var lw = parseFloat(weightEl.value);
+
+    var fs = 104;
+    var fontStr = '400 ' + fs + 'px "' + st.font + '", cursive';
+    ctx.font = fontStr;
+
+    var chars = Array.from(text);
+    var widths = chars.map(function(c){ return ctx.measureText(c).width; });
+    var spacing = st.spacing * fs;
+    var total = widths.reduce(function(a, b){ return a + b; }, 0) + spacing * (chars.length - 1);
+
+    var maxW = 940;
+    if (total > maxW){
+      var k = maxW / total;
+      fs = Math.floor(fs * k);
+      fontStr = '400 ' + fs + 'px "' + st.font + '", cursive';
+      ctx.font = fontStr;
+      widths = chars.map(function(c){ return ctx.measureText(c).width; });
+      spacing = st.spacing * fs;
+      total = widths.reduce(function(a, b){ return a + b; }, 0) + spacing * (chars.length - 1);
+    }
+
+    var pad = fs * 0.55;
+    var W = Math.ceil(total + pad * 2);
+    var H = Math.ceil(fs * 1.95);
+    cv.width = Math.round(W * SCALE);
+    cv.height = Math.round(H * SCALE);
+    cv.style.width = W + 'px';
+    cv.style.height = H + 'px';
+    dimsEl.textContent = Math.round(W * SCALE) + ' × ' + Math.round(H * SCALE) + ' px';
+
+    ctx.setTransform(SCALE, 0, 0, SCALE, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    if (state.bg !== 'transparent'){
+      ctx.fillStyle = state.bg;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    rnd = mulberry32(state.seed + text.length);
+
+    ctx.save();
+    ctx.translate(W / 2, H / 2);
+    ctx.rotate(st.rot + (rnd() - 0.5) * 0.018);
+    ctx.transform(1, 0, st.skew + (rnd() - 0.5) * 0.03, 1, 0, 0);
+
+    ctx.fillStyle = state.ink;
+    ctx.strokeStyle = state.ink;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+
+    if (st.flour){
+      ctx.globalAlpha = 0.85;
+      flourish(st.flour, total, fs, state.ink, lw);
       ctx.globalAlpha = 1;
-      if(y > H && Math.random() > 0.975) cols[i] = -2;
-      cols[i] += 0.55;
     }
-    requestAnimationFrame(draw);
-  }
-  resize(); draw();
-  window.addEventListener('resize', resize);
 
-  /* ============ LOS CINCO MÓDULOS ============ */
-  // 01 · toro
-  const donut = document.getElementById('m-donut');
-  let A=0,B=0,DW=78,DH=21;
-  function frameDonut(){
-    const b = new Array(DW*DH).fill(' '), z = new Array(DW*DH).fill(0);
-    for(let j=0;j<6.283;j+=0.07){
-      for(let i=0;i<6.283;i+=0.02){
-        const c=Math.sin(i),d=Math.cos(j),e=Math.sin(A),f=Math.sin(j),g=Math.cos(A),
-        h=d+2,D=1/(c*h*e+f*g+5),l=Math.cos(i),m=Math.cos(B),n=Math.sin(B),t=c*h*g-f*e;
-        const x=Math.floor(DW/2+29*D*(l*h*m-t*n)),y=Math.floor(DH/2+10.5*D*(l*h*n+t*m)),o=x+DW*y;
-        const N=Math.floor(8*((f*e-c*d*g)*m-c*d*e-f*g-l*d*n));
-        if(y>0&&y<DH&&x>0&&x<DW&&D>z[o]){z[o]=D;b[o]=".,-~:;=!*#$@"[N>0?N:0];}
-      }
-    }
-    A+=0.032;B+=0.017;
-    let s=''; for(let r=0;r<DH;r++) s += b.slice(r*DW,r*DW+DW).join('')+'\n';
-    donut.textContent = s;
-  }
-  frameDonut(); setInterval(frameDonut,52);
+    var x = -total / 2;
+    var phase = rnd() * 6.28;
 
-  // 02 · lluvia de axiomas
-  const rc = document.getElementById('m-rain'), rx = rc.getContext('2d');
-  const glyphs = "01UNKΣΔλ∞⊘{}[]<>/#$@".split("");
-  let rcols=[], rw=0, rh=0;
-  function rainResize(){
-    rw = rc.clientWidth || 620; rh = rc.clientHeight || 158;
-    rc.width = rw; rc.height = rh;
-    const n = Math.floor(rw/13);
-    rcols = new Array(n).fill(0).map(()=>Math.random()*-40);
-    rx.fillStyle='#05060a'; rx.fillRect(0,0,rw,rh);
-  }
-  function frameRain(){
-    rx.fillStyle='rgba(5,6,10,0.16)'; rx.fillRect(0,0,rw,rh);
-    const cs = getComputedStyle(root);
-    const fg = cs.getPropertyValue('--fg').trim() || '#00ffc8';
-    const a1 = cs.getPropertyValue('--acc1').trim() || '#ff2fd0';
-    const a2 = cs.getPropertyValue('--warn').trim() || '#ffcc00';
-    rx.font='13px "Share Tech Mono", monospace';
-    for(let k=0;k<rcols.length;k++){
-      const ch = glyphs[(Math.random()*glyphs.length)|0];
-      const yy = rcols[k]*15;
-      if(yy>0 && yy<rh+16){
-        rx.fillStyle = Math.random()>0.9 ? a1 : (Math.random()>0.75 ? a2 : fg);
-        rx.fillText(ch, k*13+2, yy);
-      }
-      if(yy>rh && Math.random()>0.975) rcols[k]=0;
-      rcols[k]+=1;
-    }
-  }
-  rainResize(); setInterval(frameRain,70);
-  window.addEventListener('resize', rainResize);
+    chars.forEach(function(ch, i){
+      var size = fs;
+      if (st.mono && i > 0) size = fs * 0.66;
+      if (st.mono && i === 0) size = fs * 1.24;
+      ctx.font = '400 ' + size + 'px "' + st.font + '", cursive';
 
-  // 03 · interferencia exacta
-  const mand = document.getElementById('m-mandala');
-  const mchars=" .:-=+*#%@"; let mt=0; const MW=88, MH=30;
-  function frameMand(){
-    let s='';
-    for(let y=0;y<MH;y++){
-      for(let x=0;x<MW;x++){
-        const nx=(x-MW/2), ny=(y-MH/2)*2.2;
-        const r=Math.sqrt(nx*nx+ny*ny)/(MW/2), a=Math.atan2(ny,nx);
-        const v=Math.abs(Math.sin(r*10-mt)*Math.cos(a*6+mt*0.8));
-        s+=mchars[Math.max(0,Math.min(9,Math.floor(v*9)))];
-      }
-      s+='\n';
-    }
-    mt+=0.11; mand.textContent=s;
-  }
-  frameMand(); setInterval(frameMand,62);
+      var y = 0;
+      if (st.wave) y += Math.sin(i * 0.85 + phase) * st.wave * fs;
+      if (!st.mono) y += (rnd() - 0.5) * fs * 0.012;
 
-  // 04 · el borde sin techo
-  const ond = document.getElementById('m-onda'); let ot=0; const OW=88, OH=17;
-  function frameOnda(){
-    const L=[];
-    for(let y=0;y<OH;y++){
-      let s='';
-      for(let x=0;x<OW;x++){
-        const v=Math.sin(x*0.17+ot)*Math.cos(y*0.42+ot*0.5)+Math.sin((x+y)*0.09-ot*1.3);
-        const idx=Math.floor((v+2)/4*9);
-        s+=" .:-=+*#%@"[Math.max(0,Math.min(9,idx))];
-      }
-      L.push(s);
-    }
-    ot+=0.085; ond.textContent=L.join('\n');
-  }
-  frameOnda(); setInterval(frameOnda,72);
+      ctx.fillText(ch, x, y);
+      var w = widths[i];
+      x += w + spacing + (st.mono && i === 0 ? spacing * 1.5 : 0);
+    });
 
-  // 05 · la mesa del juego
-  const mesa = document.getElementById('m-mesa');
-  const suits="♠♥♦♣", vals="0123456789JQKA", MW2=40;
-  function frameMesa(){
-    const L=[];
-    for(let y=0;y<5;y++){
-      let s='';
-      for(let x=0;x<MW2;x++){
-        const r=Math.random();
-        s += (r>0.5 ? vals[(Math.random()*vals.length)|0] : suits[(Math.random()*4)|0]) + ' ';
-      }
-      L.push(s);
-    }
-    L.splice(2,0,'─'.repeat(MW2*2));
-    L.splice(4,0,'─'.repeat(MW2*2));
-    mesa.textContent=L.join('\n');
+    ctx.restore();
   }
-  frameMesa(); setInterval(frameMesa,110);
 
-  /* ============ SCRAMBLE ============ */
-  const CH = "!<>-_\\/[]{}—=+*^?#▓▒░█▄▀0123456789UNK";
-  function scramble(el, finalText, dur){
-    dur = dur || 800;
-    const start = performance.now(), len = finalText.length;
-    function frame(now){
-      const p = Math.min((now-start)/dur, 1);
-      let out = "";
-      for(let i=0;i<len;i++) out += (i < p*len*1.25) ? finalText[i] : CH[(Math.random()*CH.length)|0];
-      el.textContent = out;
-      if(p<1) requestAnimationFrame(frame); else el.textContent = finalText;
-    }
-    requestAnimationFrame(frame);
+  /* ---------- exportación ---------- */
+  function slug(s){
+    return (s || 'firma').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0, 40) || 'firma';
   }
-  document.querySelectorAll('h2').forEach(h=>{
-    const txt = h.textContent.trim(); h.textContent = "";
-    const io = new IntersectionObserver((es)=>{
-      es.forEach(e=>{ if(e.isIntersecting){ scramble(h, txt, 620); io.disconnect(); } });
-    },{threshold:.4});
-    io.observe(h);
+
+  document.getElementById('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    cv.toBlob(function(blob){
+      if (!blob){ say('No se pudo generar el archivo.'); return; }
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'firma-' + slug(nameEl.value) + '.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+      say('Firma guardada en tu equipo.');
+    }, 'image/png');
   });
 
-  /* ============ AXIOMAS ============ */
-  const AXIOMAS = [
-    ["Ningún sistema es sagrado","Todo sistema es contingente. Si alguien te dice que las reglas son eternas, está vendiendo algo."],
-    ["Si se puede escribir, se puede reescribir","No existe texto sin borrador. Ni ley. Ni norma. Ni destino."],
-    ["La lógica es el piso, no el techo","Los axiomas sostienen. No encierran. Arriba del piso construís lo que quieras."],
-    ["El resultado útil no es el final","Es el punto de partida del próximo sistema. Nunca cierres el bucle."],
-    ["Tus medios, tus fines","Alineá ambos a tu propia perspectiva. Ni los medios ajenos ni los fines ajenos."],
-    ["Hackear la realidad no es metáfora","Es método. Instrumentalismo propio. Elegís las herramientas, no las heredás."],
-    ["Matá la teoría de la incapacidad","Es la única que sostiene a todas las demás. La vocecita que dice 'vos no podés'."],
-    ["La mula carga, y el que carga sabe","El que sabe, reescribe. El conocimiento es peso que se convierte en distancia."],
-    ["Prosperidad, disfrute, final ideal","No sometido. No por permiso. Por escritura propia."],
-    ["UNK no te pide que creas","Te pide que escribas. La fe es de los templos. Acá se labura."],
-    ["Dejá de apostar","El casino vive de que juegues. Vos vivís de que escribas."],
-    ["Reescribí el tablero, no las fichas","Mover fichas es gestión. Redibujar el tablero es agencia."]
-  ];
-  const AG = document.getElementById('axiomas');
-  AXIOMAS.forEach((a,i)=>{
-    const d = document.createElement('div');
-    d.className='card';
-    d.innerHTML = '<div class="n">AX-'+String(i+1).padStart(2,'0')+'</div><div class="t">'+a[0]+'</div><p>'+a[1]+'</p>';
-    AG.appendChild(d);
+  document.getElementById('copy').addEventListener('click', function(){
+    if (!navigator.clipboard || !window.ClipboardItem){ say('Tu navegador no permite copiar imágenes.'); return; }
+    cv.toBlob(function(blob){
+      if (!blob) return;
+      navigator.clipboard.write([new ClipboardItem({'image/png': blob})])
+        .then(function(){ say('Firma copiada al portapapeles.'); })
+        .catch(function(){ say('No se pudo copiar. Usa Guardar.'); });
+    }, 'image/png');
   });
 
-  /* ============ LOG ============ */
-  const LOG = document.getElementById('log');
-  const FRASES = [
-    "sistema.axiomas[3].regla = NO_ROMPIBLE ......... ok",
-    "stat_quo.detectado() -> temor al avance ........ ok",
-    "casino.partidas_jugadas++ ..................... ∞",
-    "reescribibilidad.disponible = TRUE ............ ok",
-    "teoria_incapacidad.estado = CUESTIONADA ....... ok",
-    "contingencia.expandir(libertad) ............... +1",
-    "usuario.agencia = RECUPERADA ................. ok",
-    "ciencia.guardapolvo = REMOVIDO ............... ok",
-    "linea_unica.quebrada .......................... ok",
-    "mula.pasos++ .................................. siguiendo",
-    "permiso.externo.solicitado = FALSE ............ ok",
-    "nuevo_camino.escrito .......................... 1",
-    "borrador.tirado ............................... +1",
-    "realidad.moldeada.a_semejanza ................. ok"
-  ];
-  function logLine(txt){
-    const l = document.createElement('div');
-    l.innerHTML = '<b>['+new Date().toLocaleTimeString('es-AR',{hour12:false})+']</b> '+txt;
-    LOG.appendChild(l);
-    if(LOG.children.length>7) LOG.removeChild(LOG.firstChild);
-  }
-  FRASES.forEach((f,i)=>setTimeout(()=>logLine(f), i*420));
-  setInterval(()=>logLine(FRASES[(Math.random()*FRASES.length)|0]), 2600);
-
-  /* ============ REESCRIBIDOR ============ */
-  const ctr = document.getElementById('ctr');
-  let count = 0;
-  const MOLDE = [
-    t => '"'+t+'"\n\n► NO. Eso es un borrador que alguien dejó abierto.\n► Reescribilo: '+t.replace(/siempre/gi,'').replace(/nunca/gi,'').replace(/\s+/g,' ').trim()+' ... y ahora con tu firma abajo.',
-    t => 'ENTRADA: '+t+'\n\n► Sistema detectado: cerrado.\n► Acción: abrir el bucle. Los axiomas se mantienen.\n► El resultado exacto no cambia la historia: la REESCRIBE.',
-    t => '"'+t+'"\n\n► Traducción: alguien más escribió eso y vos lo heredaste como si fuera clima.\n► Clima no es. Es texto. Y el texto se tacha.',
-    t => 'REESCRITURA APLICADA A: '+t+'\n\n► 1. Identificá el axioma (regla clara, no rompible).\n► 2. Verificá que el resultado sea útil.\n► 3. Ahora cambiá los operadores y mirá qué pasa.\n► Nada explota. Solo se mueve el techo.',
-    t => '"'+t+'"\n\n► Veredicto: contingente.\n► Podría haber sido de otra forma. Podría ser de otra forma.\n► Y "podría" es la palabra más subestimada del idioma.',
-    t => t+'\n\n► La mula cargó tu frase todo el día. Ahora la bajó.\n► Pesaba. Ya no. Reescribila y volvé a cargar.'
-  ];
-  const out = document.getElementById('out');
-  document.getElementById('go').addEventListener('click', ()=>{
-    let v = document.getElementById('inp').value.trim() || 'esto siempre fue así';
-    const target = MOLDE[(Math.random()*MOLDE.length)|0](v);
-    count++; ctr.textContent = count;
-    logLine('reescritura #'+count+' aplicada sobre entrada de '+v.length+' caracteres');
-    const start = performance.now();
-    (function anim(now){
-      const p = Math.min((now-start)/700,1);
-      let s='';
-      for(let i=0;i<target.length;i++) s += (i < p*target.length*1.3) ? target[i] : CH[(Math.random()*CH.length)|0];
-      out.textContent = s;
-      if(p<1) requestAnimationFrame(anim); else out.textContent = target;
-    })(start);
-    if(SND.on) blip(180+Math.random()*400, .09);
+  /* ---------- arranque ---------- */
+  var fonts = STYLES.map(function(s){ return s.font; });
+  Promise.all(fonts.map(ensureFont)).then(function(){
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+    render();
   });
-
-  /* ============ PALETAS ============ */
-  const PALETAS = [
-    {n:'ACIDO',    v:{'--fg':'#9dff2e','--acc1':'#ff00d4','--acc2':'#00f0ff','--warn':'#ffcc00','--bg':'#04060a'}},
-    {n:'SANGRE',   v:{'--fg':'#ff3b3b','--acc1':'#ffcc00','--acc2':'#ff8a00','--warn':'#ffffff','--bg':'#0a0303'}},
-    {n:'HUEVO',    v:{'--fg':'#ffe066','--acc1':'#00ffc8','--acc2':'#ff5ec4','--warn':'#8cff00','--bg':'#0a0803'}},
-    {n:'VOID',     v:{'--fg':'#d8d8ff','--acc1':'#7b5cff','--acc2':'#00d0ff','--warn':'#ff6bd6','--bg':'#05040f'}},
-    {n:'PERELMAN', v:{'--fg':'#00ff9c','--acc1':'#ff0040','--acc2':'#ffd000','--warn':'#ff00ff','--bg':'#000000'}},
-    {n:'TERMAL',   v:{'--fg':'#ff7a00','--acc1':'#00e5ff','--acc2':'#ff00a8','--warn':'#ffe600','--bg':'#0b0500'}}
-  ];
-  let pi = 0;
-  function setPaleta(i){
-    pi = ((i%PALETAS.length)+PALETAS.length)%PALETAS.length;
-    const p = PALETAS[pi];
-    Object.entries(p.v).forEach(([k,val])=>root.style.setProperty(k,val));
-    root.style.setProperty('--hair', 'color-mix(in srgb, '+p.v['--fg']+' 22%, transparent)');
-    document.body.style.background = p.v['--bg'];
-    try{ localStorage.setItem('unk_paleta', String(pi)); }catch(e){}
-    logLine('paleta reescrita -> '+p.n+'  (la realidad cambió de color, no de lógica)');
-  }
-  try{ const s = localStorage.getItem('unk_paleta'); if(s!==null) setPaleta(parseInt(s)); }catch(e){}
-
-  /* ============ SONIDO ============ */
-  const SND = {ctx:null, on:false};
-  function ac(){ if(!SND.ctx) SND.ctx = new (window.AudioContext||window.webkitAudioContext)(); return SND.ctx; }
-  function blip(freq, dur){
-    try{
-      const c = ac(); const o = c.createOscillator(); const g = c.createGain();
-      o.type='square'; o.frequency.value=freq;
-      g.gain.setValueAtTime(.04, c.currentTime);
-      g.gain.exponentialRampToValueAtTime(.0001, c.currentTime+dur);
-      o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime+dur);
-    }catch(e){}
-  }
-  let drone=null;
-  function toggleDrone(on){
-    try{
-      const c = ac();
-      if(on){
-        drone = [55, 82.4, 110.5].map((f,i)=>{
-          const o=c.createOscillator(); o.type= i===2?'triangle':'sawtooth'; o.frequency.value=f;
-          const g=c.createGain(); g.gain.value=0.0;
-          o.connect(g); g.connect(c.destination); o.start();
-          g.gain.linearRampToValueAtTime(0.022, c.currentTime+1.5);
-          return {o,g};
-        });
-        const lfo=c.createOscillator(); lfo.frequency.value=0.08; const lg=c.createGain(); lg.gain.value=1.6;
-        lfo.connect(lg); lg.connect(drone[1].o.frequency); lfo.start();
-        drone.push({o:lfo,g:null});
-      } else if(drone){
-        drone.forEach(d=>{ try{ d.o.stop(); }catch(e){} }); drone=null;
-      }
-    }catch(e){}
-  }
-
-  /* ============ BARRA ============ */
-  document.getElementById('bar').addEventListener('click', (e)=>{
-    const b = e.target.closest('.btn'); if(!b) return;
-    const a = b.dataset.act;
-    if(a==='pal'){ setPaleta(pi+1); if(SND.on) blip(300,.06); }
-    if(a==='glitch'){ glitchMul = glitchMul>=3 ? 1 : glitchMul+1;
-      root.style.setProperty('--hueSpeed', (12/Math.max(glitchMul,1))+'s');
-      root.style.setProperty('--scan-op', (0.14*glitchMul).toFixed(2));
-      b.classList.add('on'); setTimeout(()=>b.classList.remove('on'),200);
-      logLine('glitch nivel '+glitchMul+' :: el statu quo se sacude');
-      if(SND.on) blip(120,.12);
-    }
-    if(a==='calm'){ glitchMul=1; root.style.setProperty('--hueSpeed','40s'); root.style.setProperty('--scan-op','0.06');
-      logLine('modo calma :: respirar y reescribir');
-    }
-    if(a==='sound'){ SND.on = !SND.on; b.textContent = 'SONIDO:'+(SND.on?'ON':'OFF');
-      b.classList.toggle('on', SND.on); ac(); toggleDrone(SND.on);
-      logLine('drone '+(SND.on?'activado':'apagado'));
-    }
-    if(a==='axioma'){
-      const x = AXIOMAS[(Math.random()*AXIOMAS.length)|0];
-      const el = document.createElement('div');
-      el.className='term'; el.style.marginTop='14px';
-      el.innerHTML = '<span class="ps1">unk@axioma:~$</span> emitir --aleatorio<br><span class="warnc">'+x[0]+'</span><br><span class="dim">'+x[1]+'</span>';
-      document.querySelector('.wrap').insertBefore(el, document.getElementById('bar').nextSibling.nextSibling);
-      if(SND.on) blip(520,.1);
-      logLine('axioma emitido al azar :: '+x[0]);
-    }
-  });
-
-  /* ============ MOUSE ============ */
-  root.addEventListener('mousemove', (e)=>{
-    const r = root.getBoundingClientRect();
-    const x = (e.clientX-r.left)/r.width;
-    document.getElementById('plasma').style.transform = 'translate('+((x-.5)*18).toFixed(1)+'px,0)';
-  });
-
-  setInterval(()=>{ if(Math.random()<0.22) root.style.setProperty('--scan-op', (0.08+Math.random()*0.22).toFixed(2)); }, 900);
-
-  setTimeout(()=>logLine('UNK v1.0 :: nodo iniciado. mula en marcha.'), 100);
+  render();
 })();
 </script>
 </body>
