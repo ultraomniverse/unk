@@ -31,6 +31,7 @@
   .plrow:hover{background:var(--card);color:var(--txt)}
   .plrow span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sidefoot{margin-top:auto;font-size:10.5px;color:var(--mut);padding:14px 10px 0;line-height:1.6;border-top:1px solid var(--line)}
+  .sidefoot a{color:var(--mut);text-decoration:underline;cursor:pointer}
   .main{min-width:0;padding-bottom:20px}
   .topbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:12px 18px;background:rgba(11,11,13,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
   .ico{width:32px;height:32px;border-radius:50%;border:0;background:var(--card);color:var(--txt);display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
@@ -151,14 +152,21 @@
 
   .sheet{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:none;place-items:center;padding:20px}
   .sheet.open{display:grid}
-  .sheet .box{width:100%;max-width:340px;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:18px}
+  .sheet .box{width:100%;max-width:420px;max-height:86vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:18px}
   .sheet h3{margin:0 0 12px;font-size:14px}
   .sheet .row{display:flex;align-items:center;gap:9px;padding:8px;border-radius:7px;cursor:pointer;font-size:12.5px}
   .sheet .row:hover{background:var(--card)}
   .sheet input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:8px 11px;font-size:12.5px;font-family:inherit;outline:none;margin-bottom:10px}
   .sheet input:focus{border-color:var(--acc)}
   .sheet .close{float:right;background:none;border:0;color:var(--mut);cursor:pointer;font-size:16px}
-  .sheet .foot{display:flex;gap:8px;justify-content:flex-end}
+  .sheet .foot{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+  .sheet .hst{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;font-size:11.5px;font-family:ui-monospace,monospace;background:var(--card);margin-bottom:5px}
+  .sheet .hst b{font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .sheet .dot{width:7px;height:7px;border-radius:50%;background:var(--line2);flex:0 0 auto}
+  .sheet .dot.g{background:#4ade80}.sheet .dot.r{background:var(--acc2)}.sheet .dot.y{background:#eab308}
+  .sheet .x{background:none;border:0;color:var(--mut);cursor:pointer;font-size:13px;padding:0 2px}
+  .sheet .x:hover{color:var(--acc2)}
+  .sheet .sec{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--mut);font-weight:600;margin:16px 0 7px}
 
   @media(max-width:760px){
     .shell{grid-template-columns:1fr}.side{display:none}.mid{width:170px}.player{grid-template-columns:1fr auto}
@@ -187,7 +195,7 @@
     <div class="sep"></div>
     <h4>Listas <button id="newList" title="Nueva lista">+</button></h4>
     <div id="sideLists"></div>
-    <div class="sidefoot">Canciones y vídeos.<br>Reproducción directa, sin anuncios.</div>
+    <div class="sidefoot">Canciones y vídeos.<br>Reproducción directa, sin anuncios.<br><a id="openCfg">Fuentes de red</a></div>
   </aside>
 
   <main class="main">
@@ -318,54 +326,93 @@ var db=(function(){
 
 /* =======================================================================
    RED
+   Instancias: solo yt.chocolatemoo53.com publica CORS nativo ahora mismo.
+   El resto va SIEMPRE por proxy. Orden por salud persistida.
    ======================================================================= */
-var INV=['https://yewtu.be','https://inv.nadeko.net','https://invidious.nerdvpn.de','https://invidious.f5.si','https://iv.datura.network','https://invidious.privacyredirect.com'];
-var PIPED=['https://pipedapi.kavin.rocks','https://pipedapi.adminforge.de','https://pipedapi.reallyaweso.me','https://api.piped.private.coffee'];
-var PROXIES=[
-  function(u){ return 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u); },
-  function(u){ return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u); }
+var DEF_HOSTS=[
+  {u:'https://yt.chocolatemoo53.com', cors:true},
+  {u:'https://invidious.nerdvpn.de', cors:false},
+  {u:'https://inv.nadeko.net', cors:false},
+  {u:'https://invidious.tiekoetter.com', cors:false}
 ];
-var lastInv=null, cache={};
+var DEF_PROXIES=[
+  'https://proxy.cors.dev/',
+  'https://api.codetabs.com/v1/proxy?quest=',
+  'https://api.allorigins.win/raw?url='
+];
+var DEF_PIPED=['https://pipedapi.kavin.rocks','https://pipedapi.adminforge.de','https://pipedapi.reallyaweso.me'];
+
+var HOSTS=DEF_HOSTS.slice(), PROXIES=DEF_PROXIES.slice(), PIPED=DEF_PIPED.slice();
+var health={}, cache={}, fails=0;
+
+function pxWrap(p){
+  return function(t){
+    return p.indexOf('?')>-1 ? p+encodeURIComponent(t) : p+t;
+  };
+}
+function scoreOf(k){ return health[k]||0; }
+function bump(k,ok){
+  health[k]=Math.max(-6,Math.min(6,(health[k]||0)+(ok?2:-2)));
+  db.set('health',health);
+}
+function sortByHealth(arr,keyOf){
+  return arr.slice().sort(function(a,b){ return scoreOf(keyOf(b))-scoreOf(keyOf(a)); });
+}
+function orderedHosts(){ return sortByHealth(HOSTS,function(h){return h.u;}); }
+function orderedProxies(){ return sortByHealth(PROXIES,function(p){return p;}); }
 
 function j(url,ms){
-  var c=new AbortController(), t=setTimeout(function(){c.abort();},ms||8000);
+  var c=new AbortController(), t=setTimeout(function(){c.abort();},ms||9000);
   return fetch(url,{signal:c.signal,headers:{'Accept':'application/json'}})
     .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
     .finally(function(){ clearTimeout(t); });
 }
-function hostOf(u){
-  for(var i=0;i<INV.length;i++) if(u.indexOf(INV[i])>-1) return INV[i];
-  return null;
-}
-function race(urls,ms){
-  ms=ms||8000;
+function race(urls,ms,keys){
+  ms=ms||9000;
   return new Promise(function(res,rej){
-    var done=false, fails=0;
+    var done=false, f=0;
     function kill(){ if(!done){ done=true; rej(new Error('sin respuesta')); } }
-    urls.forEach(function(u){
+    urls.forEach(function(u,i){
       j(u,ms).then(function(d){
         if(done) return;
         done=true;
-        var h=hostOf(u); if(h) lastInv=h;
+        if(keys&&keys[i]) bump(keys[i],true);
         res(d);
-      }).catch(function(){ if(++fails===urls.length) kill(); });
+      }).catch(function(){
+        if(keys&&keys[i]) bump(keys[i],false);
+        if(++f===urls.length) kill();
+      });
     });
-    setTimeout(kill,ms+600);
+    setTimeout(kill,ms+800);
   });
 }
-function pool(list,path,ms){
-  var urls=[];
-  PROXIES.forEach(function(w){
-    urls.push(w(list[0]+path));
-    urls.push(w(list[1]+path));
+/* Construye la lista de URLs: primero hosts con CORS nativo, luego proxies
+   sobre hosts ordenados. Devuelve también las claves para puntuar. */
+function build(hosts,proxies,path){
+  var urls=[], keys=[];
+  hosts.filter(function(h){return h.cors;}).slice(0,1).forEach(function(h){
+    urls.push(h.u+path); keys.push(h.u);
   });
-  list.forEach(function(b){ urls.push(b+path); });
-  return race(urls,ms);
+  proxies.slice(0,2).forEach(function(p){
+    hosts.slice(0,3).forEach(function(h){
+      urls.push(pxWrap(p)(h.u+path)); keys.push(p);
+    });
+  });
+  return {urls:urls,keys:keys};
 }
 function cached(key,fn){
   var c=cache[key];
   if(c && Date.now()-c.t<300000) return Promise.resolve(c.v);
   return fn().then(function(v){ cache[key]={t:Date.now(),v:v}; return v; });
+}
+function get(path){
+  var b=build(orderedHosts(),orderedProxies(),path);
+  return race(b.urls,9000,b.keys).then(function(d){ fails=0; net('en línea','ok'); return d; })
+    .catch(function(e){ fails++; net('red inestable','bad'); throw e; });
+}
+function getPiped(path){
+  var hosts=sortByHealth(PIPED,function(x){return x;});
+  return race(hosts.map(function(h){return h+path;}),9000,hosts);
 }
 
 /* =======================================================================
@@ -379,8 +426,7 @@ function norm(it,kind){
   if(!id||id.length!==11) return null;
   var up=it.uploaderName||it.uploader||it.author||'';
   return {
-    id:id,
-    kind:kind||'music',
+    id:id, kind:kind||'music',
     title:it.title||'Sin título',
     artist:String(up).replace(/ - Topic$/,''),
     artistId:String(it.uploaderUrl||it.authorId||'').replace('/channel/',''),
@@ -397,43 +443,37 @@ var api={
     var e=encodeURIComponent(q), k=kind==='video'?'video':'music';
     return cached('s:'+k+':'+e,function(){
       if(k==='music'){
-        return pool(PIPED,'/search?q='+e+'&filter=music_songs',8000)
+        return getPiped('/search?q='+e+'&filter=music_songs')
           .then(function(d){ return (d.items||[]).map(function(x){return norm(x,'music');}).filter(Boolean); })
           .then(function(r){ if(r.length) return r; throw 0; })
-          .catch(function(){
-            return pool(INV,'/api/v1/search?q='+e+'&type=video',8000)
-              .then(function(d){ return (Array.isArray(d)?d:[]).map(function(x){return norm(x,'music');}).filter(Boolean); });
-          });
+          .catch(function(){ return get('/api/v1/search?q='+e+'&type=video')
+            .then(function(d){ return (Array.isArray(d)?d:[]).map(function(x){return norm(x,'music');}).filter(Boolean); }); });
       }
-      return pool(INV,'/api/v1/search?q='+e+'&type=video',8000)
+      return get('/api/v1/search?q='+e+'&type=video')
         .then(function(d){ return (Array.isArray(d)?d:[]).map(function(x){return norm(x,'video');}).filter(Boolean); })
         .then(function(r){ if(r.length) return r; throw 0; })
-        .catch(function(){
-          return pool(PIPED,'/search?q='+e+'&filter=videos',8000)
-            .then(function(d){ return (d.items||[]).map(function(x){return norm(x,'video');}).filter(Boolean); });
-        });
+        .catch(function(){ return getPiped('/search?q='+e+'&filter=videos')
+          .then(function(d){ return (d.items||[]).map(function(x){return norm(x,'video');}).filter(Boolean); }); });
     });
   },
   trending:function(kind){
     var k=kind==='video'?'video':'music';
     return cached('t:'+k,function(){
       var path=k==='music'?'/api/v1/trending?region=US&type=music':'/api/v1/trending?region=US&type=default';
-      return pool(INV,path,8000)
+      return get(path)
         .then(function(d){ return (Array.isArray(d)?d:[]).map(function(x){return norm(x,k);}).filter(Boolean); })
         .then(function(r){ if(r.length) return r; throw 0; })
-        .catch(function(){
-          return pool(PIPED,'/trending?region=US',8000)
-            .then(function(d){ return (Array.isArray(d)?d:[]).map(function(x){return norm(x,k);}).filter(Boolean); });
-        });
+        .catch(function(){ return getPiped('/trending?region=US')
+          .then(function(d){ return (Array.isArray(d)?d:[]).map(function(x){return norm(x,k);}).filter(Boolean); }); });
     });
   },
   channel:function(id){
     return cached('c:'+id,function(){
-      return pool(INV,'/api/v1/channels/'+id,8000).then(function(d){
+      return get('/api/v1/channels/'+id).then(function(d){
         return { name:d.author, thumb:(d.authorThumbnails&&d.authorThumbnails[0]&&d.authorThumbnails[0].url)||'',
           desc:d.description||'', items:(d.latestVideos||[]).map(function(x){return norm(x,'video');}).filter(Boolean) };
       }).catch(function(){
-        return pool(PIPED,'/channel/'+id,8000).then(function(d){
+        return getPiped('/channel/'+id).then(function(d){
           return { name:d.name, thumb:d.avatarUrl, desc:d.description||'',
             items:(d.relatedStreams||[]).map(function(x){return norm(x,'video');}).filter(Boolean) };
         });
@@ -442,11 +482,11 @@ var api={
   },
   album:function(id){
     return cached('a:'+id,function(){
-      return pool(INV,'/api/v1/playlists/'+id,8000).then(function(d){
+      return get('/api/v1/playlists/'+id).then(function(d){
         return { name:d.title, thumb:d.playlistThumbnail, owner:d.author||'',
           items:(d.videos||[]).map(function(x){return norm(x,'music');}).filter(Boolean) };
       }).catch(function(){
-        return pool(PIPED,'/playlists/'+id,8000).then(function(d){
+        return getPiped('/playlists/'+id).then(function(d){
           return { name:d.name, thumb:d.thumbnailUrl, owner:d.uploader||'',
             items:(d.relatedStreams||[]).map(function(x){return norm(x,'music');}).filter(Boolean) };
         });
@@ -456,30 +496,41 @@ var api={
 };
 
 /* =======================================================================
-   FUENTES — directo, local=true evita el bloqueo por IP
+   FUENTES DE REPRODUCCIÓN
+   El elemento <video> no necesita CORS: solo importa el bloqueo por IP,
+   que se evita con local=true o con el proxy delante.
    ======================================================================= */
-function hosts(){
-  var out=[];
-  if(lastInv) out.push(lastInv);
-  INV.forEach(function(h){ if(out.indexOf(h)<0) out.push(h); });
-  return out;
-}
 function srcChain(t,wantVideo){
-  var list=[], hs=hosts(), i;
+  var hs=orderedHosts(), ps=orderedProxies().slice(0,2), out=[], i, k;
+  function push(u,label,mode){ out.push({u:u,k:label,m:mode}); }
+
   if(wantVideo){
     var vq=S.hd?[22,18]:[18];
-    for(i=0;i<hs.length;i++) for(var q=0;q<vq.length;q++)
-      list.push({u:hs[i]+'/latest_version?id='+t.id+'&itag='+vq[q]+'&local=true',k:(vq[q]===22?'720p':'360p')+' · '+hs[i].replace(/https:\/\//,''),m:'video'});
+    for(i=0;i<hs.length;i++) for(k=0;k<vq.length;k++)
+      push(hs[i].u+'/latest_version?id='+t.id+'&itag='+vq[k]+'&local=true',(vq[k]===22?'720p':'360p')+' · '+hs[i].u.replace(/https:\/\//,''),'video');
     for(i=0;i<hs.length;i++)
-      list.push({u:hs[i]+'/latest_version?id='+t.id+'&itag=140&local=true',k:'audio (respaldo) · '+hs[i].replace(/https:\/\//,''),m:'audio'});
+      push(hs[i].u+'/latest_version?id='+t.id+'&itag=140&local=true','audio · '+hs[i].u.replace(/https:\/\//,''),'audio');
   }else{
     var aq=[140,251,139];
-    for(i=0;i<hs.length;i++) for(var w=0;w<aq.length;w++)
-      list.push({u:hs[i]+'/latest_version?id='+t.id+'&itag='+aq[w]+'&local=true',k:(aq[w]===140?'audio 128k':aq[w]===251?'opus':'audio 48k')+' · '+hs[i].replace(/https:\/\//,''),m:'audio'});
+    for(i=0;i<hs.length;i++) for(k=0;k<aq.length;k++)
+      push(hs[i].u+'/latest_version?id='+t.id+'&itag='+aq[k]+'&local=true',(aq[k]===140?'audio 128k':aq[k]===251?'opus':'audio 48k')+' · '+hs[i].u.replace(/https:\/\//,''),'audio');
     for(i=0;i<hs.length;i++)
-      list.push({u:hs[i]+'/latest_version?id='+t.id+'&itag=18&local=true',k:'360p (respaldo) · '+hs[i].replace(/https:\/\//,''),m:'video'});
+      push(hs[i].u+'/latest_version?id='+t.id+'&itag=18&local=true','360p · '+hs[i].u.replace(/https:\/\//,''),'video');
   }
-  return list;
+  /* proxificado: salta el bloqueo por IP del todo */
+  ps.forEach(function(p){
+    push(pxWrap(p)(hs[0].u+'/latest_version?id='+t.id+'&itag='+(wantVideo?(S.hd?22:18):140)+'&local=true'),'vía proxy','video');
+  });
+  /* sin local: URL directa de googlevideo */
+  for(i=0;i<hs.length;i++)
+    push(hs[i].u+'/latest_version?id='+t.id+'&itag='+(wantVideo?18:140),'directo · '+hs[i].u.replace(/https:\/\//,''),wantVideo?'video':'audio');
+  return out;
+}
+function pipedSrc(id,wantVideo){
+  return getPiped('/streams/'+id).then(function(d){
+    var a=((wantVideo?d.videoStreams:d.audioStreams)||[]).sort(function(x,y){return (y.bitrate||0)-(x.bitrate||0);});
+    return a.map(function(s){ return s.url; }).filter(Boolean);
+  }).catch(function(){ return []; });
 }
 
 /* =======================================================================
@@ -504,7 +555,7 @@ function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'
 function net(txt,cls){var b=$('#netBadge');b.textContent=txt;b.className='badge'+(cls?' '+cls:'');}
 
 /* =======================================================================
-   SUPERFICIE / MODO
+   SUPERFICIE
    ======================================================================= */
 function syncStage(){
   var open=$('#npv').classList.contains('open');
@@ -575,6 +626,11 @@ function playTrack(t){
   paintNow(); paintVidBtns(); renderQueue(); save(); mediaSession(t);
   media.pause();
   trySrc();
+  /* refuerzo: si la cadena estática se agota, se añaden las de Piped */
+  pipedSrc(t.id,wantVideo).then(function(list){
+    if(!list.length||S.cur!==t) return;
+    list.forEach(function(u){ S.chain.push({u:u,k:'piped',m:wantVideo?'video':'audio'}); });
+  });
 }
 function playQueue(i){
   if(i<0||i>=S.queue.length) return;
@@ -649,7 +705,6 @@ function mediaSession(t){
   }catch(e){}
 }
 
-/* visualizador */
 var vctx=viz.getContext('2d'), t0=Date.now();
 function vizLoop(){
   requestAnimationFrame(vizLoop);
@@ -741,7 +796,7 @@ function addToPlaylist(t){
   var rows=S.lists.length? S.lists.map(function(l){
     return '<div class="row" data-addpl="'+esc(l.id)+'"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h16M4 19h9"/></svg>'+esc(l.name)+'</div>';
   }).join('') : '<div class="empty">Sin listas todavía.</div>';
-  openSheet('<h3>Añadir a lista</h3><div style="max-height:44vh;overflow:auto">'+rows+'</div>'
+  openSheet('<h3>Añadir a lista</h3><div style="max-height:40vh;overflow:auto">'+rows+'</div>'
     +'<input id="apName" placeholder="O crea una nueva…" maxlength="60"><div class="foot"><button class="btn" id="apNew">Crear y añadir</button></div>');
   $('#sheetBox').addEventListener('click',function(e){
     var r=e.target.closest('[data-addpl]');
@@ -755,6 +810,74 @@ function addToPlaylist(t){
     S.lists.push(l); renderSideLists(); save(); closeSheet(); toast('Añadido a '+n);
   };
 }
+
+/* =======================================================================
+   PANEL DE FUENTES
+   ======================================================================= */
+function cfg(){
+  function row(kind,k,label,extra){
+    var s=scoreOf(k);
+    var cls=s>0?'g':s<0?'r':'y';
+    return '<div class="hst" data-kind="'+kind+'" data-k="'+esc(k)+'"><span class="dot '+cls+'"></span><b>'+esc(label||k)+'</b>'
+      +'<span style="color:var(--mut)">'+(s>0?'+':'')+s+'</span>'
+      +(extra?'':'<button class="x" data-del="'+esc(k)+'" data-dk="'+kind+'">✕</button>')+'</div>';
+  }
+  openSheet('<h3>Fuentes de red</h3>'
+    +'<div class="note" style="margin-bottom:12px">Las instancias públicas caducan. Si algo deja de cargar, añade una viva desde <b>api.invidious.io</b> o pega un proxy propio. Los puntos son la salud local: verde responde, rojo falla.</div>'
+    +'<div class="sec">Instancias</div>'
+    +HOSTS.map(function(h){ return row('host',h.u,h.u.replace(/https:\/\//,'')+(h.cors?' · CORS':'')); }).join('')
+    +'<input id="newHost" placeholder="https://mi-instancia.tld">'
+    +'<div class="foot"><button class="btn o" id="addHost">Añadir instancia</button></div>'
+    +'<div class="sec">Proxies</div>'
+    +PROXIES.map(function(p){ return row('px',p,p); }).join('')
+    +'<input id="newPx" placeholder="https://mi-proxy/?url=">'
+    +'<div class="foot"><button class="btn o" id="addPx">Añadir proxy</button></div>'
+    +'<div class="sec">Probar</div>'
+    +'<div class="foot" style="justify-content:flex-start"><button class="btn" id="runTest">Comprobar todo</button>'
+    +'<button class="btn o" id="resetCfg">Restaurar</button></div>'
+    +'<div id="testOut" style="margin-top:10px;font-size:11.5px;color:var(--mut)"></div>');
+
+  $('#addHost').onclick=function(){
+    var v=$('#newHost').value.trim().replace(/\/$/,'');
+    if(!/^https?:\/\//.test(v)) return toast('URL no válida');
+    if(HOSTS.some(function(h){return h.u===v;})) return toast('Ya existe');
+    HOSTS.push({u:v,cors:false}); persistCfg(); cfg(); toast('Instancia añadida');
+  };
+  $('#addPx').onclick=function(){
+    var v=$('#newPx').value.trim();
+    if(!/^https?:\/\//.test(v)) return toast('URL no válida');
+    if(PROXIES.indexOf(v)>-1) return toast('Ya existe');
+    PROXIES.push(v); persistCfg(); cfg(); toast('Proxy añadido');
+  };
+  $('#sheetBox').addEventListener('click',function(e){
+    var d=e.target.closest('[data-del]');
+    if(!d) return;
+    var k=d.dataset.del, kind=d.dataset.dk;
+    if(kind==='host') HOSTS=HOSTS.filter(function(h){return h.u!==k;});
+    else PROXIES=PROXIES.filter(function(p){return p!==k;});
+    persistCfg(); cfg();
+  });
+  $('#resetCfg').onclick=function(){
+    HOSTS=DEF_HOSTS.slice(); PROXIES=DEF_PROXIES.slice(); health={};
+    persistCfg(); db.set('health',{}); cfg(); toast('Restaurado');
+  };
+  $('#runTest').onclick=function(){
+    var out=$('#testOut'); out.textContent='Comprobando…';
+    var jobs=HOSTS.map(function(h){
+      return j(h.u+'/api/v1/stats',8000).then(function(){bump(h.u,true);return h.u+'  OK';})
+        .catch(function(){bump(h.u,false);return h.u+'  falla';});
+    });
+    Promise.all(jobs).then(function(r){
+      out.innerHTML=r.map(function(x){return esc(x);}).join('<br>');
+      cfg2();
+    });
+  };
+  function cfg2(){ /* repinta sin reabrir */ }
+}
+function persistCfg(){
+  db.set('cfg',{hosts:HOSTS,proxies:PROXIES});
+}
+$('#openCfg').onclick=cfg;
 
 /* =======================================================================
    RENDER
@@ -792,6 +915,12 @@ function skeletonRows(n){
   for(var i=0;i<n;i++) out+='<div class="tr"><div class="n">'+(i+1)+'</div><div class="th sk"></div><div><div class="t1 sk" style="width:60%;height:11px"></div><div class="t2 sk" style="width:35%;height:9px;margin-top:6px"></div></div></div>';
   return '<div class="tracklist">'+out+'</div>';
 }
+function fail(msg){
+  return '<div class="note">'+esc(msg)+' <button class="btn o" id="toCfg">Revisar fuentes</button></div>';
+}
+function wireFail(){
+  var b=$('#toCfg'); if(b) b.onclick=cfg;
+}
 
 /* =======================================================================
    VISTAS
@@ -810,11 +939,11 @@ function home(){
   api.trending('music').then(function(r){
     if(!alive(t)) return;
     $('#s1').innerHTML=trackList(r.slice(0,14),'hm');
-  }).catch(function(){ if(alive(t)) $('#s1').innerHTML='<div class="empty">No se pudo cargar.</div>'; });
+  }).catch(function(){ if(alive(t)){ $('#s1').innerHTML=fail('No se pudo cargar la tendencia.'); wireFail(); } });
   api.trending('video').then(function(r){
     if(!alive(t)) return;
     $('#s2').innerHTML=trackList(r.slice(0,14),'hv');
-  }).catch(function(){ if(alive(t)) $('#s2').innerHTML='<div class="empty">No se pudo cargar.</div>'; });
+  }).catch(function(){ if(alive(t)){ $('#s2').innerHTML=fail('No se pudo cargar la tendencia.'); wireFail(); } });
   $('#s3').innerHTML=S.hist.length? trackList(S.hist.slice(0,8),'hh') : '<div class="empty">Todavía no has escuchado nada.</div>';
   $('#s4').innerHTML=S.likes.length? trackList(S.likes.slice(0,8),'hl') : '<div class="empty">Marca lo que te guste con el corazón.</div>';
 }
@@ -832,7 +961,7 @@ function explore(p){
   api.trending(kind).then(function(r){
     if(!alive(t)) return;
     $('#ex').innerHTML=trackList(r.slice(0,30),'ex');
-  }).catch(function(){ if(alive(t)) $('#ex').innerHTML='<div class="empty">No se pudo cargar.</div>'; });
+  }).catch(function(){ if(alive(t)){ $('#ex').innerHTML=fail('No se pudo cargar.'); wireFail(); } });
 }
 
 function library(){
@@ -859,7 +988,7 @@ function searchView(p){
   api.search(q,kind).then(function(r){
     if(!alive(t)) return;
     $('#res').innerHTML=trackList(r,'sr');
-  }).catch(function(){ if(alive(t)) $('#res').innerHTML='<div class="empty">Sin resultados. Prueba otra búsqueda.</div>'; });
+  }).catch(function(){ if(alive(t)){ $('#res').innerHTML=fail('Sin resultados. Revisa las fuentes de red.'); wireFail(); } });
 }
 
 function artistView(p){
@@ -871,10 +1000,10 @@ function artistView(p){
       +'<div><div class="k">Artista</div><h1>'+esc(d.name)+'</h1><div class="meta">'+esc(d.desc)+'</div></div></div>'
       +'<div class="actions"><button class="btn" id="arPlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Reproducir</button>'
       +'<button class="btn o" id="arMix">Mezclar</button></div>'
-      +'<div id="arL">'+trackList(d.items,'ar')+'</div>';
+      +'<div>'+trackList(d.items,'ar')+'</div>';
     $('#arPlay').onclick=function(){ if(!d.items.length) return; S.queue=d.items.slice(); S.qi=0; renderQueue(); playTrack(d.items[0]); };
     $('#arMix').onclick=function(){ if(!d.items.length) return; S.queue=d.items.slice().sort(function(){return Math.random()-.5;}); S.qi=0; renderQueue(); playTrack(S.queue[0]); };
-  }).catch(function(){ if(alive(t)) view.innerHTML='<div class="empty">No se pudo cargar el artista.</div>'; });
+  }).catch(function(){ if(alive(t)) view.innerHTML=fail('No se pudo cargar el artista.')+(function(){wireFail();return '';})(); });
 }
 
 function albumView(p){
@@ -885,9 +1014,9 @@ function albumView(p){
     view.innerHTML='<div class="hero"><div class="art">'+(d.thumb?'<img src="'+esc(d.thumb)+'" alt="">':'')+'</div>'
       +'<div><div class="k">Álbum / lista</div><h1>'+esc(d.name)+'</h1><div class="meta">'+esc(d.owner)+' · '+d.items.length+' pistas</div></div></div>'
       +'<div class="actions"><button class="btn" id="alPlay"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Reproducir</button></div>'
-      +'<div id="alL">'+trackList(d.items,'al')+'</div>';
+      +'<div>'+trackList(d.items,'al')+'</div>';
     $('#alPlay').onclick=function(){ if(!d.items.length) return; S.queue=d.items.slice(); S.qi=0; renderQueue(); playTrack(d.items[0]); };
-  }).catch(function(){ if(alive(t)) view.innerHTML='<div class="empty">No se pudo cargar el álbum.</div>'; });
+  }).catch(function(){ if(alive(t)){ view.innerHTML=fail('No se pudo cargar el álbum.'); wireFail(); } });
 }
 
 function playlistView(p){
@@ -945,7 +1074,6 @@ function router(){
 }
 window.addEventListener('hashchange',router);
 
-/* delegación global */
 document.addEventListener('click',function(e){
   var g=e.target.closest('[data-go]');
   if(g){ e.preventDefault(); location.hash=g.dataset.go; return; }
@@ -986,10 +1114,9 @@ $('#q').addEventListener('input',function(){
   var v=this.value.trim();
   if(!v) return;
   typing=setTimeout(function(){
-    var cur=location.hash;
-    if(cur.indexOf('#/search/')===0 && $('#q').value.trim()===v) return;
+    if($('#q').value.trim()!==v) return;
     location.hash='#/search/'+encodeURIComponent(v)+'/music';
-  },600);
+  },650);
 });
 
 $('#pPlay').onclick=toggle; $('#npPlay').onclick=toggle;
@@ -1051,13 +1178,17 @@ if(!navigator.onLine) net('sin conexión','bad');
 /* =======================================================================
    ARRANQUE
    ======================================================================= */
-Promise.all([db.get('state'),db.get('likes'),db.get('lists'),db.get('hist')]).then(function(r){
+Promise.all([db.get('state'),db.get('likes'),db.get('lists'),db.get('hist'),db.get('cfg'),db.get('health')]).then(function(r){
   var st=r[0]||{};
   S.queue=st.queue||[]; S.qi=(typeof st.qi==='number'?st.qi:-1);
   S.shuffle=!!st.shuffle; S.repeat=st.repeat||'off';
   S.vol=(typeof st.vol==='number'?st.vol:85); S.vid=!!st.vid;
   S.hd=(typeof st.hd==='boolean'?st.hd:true);
   S.likes=r[1]||[]; S.lists=r[2]||[]; S.hist=r[3]||[];
+  health=r[5]||{};
+  var cfgd=r[4];
+  if(cfgd&&cfgd.hosts&&cfgd.hosts.length) HOSTS=cfgd.hosts;
+  if(cfgd&&cfgd.proxies&&cfgd.proxies.length) PROXIES=cfgd.proxies;
   media.volume=S.vol/100; $('#vol').value=S.vol;
   if(S.qi>=S.queue.length) S.qi=S.queue.length-1;
   S.cur=(S.qi>=0?S.queue[S.qi]:null);
