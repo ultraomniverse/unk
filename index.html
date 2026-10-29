@@ -153,7 +153,7 @@
         <button class="mag" id="go"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
         <input id="q" placeholder="Buscar canciones, vídeos, artistas">
       </div>
-      <div class="badge" id="netBadge">comprobando…</div>
+      <div class="badge" id="netBadge">listo</div>
     </header>
     <div class="view" id="view"></div>
   </main>
@@ -231,51 +231,50 @@ var db=(function(){
 })();
 
 /* =======================================================================
-   RED
-   Invidious primero: sí manda Access-Control-Allow-Origin.
-   Piped como respaldo. Presupuesto global para no colgarse.
+   RED — carrera en paralelo, gana la primera respuesta válida
    ======================================================================= */
 var INV=['https://inv.nadeko.net','https://invidious.nerdvpn.de','https://yewtu.be','https://invidious.f5.si','https://iv.datura.network','https://invidious.privacyredirect.com'];
 var PIPED=['https://pipedapi.reallyaweso.me','https://pipedapi.adminforge.de','https://pipedapi.kavin.rocks','https://api.piped.private.coffee'];
 var PROXIES=[
   function(u){ return 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u); },
-  function(u){ return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u); }
+  function(u){ return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u); },
+  function(u){ return 'https://corsproxy.io/?url='+encodeURIComponent(u); }
 ];
-var dead={}, lastInv=null;
+var lastInv=null;
 
 function j(url,ms){
-  var c=new AbortController(), t=setTimeout(function(){c.abort();},ms||4500);
+  var c=new AbortController(), t=setTimeout(function(){c.abort();},ms||5000);
   return fetch(url,{signal:c.signal,headers:{'Accept':'application/json'}})
     .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
     .finally(function(){ clearTimeout(t); });
 }
 
-function walk(urls,ms){
-  var i=0;
+function race(urls,ms){
+  ms=ms||5000;
   return new Promise(function(res,rej){
-    (function step(){
-      if(i>=urls.length) return rej(new Error('agotado'));
-      var u=urls[i++];
-      if(dead[u]) return step();
+    var done=false, fails=0;
+    function kill(){ if(!done){ done=true; rej(new Error('sin respuesta')); } }
+    urls.forEach(function(u){
       j(u,ms).then(function(d){
-        var host=(u.match(/^https?:\/\/[^/]+/)||[])[0];
-        if(host && INV.indexOf(host)>-1) lastInv=host;
+        if(done) return;
+        done=true;
+        var host=(u.match(/^https?:\/\/[^/]+/)||[])[0]||'';
+        if(INV.indexOf(host)>-1) lastInv=host;
         res(d);
-      }).catch(function(){
-        dead[u]=1; setTimeout(function(){ delete dead[u]; },120000); step();
-      });
-    })();
+      }).catch(function(){ if(++fails===urls.length) kill(); });
+    });
+    setTimeout(kill,ms+800);
   });
 }
 
-// directo en todas las instancias; luego, solo si hace falta, vía proxy
+// directo + vía proxy, todo a la vez
 function pool(list,path,ms){
-  var direct=list.map(function(b){ return b+path; });
-  return walk(direct,ms).catch(function(){
-    var prox=[];
-    PROXIES.forEach(function(w){ list.slice(0,2).forEach(function(b){ prox.push(w(b+path)); }); });
-    return walk(prox,9000);
+  var urls=list.map(function(b){ return b+path; });
+  PROXIES.forEach(function(w){
+    urls.push(w(list[0]+path));
+    urls.push(w(list[1]+path));
   });
+  return race(urls,ms);
 }
 
 function budget(p,ms){
@@ -313,25 +312,25 @@ function norm(it){
 var api={
   search:function(q){
     var e=encodeURIComponent(q);
-    return pool(INV,'/api/v1/search?q='+e+'&type=video',4500)
+    return pool(INV,'/api/v1/search?q='+e+'&type=video',5000)
       .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); })
       .then(function(r){ if(r.length) return r; throw 0; })
       .catch(function(){
-        return pool(PIPED,'/search?q='+e+'&filter=music_songs',4000)
-          .then(function(d){ return (d.items||[]).map(norm).filter(Boolean); })
+        return pool(INV,'/api/v1/search?q='+e+'&type=all',5000)
+          .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); })
           .then(function(r){ if(r.length) return r; throw 0; })
           .catch(function(){
-            return pool(INV,'/api/v1/search?q='+e+'&type=all',5000)
-              .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); });
+            return pool(PIPED,'/search?q='+e+'&filter=music_songs',5000)
+              .then(function(d){ return (d.items||[]).map(norm).filter(Boolean); });
           });
       });
   },
   trending:function(){
-    return pool(INV,'/api/v1/trending?region=US&type=music',4500)
+    return pool(INV,'/api/v1/trending?region=US&type=music',5000)
       .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); })
       .then(function(r){ if(r.length) return r; throw 0; })
       .catch(function(){
-        return pool(PIPED,'/trending?region=US',4000)
+        return pool(PIPED,'/trending?region=US',5000)
           .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); });
       });
   },
@@ -339,7 +338,7 @@ var api={
     var chain=[];
     if(lastInv) chain.push(function(){ return Promise.resolve({url:lastInv+'/latest_version?id='+id+'&itag=140'}); });
     chain.push(function(){
-      return pool(INV,'/api/v1/videos/'+id,5000).then(function(d){
+      return pool(INV,'/api/v1/videos/'+id,6000).then(function(d){
         var a=(d.adaptiveFormats||[]).filter(function(f){ return /audio/.test(f.type||''); })
           .sort(function(x,y){ return (y.bitrate||0)-(x.bitrate||0); })[0];
         if(!a||!a.url) throw 0;
@@ -347,7 +346,7 @@ var api={
       });
     });
     chain.push(function(){
-      return pool(PIPED,'/streams/'+id,5000).then(function(d){
+      return pool(PIPED,'/streams/'+id,6000).then(function(d){
         var a=(d.audioStreams||[]).sort(function(x,y){ return (y.bitrate||0)-(x.bitrate||0); })[0];
         if(!a) throw 0;
         return {url:a.url};
@@ -356,7 +355,7 @@ var api={
     return chain.reduce(function(p,f){ return p.catch(f); }, Promise.reject());
   },
   channel:function(id){
-    return pool(INV,'/api/v1/channels/'+id,5000).then(function(d){
+    return pool(INV,'/api/v1/channels/'+id,6000).then(function(d){
       return {
         name:d.author,
         thumb:(d.authorThumbnails&&d.authorThumbnails[0]&&d.authorThumbnails[0].url)||'',
@@ -364,18 +363,18 @@ var api={
         items:(d.latestVideos||[]).map(norm).filter(Boolean)
       };
     }).catch(function(){
-      return pool(PIPED,'/channel/'+id,5000).then(function(d){
+      return pool(PIPED,'/channel/'+id,6000).then(function(d){
         return { name:d.name, thumb:d.avatarUrl, desc:d.description||'',
           items:(d.relatedStreams||[]).map(norm).filter(Boolean) };
       });
     });
   },
   album:function(id){
-    return pool(INV,'/api/v1/playlists/'+id,5000).then(function(d){
+    return pool(INV,'/api/v1/playlists/'+id,6000).then(function(d){
       return { name:d.title, thumb:d.playlistThumbnail, owner:d.author||'',
         items:(d.videos||[]).map(norm).filter(Boolean) };
     }).catch(function(){
-      return pool(PIPED,'/playlists/'+id,5000).then(function(d){
+      return pool(PIPED,'/playlists/'+id,6000).then(function(d){
         return { name:d.name, thumb:d.thumbnailUrl, owner:d.uploader||'',
           items:(d.relatedStreams||[]).map(norm).filter(Boolean) };
       });
@@ -387,7 +386,7 @@ var api={
    ESTADO
    ======================================================================= */
 var view=$('#view'), audio=new Audio(), emb=$('#emb');
-var S={queue:[],qi:-1,shuffle:false,repeat:'off',vol:85,likes:[],lists:[],hist:[],tab:'songs',online:null,embed:false,playing:false,cur:null};
+var S={queue:[],qi:-1,shuffle:false,repeat:'off',vol:85,likes:[],lists:[],hist:[],online:null,playing:false,cur:null};
 var navToken=0;
 function alive(t){ return t===navToken; }
 
@@ -413,7 +412,6 @@ function playTrack(t){
   S.hist.unshift({id:t.id,title:t.title,artist:t.artist,thumb:t.thumb,dur:t.dur,ts:Date.now()});
   S.hist=S.hist.slice(0,80);
   paintNow(); renderQueue(); save();
-  if(S.online===false) return embedPlay(t.id);
   audio.pause(); audio.src='';
   api.audio(t.id).then(function(r){
     audio.src=r.url;
@@ -463,8 +461,8 @@ function paintNow(){
 /* =======================================================================
    COMPONENTES
    ======================================================================= */
-function card(t,round){
-  return '<div class="card'+(round?' round':'')+'" data-play="'+esc(t.id)+'"><div class="art"><img loading="lazy" src="'+esc(t.thumb)+'" alt=""><div class="pv"><b><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></b></div></div><div class="tt">'+esc(t.title)+'</div><div class="sb">'+esc(t.artist||'')+'</div></div>';
+function card(t){
+  return '<div class="card" data-play="'+esc(t.id)+'"><div class="art"><img loading="lazy" src="'+esc(t.thumb)+'" alt=""><div class="pv"><b><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></b></div></div><div class="tt">'+esc(t.title)+'</div><div class="sb">'+esc(t.artist||'')+'</div></div>';
 }
 function trackRow(t,i){
   var on = S.cur && S.cur.id===t.id;
@@ -494,7 +492,7 @@ function wireList(container,list){
     };
   });
 }
-function retryBox(){ return '<div class="note">No se pudo conectar con ningún servidor.<button class="btn o" data-retry style="padding:5px 12px;font-size:11px">Reintentar</button></div>'; }
+function retryBox(){ return '<div class="note">Ningún servidor respondió.<button class="btn o" data-retry style="padding:5px 12px;font-size:11px">Reintentar</button></div>'; }
 function wireRetry(){ $$('[data-retry]').forEach(function(b){ b.onclick=retry; }); }
 
 /* =======================================================================
@@ -508,13 +506,12 @@ function vHome(){
     c.onclick=function(){ location.hash='#/search?q='+encodeURIComponent(g); };
     $('#genres').appendChild(c);
   });
-  if(S.online===false){ $('#feed').innerHTML=retryBox(); wireRetry(); return; }
-  budget(api.trending(),16000).then(function(list){
+  budget(api.trending(),14000).then(function(list){
     if(!alive(tok)) return;
     if(!list.length) throw 0;
     var h='';
-    if(S.hist.length) h+='<div class="shelf"><div class="hrow"><h2>Escuchado hace poco</h2></div><div class="cards">'+S.hist.slice(0,12).map(function(x){return card(x);}).join('')+'</div></div>';
-    h+='<div class="shelf"><div class="hrow"><h2>Tendencias</h2></div><div class="cards">'+list.slice(0,14).map(function(x){return card(x);}).join('')+'</div></div>';
+    if(S.hist.length) h+='<div class="shelf"><div class="hrow"><h2>Escuchado hace poco</h2></div><div class="cards">'+S.hist.slice(0,12).map(card).join('')+'</div></div>';
+    h+='<div class="shelf"><div class="hrow"><h2>Tendencias</h2></div><div class="cards">'+list.slice(0,14).map(card).join('')+'</div></div>';
     $('#feed').innerHTML=h;
     wireList($('#feed'),S.hist.concat(list));
   }).catch(function(){
@@ -526,7 +523,6 @@ function vHome(){
 function vSearch(q){
   var tok=navToken;
   view.innerHTML='<div class="hrow"><h2>Resultados para «'+esc(q)+'»</h2></div><div id="res">'+skeleton(4)+'</div>';
-  if(S.online===false){ $('#res').innerHTML=retryBox(); wireRetry(); return; }
   budget(api.search(q),16000).then(function(list){
     if(!alive(tok)) return;
     if(!list.length){ $('#res').innerHTML='<div class="note">Sin resultados para «'+esc(q)+'».</div>'; return; }
@@ -572,8 +568,8 @@ function vLibrary(){
   view.innerHTML='<div class="hrow"><h1>Biblioteca</h1></div>';
   if(!S.likes.length && !S.hist.length){ view.innerHTML+='<div class="note">Todavía no has guardado nada. Usa el corazón del reproductor.</div>'; return; }
   var h='';
-  if(S.likes.length) h+='<div class="shelf"><div class="hrow"><h2>Me gusta · '+S.likes.length+'</h2><button class="btn o" id="playLiked" style="padding:5px 12px;font-size:11px">Reproducir</button></div><div class="cards">'+S.likes.map(function(t){return card(t);}).join('')+'</div></div>';
-  if(S.hist.length) h+='<div class="shelf"><div class="hrow"><h2>Historial</h2></div><div class="cards">'+S.hist.slice(0,20).map(function(t){return card(t);}).join('')+'</div></div>';
+  if(S.likes.length) h+='<div class="shelf"><div class="hrow"><h2>Me gusta · '+S.likes.length+'</h2><button class="btn o" id="playLiked" style="padding:5px 12px;font-size:11px">Reproducir</button></div><div class="cards">'+S.likes.map(card).join('')+'</div></div>';
+  if(S.hist.length) h+='<div class="shelf"><div class="hrow"><h2>Historial</h2></div><div class="cards">'+S.hist.slice(0,20).map(card).join('')+'</div></div>';
   view.innerHTML+=h;
   wireList(view,S.likes.concat(S.hist));
   if($('#playLiked')) $('#playLiked').onclick=function(){ S.queue=S.likes.slice(); playQueue(0); };
@@ -587,11 +583,10 @@ function vExplore(){
     c.onclick=function(){ location.hash='#/search?q='+encodeURIComponent(g); };
     $('#g2').appendChild(c);
   });
-  if(S.online===false){ $('#ex').innerHTML=retryBox(); wireRetry(); return; }
   $('#ex').innerHTML=skeleton(4);
   budget(api.search('top hits 2026'),16000).then(function(l){
     if(!alive(tok)) return;
-    $('#ex').innerHTML='<div class="cards">'+l.map(function(t){return card(t);}).join('')+'</div>';
+    $('#ex').innerHTML='<div class="cards">'+l.map(card).join('')+'</div>';
     wireList($('#ex'),l);
   }).catch(function(){ if(alive(tok)){ view.innerHTML=retryBox(); wireRetry(); } });
 }
@@ -693,21 +688,12 @@ document.addEventListener('keydown',function(e){
 
 function setBadge(){
   var b=$('#netBadge');
-  if(S.online===null){ b.textContent='comprobando…'; return; }
-  b.textContent=S.online?'sin anuncios':'sin conexión · reintentar';
-  b.style.color=S.online?'var(--acc)':'var(--mut)';
-  b.style.borderColor=S.online?'var(--acc)':'var(--line2)';
+  b.textContent = S.online===false ? 'sin conexión · reintentar' : 'sin anuncios';
+  b.style.color = S.online===false ? 'var(--mut)' : 'var(--acc)';
+  b.style.borderColor = S.online===false ? 'var(--line2)' : 'var(--acc)';
 }
 
-function retry(){
-  S.online=null; dead={}; lastInv=null;
-  $('#vid').style.display='none'; emb.src='about:blank';
-  setBadge(); route();
-  budget(api.trending(),14000)
-    .then(function(){ S.online=true; })
-    .catch(function(){ S.online=false; })
-    .finally(function(){ setBadge(); if(!location.hash||location.hash==='#/') route(); });
-}
+function retry(){ lastInv=null; S.online=null; setBadge(); route(); }
 
 /* =======================================================================
    ARRANQUE
@@ -720,11 +706,8 @@ Promise.all([db.get('state'),db.get('likes'),db.get('lists'),db.get('hist')]).th
   $('#pShuf').classList.toggle('on',S.shuffle);
   $('#pRep').classList.toggle('on',S.repeat!=='off');
   renderSide(); paintPlay(); paintNow(); renderQueue(); route();
+  setBadge();
 });
-budget(api.trending(),14000)
-  .then(function(){ S.online=true; })
-  .catch(function(){ S.online=false; })
-  .finally(function(){ setBadge(); if(!location.hash||location.hash==='#/') route(); });
 })();
 </script>
 </body>
