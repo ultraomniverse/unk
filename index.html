@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
 <title>Pentagram Music</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><circle cx='20' cy='20' r='17.5' fill='none' stroke='%23d92b3a' stroke-width='2'/><path d='M20 33.5 11.8 8.7 33.3 24.3H6.7l21.5-15.6z' fill='none' stroke='%23d92b3a' stroke-width='2'/></svg>">
 <style>
@@ -40,7 +41,7 @@
   .searchwrap input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:18px;padding:8px 14px 8px 36px;font-size:13px;font-family:inherit;outline:none}
   .searchwrap input:focus{border-color:var(--acc)}
   .searchwrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--mut);pointer-events:none}
-  .badge{margin-left:auto;font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--line2);color:var(--mut);white-space:nowrap}
+  .badge{margin-left:auto;font-size:10.5px;padding:4px 9px;border-radius:20px;border:1px solid var(--line2);color:var(--mut);white-space:nowrap;cursor:pointer}
   .view{padding:20px 18px 30px}
   .hrow{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 14px}
   .hrow h1{font-size:24px;margin:0;letter-spacing:-.6px;font-weight:600}
@@ -91,6 +92,7 @@
   .sq:hover{color:var(--txt);background:var(--card)}
   .sq.on{color:var(--acc);border-color:var(--acc)}
   .note{font-size:11.5px;color:var(--mut);background:var(--card);border:1px solid var(--line);border-left:2px solid var(--acc);border-radius:6px;padding:9px 12px;margin-bottom:16px;line-height:1.6}
+  .note .btn{margin-top:9px}
   .player{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;padding:10px 16px;background:var(--bg2);border-top:1px solid var(--line)}
   .np{display:flex;align-items:center;gap:11px;min-width:0}
   .np .art{width:48px;height:48px;border-radius:5px;overflow:hidden;background:var(--card);border:1px solid var(--line);flex:0 0 auto}
@@ -192,15 +194,14 @@
 
 /* =======================================================================
    BACKEND
-   1. db      — almacén persistente (IndexedDB, con caída a localStorage)
-   2. pool    — enrutador de proveedores con failover y cuarentena
-   3. api     — superficie de endpoints; el frontend solo usa esto
+   db   — almacén persistente (IndexedDB, caída a localStorage)
+   pool — enrutador: instancias directas -> proxys CORS -> cuarentena
+   api  — endpoints; el frontend solo usa esto
    ======================================================================= */
 
 var $=function(s,r){return (r||document).querySelector(s);},
     $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
 
-/* ---------- 1. db ---------- */
 var db=(function(){
   var NAME='pentagram', STORE='kv', h=null;
   function open(){
@@ -232,9 +233,15 @@ var db=(function(){
   };
 })();
 
-/* ---------- 2. pool ---------- */
+/* ---------- red ---------- */
 var PIPED=['https://pipedapi.kavin.rocks','https://pipedapi.adminforge.de','https://api.piped.private.coffee','https://pipedapi.drgns.space'];
 var INV=['https://inv.nadeko.net','https://invidious.nerdvpn.de','https://yewtu.be'];
+// proxys CORS abiertos: se aplican solo cuando la instancia directa falla
+var CORS=[
+  function(u){ return 'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u); },
+  function(u){ return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u); },
+  function(u){ return 'https://corsproxy.io/?url='+encodeURIComponent(u); }
+];
 var quarantine={};
 
 function get(url,ms){
@@ -243,23 +250,30 @@ function get(url,ms){
     .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
     .finally(function(){ clearTimeout(t); });
 }
+
+function candidates(list,path){
+  var out=list.map(function(b){ return b+path; });
+  CORS.forEach(function(wrap){ list.forEach(function(b){ out.push(wrap(b+path)); }); });
+  return out;
+}
+
 function pool(list,path,ms){
-  var i=0;
+  var urls=candidates(list,path), i=0;
   return new Promise(function(res,rej){
     (function step(){
-      if(i>=list.length) return rej(new Error('proveedores agotados'));
-      var base=list[i++];
-      if(quarantine[base]) return step();
-      get(base+path,ms).then(res).catch(function(){
-        quarantine[base]=Date.now();
-        setTimeout(function(){ delete quarantine[base]; },90000);
+      if(i>=urls.length) return rej(new Error('proveedores agotados'));
+      var u=urls[i++];
+      if(quarantine[u]) return step();
+      get(u,ms).then(res).catch(function(){
+        quarantine[u]=Date.now();
+        setTimeout(function(){ delete quarantine[u]; },120000);
         step();
       });
     })();
   });
 }
 
-/* ---------- 3. api ---------- */
+/* ---------- normalizador ---------- */
 function norm(it){
   if(!it) return null;
   var raw=it.url||'';
@@ -272,21 +286,32 @@ function norm(it){
     id:id,
     title:it.title||'Sin título',
     artist:String(up).replace(/ - Topic$/,''),
-    artistId:String(it.uploaderUrl||'').replace('/channel/',''),
+    artistId:String(it.uploaderUrl||it.authorId||'').replace('/channel/',''),
     dur:it.duration||it.lengthSeconds||0,
     thumb:th
   };
 }
 
+/* ---------- api ---------- */
 var api={
   search:function(q,filter){
     var f=filter==='albums'?'music_albums':filter==='playlists'?'music_playlists':'music_songs';
     return pool(PIPED,'/search?q='+encodeURIComponent(q)+'&filter='+f)
-      .then(function(d){ return (d.items||[]).map(norm).filter(Boolean); });
+      .then(function(d){ return (d.items||[]).map(norm).filter(Boolean); })
+      .then(function(r){ if(r.length) return r; throw 0; })
+      .catch(function(){
+        return pool(INV,'/api/v1/search?q='+encodeURIComponent(q)+'&type=video')
+          .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); });
+      });
   },
   trending:function(){
     return pool(PIPED,'/trending?region=US')
-      .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); });
+      .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); })
+      .then(function(r){ if(r.length) return r; throw 0; })
+      .catch(function(){
+        return pool(INV,'/api/v1/trending?region=US')
+          .then(function(d){ return (Array.isArray(d)?d:[]).map(norm).filter(Boolean); });
+      });
   },
   streams:function(id){
     return pool(PIPED,'/streams/'+id).then(function(d){
@@ -297,31 +322,40 @@ var api={
         title:d.title,
         author:String(d.uploader||'').replace(/ - Topic$/,''),
         dur:d.duration||0,
-        thumb:d.thumbnailUrl,
-        related:(d.relatedStreams||[]).map(norm).filter(Boolean)
+        thumb:d.thumbnailUrl
       };
     });
   },
   audio:function(id){
     return api.streams(id).catch(function(){
-      return pool(INV,'/latest_version?id='+id+'&itag=140',6000)
-        .then(function(){ return { url:'https://inv.nadeko.net/latest_version?id='+id+'&itag=140' }; });
+      return pool(INV,'/api/v1/videos/'+id,6000).then(function(d){
+        var a=(d.adaptiveFormats||[]).filter(function(f){ return /audio/.test(f.type||''); })
+          .sort(function(x,y){ return (y.bitrate||0)-(x.bitrate||0); })[0];
+        if(!a||!a.url) throw new Error('sin audio');
+        return { url:a.url };
+      });
     });
   },
   channel:function(id){
     return pool(PIPED,'/channel/'+id).then(function(d){
-      return {
-        name:d.name, thumb:d.avatarUrl, desc:d.description||'',
-        items:(d.relatedStreams||[]).map(norm).filter(Boolean)
-      };
+      return { name:d.name, thumb:d.avatarUrl, desc:d.description||'',
+        items:(d.relatedStreams||[]).map(norm).filter(Boolean) };
+    }).catch(function(){
+      return pool(INV,'/api/v1/channels/'+id).then(function(d){
+        return { name:d.author, thumb:d.authorThumbnails&&d.authorThumbnails[0]&&d.authorThumbnails[0].url,
+          desc:d.description||'', items:(d.latestVideos||[]).map(norm).filter(Boolean) };
+      });
     });
   },
   album:function(id){
     return pool(PIPED,'/playlists/'+id).then(function(d){
-      return {
-        name:d.name, thumb:d.thumbnailUrl, owner:d.uploader||'',
-        items:(d.relatedStreams||[]).map(norm).filter(Boolean)
-      };
+      return { name:d.name, thumb:d.thumbnailUrl, owner:d.uploader||'',
+        items:(d.relatedStreams||[]).map(norm).filter(Boolean) };
+    }).catch(function(){
+      return pool(INV,'/api/v1/playlists/'+id).then(function(d){
+        return { name:d.title, thumb:d.playlistThumbnail, owner:d.author||'',
+          items:(d.videos||[]).map(norm).filter(Boolean) };
+      });
     });
   }
 };
@@ -331,6 +365,8 @@ var api={
    ======================================================================= */
 var view=$('#view'), audio=new Audio(), emb=$('#emb');
 var S={queue:[],qi:-1,shuffle:false,repeat:'off',vol:85,likes:[],lists:[],hist:[],tab:'songs',online:null,embed:false,playing:false,cur:null};
+var navToken=0;
+function alive(t){ return t===navToken; }
 
 audio.volume=S.vol/100;
 function save(){
@@ -342,7 +378,7 @@ function fmt(s){s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+Strin
 function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 
 /* =======================================================================
-   MOTOR DE REPRODUCCIÓN
+   MOTOR
    ======================================================================= */
 function embedPlay(id){
   $('#vid').style.display='block';
@@ -424,6 +460,7 @@ function trackRow(t,i){
 function skeleton(n){var o='';for(var i=0;i<n;i++)o+='<div class="card"><div class="sk" style="width:146px;height:146px"></div><div class="sk" style="width:90%;height:11px;margin-top:9px"></div></div>';return '<div class="cards">'+o+'</div>';}
 
 function wireList(container,list){
+  if(!container) return;
   $$('.tr',container).forEach(function(r){
     r.onclick=function(e){ if(e.target.closest('.add')) return; S.queue=list.slice(); playQueue(+r.dataset.i); };
   });
@@ -437,33 +474,46 @@ function wireList(container,list){
     };
   });
 }
+function retryBox(id){
+  return '<div class="note" id="'+id+'">No se pudo conectar con ningún proveedor.<button class="btn o" data-retry style="padding:5px 12px;font-size:11px">Reintentar</button></div>';
+}
+function wireRetry(){ $$('[data-retry]').forEach(function(b){ b.onclick=retry; }); }
 
 /* =======================================================================
    VISTAS
    ======================================================================= */
 function vHome(){
+  var tok=navToken;
   view.innerHTML='<div class="hrow"><h1>Buenas noches</h1></div><div class="chips" id="genres"></div><div id="feed">'+skeleton(5)+'</div>';
   ['Éxitos','Lo-fi','Rock','Pop latino','Jazz','Electrónica','Clásica','Hip hop'].forEach(function(g){
     var c=document.createElement('div'); c.className='chip'; c.textContent=g;
     c.onclick=function(){ location.hash='#/search?q='+encodeURIComponent(g); };
     $('#genres').appendChild(c);
   });
-  if(S.embed||S.online===false){ $('#feed').innerHTML='<div class="note">Backend no accesible. La búsqueda sigue funcionando en modo incrustado.</div>'; return; }
+  if(S.embed||S.online===false){
+    $('#feed').innerHTML=retryBox('rb'); wireRetry();
+    return;
+  }
   api.trending().then(function(list){
+    if(!alive(tok)) return;
     if(!list.length) throw 0;
     var h='';
     if(S.hist.length) h+='<div class="shelf"><div class="hrow"><h2>Escuchado hace poco</h2></div><div class="cards">'+S.hist.slice(0,12).map(function(x){return card(x);}).join('')+'</div></div>';
     h+='<div class="shelf"><div class="hrow"><h2>Tendencias</h2></div><div class="cards">'+list.slice(0,14).map(function(x){return card(x);}).join('')+'</div></div>';
     $('#feed').innerHTML=h;
     wireList($('#feed'),S.hist.concat(list));
-  }).catch(function(){ $('#feed').innerHTML='<div class="note">No se pudo cargar el inicio. Prueba a buscar.</div>'; });
+  }).catch(function(){
+    if(!alive(tok)) return;
+    $('#feed').innerHTML=retryBox('rb'); wireRetry();
+  });
 }
 
 function vSearch(q){
+  var tok=navToken;
   view.innerHTML='<div class="chips" id="filters"></div><div id="res">'+skeleton(4)+'</div>';
   [['songs','Canciones'],['albums','Álbumes'],['playlists','Listas']].forEach(function(f){
     var c=document.createElement('div'); c.className='chip'+(S.tab===f[0]?' on':''); c.textContent=f[1];
-    c.onclick=function(){ S.tab=f[0]; vSearch(q); };
+    c.onclick=function(){ S.tab=f[0]; navToken++; vSearch(q); };
     $('#filters').appendChild(c);
   });
   if(S.embed||S.online===false){
@@ -475,6 +525,7 @@ function vSearch(q){
     return;
   }
   api.search(q,S.tab).then(function(list){
+    if(!alive(tok)) return;
     if(!list.length){ $('#res').innerHTML='<div class="note">Sin resultados para «'+esc(q)+'».</div>'; return; }
     if(S.tab==='songs'){
       $('#res').innerHTML='<div class="actions"><button class="btn" id="all">Reproducir todo</button></div><div class="tracklist">'+list.map(trackRow).join('')+'</div>';
@@ -486,24 +537,31 @@ function vSearch(q){
         c.onclick=function(){ location.hash='#/album/'+c.dataset.play; };
       });
     }
-  }).catch(function(){ $('#res').innerHTML='<div class="note">Fallo de red en todos los proveedores. Reintenta en unos segundos.</div>'; });
+  }).catch(function(){
+    if(!alive(tok)) return;
+    $('#res').innerHTML=retryBox('rb'); wireRetry();
+  });
 }
 
 function vArtist(id){
+  var tok=navToken;
   view.innerHTML=skeleton(4);
   api.channel(id).then(function(a){
+    if(!alive(tok)) return;
     view.innerHTML='<div class="hero"><div class="art rnd">'+(a.thumb?'<img src="'+esc(a.thumb)+'">':'')+'</div>'+
       '<div><div class="k">Artista</div><h1>'+esc(a.name)+'</h1><div class="meta">'+esc(a.desc).slice(0,180)+'</div></div></div>'+
       '<div class="actions"><button class="btn" id="all">Reproducir</button></div>'+
       '<div class="tracklist">'+a.items.map(trackRow).join('')+'</div>';
     $('#all').onclick=function(){ S.queue=a.items.slice(); playQueue(0); };
     wireList(view,a.items);
-  }).catch(function(){ view.innerHTML='<div class="note">No se pudo cargar el artista.</div>'; });
+  }).catch(function(){ if(alive(tok)) view.innerHTML=retryBox('rb'), wireRetry(); });
 }
 
 function vAlbum(id){
+  var tok=navToken;
   view.innerHTML=skeleton(4);
   api.album(id).then(function(a){
+    if(!alive(tok)) return;
     var dur=a.items.reduce(function(s,t){return s+(t.dur||0);},0);
     view.innerHTML='<div class="hero"><div class="art">'+(a.thumb?'<img src="'+esc(a.thumb)+'">':'')+'</div>'+
       '<div><div class="k">Álbum</div><h1>'+esc(a.name)+'</h1><div class="meta">'+esc(a.owner)+' · '+a.items.length+' pistas · '+fmt(dur)+'</div></div></div>'+
@@ -511,7 +569,7 @@ function vAlbum(id){
       '<div class="tracklist">'+a.items.map(trackRow).join('')+'</div>';
     $('#all').onclick=function(){ S.queue=a.items.slice(); playQueue(0); };
     wireList(view,a.items);
-  }).catch(function(){ view.innerHTML='<div class="note">No se pudo cargar el álbum.</div>'; });
+  }).catch(function(){ if(alive(tok)) view.innerHTML=retryBox('rb'), wireRetry(); });
 }
 
 function vLibrary(){
@@ -526,18 +584,20 @@ function vLibrary(){
 }
 
 function vExplore(){
+  var tok=navToken;
   view.innerHTML='<div class="hrow"><h1>Explorar</h1></div><div class="chips" id="g2"></div><div id="ex"></div>';
   ['Nuevo','Ranking','Ambient','Soul','Metal','Indie','Reggaetón','Piano'].forEach(function(g){
     var c=document.createElement('div'); c.className='chip'; c.textContent=g;
     c.onclick=function(){ location.hash='#/search?q='+encodeURIComponent(g); };
     $('#g2').appendChild(c);
   });
-  if(S.embed||S.online===false){ $('#ex').innerHTML='<div class="note">Sin backend en este entorno.</div>'; return; }
+  if(S.embed||S.online===false){ $('#ex').innerHTML=retryBox('rb'); wireRetry(); return; }
   $('#ex').innerHTML=skeleton(4);
   api.search('top hits 2026','songs').then(function(l){
+    if(!alive(tok)) return;
     $('#ex').innerHTML='<div class="cards">'+l.map(function(t){return card(t);}).join('')+'</div>';
     wireList($('#ex'),l);
-  }).catch(function(){ $('#ex').innerHTML='<div class="note">No disponible.</div>'; });
+  }).catch(function(){ if(alive(tok)) view.innerHTML=retryBox('rb'), wireRetry(); });
 }
 
 function vPlaylist(pid){
@@ -554,7 +614,7 @@ function vPlaylist(pid){
 }
 
 /* =======================================================================
-   LISTAS
+   LISTAS Y ROUTER
    ======================================================================= */
 function addToPlaylist(track){
   if(!track) return;
@@ -564,17 +624,15 @@ function addToPlaylist(track){
   toast('Añadido a «'+S.lists[0].name+'»');
 }
 function renderSide(){
-  var c=$('#sideLists');
+  var c=$('#sideLists'); if(!c) return;
   c.innerHTML=S.lists.map(function(L){
     return '<div class="plrow" data-pl="'+L.id+'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h10"/></svg><span>'+esc(L.name)+'</span></div>';
   }).join('');
   $$('[data-pl]',c).forEach(function(r){ r.onclick=function(){ location.hash='#/playlist/'+r.dataset.pl; }; });
 }
 
-/* =======================================================================
-   ROUTER
-   ======================================================================= */
 function route(){
+  navToken++;
   var h=location.hash||'#/', m;
   $$('.nav').forEach(function(n){ n.classList.toggle('on', n.dataset.go===h); });
   if(h==='#/'||h==='') return vHome();
@@ -615,7 +673,8 @@ $('#newList').onclick=function(){
   location.hash='#/playlist/'+L.id;
 };
 $('#pPlay').onclick=function(){ if(!S.cur) return; S.playing?audio.pause():audio.play(); };
-$('#pNext').onclick=next; $('#pPrev').onclick=prev;
+$('#pNext').onclick=next;
+$('#pPrev').onclick=prev;
 $('#pShuf').onclick=function(){ S.shuffle=!S.shuffle; this.classList.toggle('on',S.shuffle); save(); };
 $('#pRep').onclick=function(){ S.repeat=S.repeat==='off'?'all':S.repeat==='all'?'one':'off'; this.classList.toggle('on',S.repeat!=='off'); save(); };
 $('#pQueue').onclick=function(){ $('#qpanel').classList.toggle('open'); renderQueue(); };
@@ -628,6 +687,7 @@ $('#pLike').onclick=function(){
   if(i>=0) S.likes.splice(i,1); else { S.likes.unshift(S.cur); toast('Añadido a Me gusta'); }
   paintNow(); save();
 };
+$('#netBadge').onclick=retry;
 document.addEventListener('keydown',function(e){
   if(e.target.tagName==='INPUT') return;
   if(e.code==='Space'){ e.preventDefault(); $('#pPlay').click(); }
@@ -638,9 +698,19 @@ document.addEventListener('keydown',function(e){
 function setBadge(){
   var b=$('#netBadge');
   if(S.online===null){ b.textContent='comprobando…'; return; }
-  b.textContent=S.online?'sin anuncios':'modo incrustado';
+  b.textContent=S.online?'sin anuncios':'sin conexión · reintentar';
   b.style.color=S.online?'var(--acc)':'var(--mut)';
   b.style.borderColor=S.online?'var(--acc)':'var(--line2)';
+}
+
+function retry(){
+  S.online=null; S.embed=false; quarantine={};
+  $('#vid').style.display='none'; emb.src='about:blank';
+  setBadge(); route();
+  get(PIPED[0]+'/trending?region=US',5000)
+    .then(function(){ S.online=true; })
+    .catch(function(){ S.online=false; S.embed=true; })
+    .finally(function(){ setBadge(); route(); });
 }
 
 /* =======================================================================
@@ -655,10 +725,10 @@ Promise.all([db.get('state'),db.get('likes'),db.get('lists'),db.get('hist')]).th
   $('#pRep').classList.toggle('on',S.repeat!=='off');
   renderSide(); paintPlay(); paintNow(); renderQueue(); route();
 });
-get(PIPED[0]+'/trending?region=US',4500)
+get(PIPED[0]+'/trending?region=US',5000)
   .then(function(){ S.online=true; })
   .catch(function(){ S.online=false; S.embed=true; })
-  .finally(function(){ setBadge(); route(); });
+  .finally(function(){ setBadge(); if(!location.hash||location.hash==='#/') route(); });
 })();
 </script>
 </body>
